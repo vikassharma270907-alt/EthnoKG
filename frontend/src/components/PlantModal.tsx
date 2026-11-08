@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Leaf, ExternalLink, Layers, Beaker, ShieldCheck, Download, CheckCircle2 } from 'lucide-react';
-import type { PlantDetail, SovereigntyCertificate } from '../types';
+import { X, Leaf, ExternalLink, Layers, Beaker, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import type { PlantDetail } from '../types';
 import { fetchSovereigntyCertificate } from '../api/client';
 
 interface PlantModalProps {
@@ -9,7 +9,6 @@ interface PlantModalProps {
 }
 
 export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
-  const [cert, setCert] = useState<SovereigntyCertificate | null>(null);
   const [isLoadingCert, setIsLoadingCert] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
@@ -19,7 +18,6 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
     setIsLoadingCert(true);
     try {
       const c = await fetchSovereigntyCertificate(plant.id);
-      setCert(c);
       const blob = new Blob([JSON.stringify(c, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -200,7 +198,19 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="bg-slate-900/80 px-6 py-3 border-t border-slate-800 flex justify-end">
+        <div className="bg-slate-900/80 px-6 py-3 border-t border-slate-800 flex items-center justify-between">
+          <button
+            onClick={handleFetchCert}
+            disabled={isLoadingCert}
+            className="px-3.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>
+              {isLoadingCert ? 'Generating...' : downloadSuccess ? 'Certificate Downloaded!' : 'Download Nagoya ABS Certificate'}
+            </span>
+            {downloadSuccess && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
+          </button>
+
           <button
             onClick={onClose}
             className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors cursor-pointer"
