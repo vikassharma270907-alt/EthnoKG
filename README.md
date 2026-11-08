@@ -7,6 +7,7 @@
 [![React](https://img.shields.io/badge/React-19-61dafb.svg?style=flat-square&logo=react)](https://react.dev)
 [![Cytoscape](https://img.shields.io/badge/Cytoscape.js-3.30+-ea580c.svg?style=flat-square)](https://js.cytoscape.org)
 [![License](https://img.shields.io/badge/License-CC--BY_4.0-emerald.svg?style=flat-square)](LICENSE)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/vikassharma270907-alt/EthnoKG)
 
 > **EthnoHack 2026 Submission**  
 > **Primary Track:** Traditional Knowledge Mining  
@@ -144,6 +145,16 @@ npm run dev
 
 Open your browser at **`http://localhost:5173`** to access EthnoKG!  
 Interactive Swagger API documentation is accessible at **`http://127.0.0.1:8000/docs`**.
+
+### Step 5: One-Click Render Deployment
+
+EthnoKG includes a native Render Blueprint (`render.yaml`), multi-stage `Dockerfile`, and automated build script (`build.sh`) for unified zero-downtime hosting:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/vikassharma270907-alt/EthnoKG)
+
+1. Click the **Deploy to Render** button above or connect `vikassharma270907-alt/EthnoKG` in your [Render Dashboard](https://dashboard.render.com).
+2. Render detects `render.yaml` automatically, builds both React 19 frontend and Python FastAPI backend, and binds the web service.
+3. Access your live production URL at `https://<your-service-name>.onrender.com`!
 
 ---
 
