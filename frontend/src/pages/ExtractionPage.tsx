@@ -83,14 +83,14 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
 
   // Animated pipeline progress simulation when processing
   useEffect(() => {
-    if (!isProcessing) {
-      setCurrentStageIdx(0);
-      return;
-    }
+    if (!isProcessing) return;
     const interval = setInterval(() => {
       setCurrentStageIdx((prev) => (prev < PIPELINE_STAGES.length - 1 ? prev + 1 : prev));
     }, 180);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      setCurrentStageIdx(0);
+    };
   }, [isProcessing]);
 
   const handleRunSample = async () => {
