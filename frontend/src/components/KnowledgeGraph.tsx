@@ -8,7 +8,8 @@ import {
   Filter, 
   X,
   Search,
-  Download
+  Download,
+  FileText
 } from 'lucide-react';
 import type { GraphResponse } from '../types';
 
@@ -273,6 +274,18 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
     a.click();
   };
 
+  const handleExportJSON = () => {
+    if (!cyRef.current) return;
+    const jsonStr = JSON.stringify(cyRef.current.json(), null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ethnokg_graph_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="relative w-full h-[680px] bg-[#090a0f] border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
       
@@ -375,6 +388,15 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           >
             <Download className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">PNG</span>
+          </button>
+          <button
+            onClick={handleExportJSON}
+            aria-label="Export graph as Cytoscape JSON"
+            className="p-1.5 bg-[#151722] hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/80 cursor-pointer transition-colors flex items-center gap-1 text-[11px] font-semibold px-2 font-mono"
+            title="Export Cytoscape JSON"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">JSON</span>
           </button>
         </div>
       </div>

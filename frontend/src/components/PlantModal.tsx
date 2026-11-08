@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import type { PlantDetail, SovereigntyCertificate } from '../types';
 import { fetchSovereigntyCertificate } from '../api/client';
+import { MoleculeViewer } from './MoleculeViewer';
 
 interface PlantModalProps {
   plant: PlantDetail | null;
@@ -380,59 +381,13 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
                 )}
               </div>
 
-              {/* Interactive 2D Structure Preview Card */}
+              {/* Interactive 3D / 2D Molecular Structure Viewer */}
               {selectedCompound && (
-                <div className="mt-3 p-4 bg-[#0d0e14] border border-zinc-700 rounded-xl space-y-3 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
-                    <div className="flex items-center gap-2">
-                      <Atom className="w-4 h-4 text-sky-400" />
-                      <span className="font-bold text-white font-mono text-xs">2D Molecular Structure: {selectedCompound}</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCompound(null)}
-                      className="text-[10px] text-zinc-400 hover:text-white font-mono cursor-pointer"
-                    >
-                      Close Preview
-                    </button>
-                  </div>
-                  <div className="flex flex-col sm:flex-row items-center gap-4">
-                    <div className="w-36 h-36 bg-white rounded-lg p-1.5 flex items-center justify-center shrink-0 border border-zinc-300 shadow-inner overflow-hidden">
-                      <img
-                        src={`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(selectedCompound)}/PNG?image_size=200x200`}
-                        alt={`2D structure of ${selectedCompound}`}
-                        className="max-w-full max-h-full object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = 'none';
-                        }}
-                      />
-                    </div>
-                    <div className="flex-1 space-y-2 text-xs">
-                      <p className="text-zinc-300 leading-relaxed text-[11px]">
-                        Authoritative 2D chemical structure retrieved from NCBI PubChem Chemical Substance Repository.
-                      </p>
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        <a
-                          href={`https://pubchem.ncbi.nlm.nih.gov/#query=${encodeURIComponent(selectedCompound)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-[11px] font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
-                        >
-                          <span>Open in PubChem</span>
-                          <ExternalLink className="w-3 h-3 text-zinc-400" />
-                        </a>
-                        <a
-                          href={`https://www.ebi.ac.uk/chembl/g/#search_results/all/query=${encodeURIComponent(selectedCompound)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-[11px] font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
-                        >
-                          <span>Search ChEMBL Bioactivity</span>
-                          <ExternalLink className="w-3 h-3 text-zinc-400" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
+                <div className="mt-3">
+                  <MoleculeViewer
+                    compoundName={selectedCompound}
+                    onClose={() => setSelectedCompound(null)}
+                  />
                 </div>
               )}
             </div>
