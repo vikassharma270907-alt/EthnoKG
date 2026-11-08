@@ -20,6 +20,14 @@ def test_healthz_alias(client):
     head_res = client.head("/healthz")
     assert head_res.status_code == 200
 
+def test_health_alias(client):
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
+
+    head_res = client.head("/health")
+    assert head_res.status_code == 200
+
 def test_dashboard_stats(client):
     response = client.get("/api/dashboard/stats")
     assert response.status_code == 200
