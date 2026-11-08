@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, 
   Send, 
@@ -9,7 +9,9 @@ import {
   Clock, 
   CheckCircle2, 
   Copy, 
-  Check 
+  Check,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { queryAssistant } from '../api/client';
@@ -23,6 +25,36 @@ export const AssistantPage: React.FC = () => {
   const [history, setHistory] = useState<Array<{ q: string; a: AssistantQueryResponse }>>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [copiedAnswer, setCopiedAnswer] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const toggleSpeechNarration = () => {
+    if (!response || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const narrative = `EthnoKG Grounded Synthesis. ${response.answer}. Confidence score: ${Math.round(response.confidence * 100)} percent. Derived from ${(response.cited_sources || []).length} peer-reviewed literature records.`;
+    const utterance = new SpeechSynthesisUtterance(narrative);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  };
 
   const sampleQuestions = [
     "What plants have documented traditional uses associated with fever and malaria?",
@@ -36,6 +68,11 @@ export const AssistantPage: React.FC = () => {
     if (isQuerying) return;
     const q = (qText || question).trim();
     if (!q) return;
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
 
     setIsQuerying(true);
     setErrorMsg(null);
@@ -161,8 +198,35 @@ export const AssistantPage: React.FC = () => {
                   Verified RAG
                 </span>
                 <button
+                  type="button"
+                  onClick={toggleSpeechNarration}
+                  className={`text-xs flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition-colors cursor-pointer font-mono ${
+                    isSpeaking
+                      ? 'bg-zinc-200 text-zinc-950 font-bold border-white'
+                      : 'bg-zinc-800/80 text-zinc-300 hover:text-white border-zinc-700 hover:bg-zinc-700'
+                  }`}
+                  title={isSpeaking ? 'Stop AI Voice Narration' : 'Listen to AI Voice Synthesis'}
+                >
+                  {isSpeaking ? (
+                    <>
+                      <VolumeX className="w-3.5 h-3.5 text-zinc-950" />
+                      <span>Stop Voice</span>
+                      <span className="flex items-end gap-0.5 h-3 ml-1">
+                        <span className="w-0.5 h-3 bg-zinc-950 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                        <span className="w-0.5 h-2 bg-zinc-950 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                        <span className="w-0.5 h-3 bg-zinc-950 rounded-full animate-bounce" />
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="w-3.5 h-3.5 text-zinc-300" />
+                      <span>Listen</span>
+                    </>
+                  )}
+                </button>
+                <button
                   onClick={handleCopyAnswer}
-                  className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 ml-2 px-2 py-1 rounded bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700 cursor-pointer transition-colors"
+                  className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 ml-1 px-2 py-1 rounded bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700 cursor-pointer transition-colors"
                 >
                   {copiedAnswer ? <Check className="w-3.5 h-3.5 text-zinc-200" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedAnswer ? 'Copied' : 'Copy'}</span>

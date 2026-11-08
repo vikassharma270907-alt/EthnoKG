@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from .core.config import settings
 from .core.database import engine, Base, SessionLocal, get_db
 from .core.seeder import seed_database
+from .core.docs_ui import get_custom_docs_html
 from .api import api_router
 
 logger = logging.getLogger("ethnokg")
@@ -34,7 +35,9 @@ app = FastAPI(
     title="EthnoKG API",
     description="Turning Traditional Knowledge into Traceable Scientific Evidence — EthnoHack 2026",
     version=settings.app_version,
-    lifespan=lifespan
+    lifespan=lifespan,
+    docs_url=None,
+    redoc_url=None
 )
 
 # Standard HTTP Security Headers (CWE-1021, CWE-79)
@@ -60,12 +63,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Custom Interactive Swagger UI Documentation Portal
+@app.get("/docs", include_in_schema=False)
+@app.get("/docs/", include_in_schema=False)
+def custom_swagger_docs():
+    return get_custom_docs_html(
+        openapi_url="/openapi.json",
+        title="EthnoKG API Documentation — EthnoHack 2026",
+        version=settings.app_version
+    )
+
+@app.get("/redoc", include_in_schema=False)
+@app.get("/redoc/", include_in_schema=False)
+def custom_redoc_docs():
+    return get_custom_docs_html(
+        openapi_url="/openapi.json",
+        title="EthnoKG API Documentation — EthnoHack 2026",
+        version=settings.app_version
+    )
+
 # Mount all API routers under /api
 app.include_router(api_router, prefix="/api")
 
-@app.api_route("/api/health", methods=["GET", "HEAD"])
-@app.api_route("/healthz", methods=["GET", "HEAD"])
-@app.api_route("/health", methods=["GET", "HEAD"])
+@app.api_route("/api/health", methods=["GET", "HEAD"], include_in_schema=False)
+@app.api_route("/healthz", methods=["GET", "HEAD"], include_in_schema=False)
+@app.api_route("/health", methods=["GET", "HEAD"], include_in_schema=False)
 def healthcheck(response: Response, db: Session = Depends(get_db)):
     db_status = "connected"
     try:
@@ -109,7 +131,7 @@ if os.path.exists(frontend_dist):
     if os.path.exists(walkthrough_dir):
         app.mount("/walkthrough", StaticFiles(directory=walkthrough_dir), name="walkthrough")
 
-    @app.api_route("/", methods=["GET", "HEAD"])
+    @app.api_route("/", methods=["GET", "HEAD"], include_in_schema=False)
     def serve_root():
         index_file = os.path.join(frontend_dist, "index.html")
         if os.path.exists(index_file):
@@ -118,9 +140,9 @@ if os.path.exists(frontend_dist):
 
     frontend_dist_path = Path(frontend_dist).resolve()
 
-    @app.api_route("/{full_path:path}", methods=["GET", "HEAD"])
+    @app.api_route("/{full_path:path}", methods=["GET", "HEAD"], include_in_schema=False)
     def serve_spa(full_path: str):
-        if full_path.startswith("api/") or full_path in ["docs", "openapi.json", "healthz", "health", "redoc", "api"]:
+        if full_path.startswith("api/") or full_path in ["docs", "docs/", "openapi.json", "healthz", "health", "redoc", "redoc/", "api"]:
             raise HTTPException(status_code=404, detail="API route not found")
         
         # Disallow hidden dotfiles and traversal probing
