@@ -79,6 +79,11 @@ def test_assistant_empty_query_returns_400(client):
     assert "blank or whitespace-only" in res_ws.json()["detail"]
 
 def test_verification_api(client):
+    # Test GET /api/verification/pending
+    pending_check = client.get("/api/verification/pending")
+    assert pending_check.status_code == 200
+    assert isinstance(pending_check.json(), list)
+
     # Fetch pending relations
     res = client.get("/api/extraction/results?status=pending")
     assert res.status_code == 200
@@ -94,6 +99,17 @@ def test_verification_api(client):
     app_res = client.post(f"/api/verification/{rel_id}/approve", json={"reviewer_name": "Test Curator", "notes": "Approved in unit test"})
     assert app_res.status_code == 200
     assert app_res.json()["verification_status"] == "approved"
+
+def test_verification_pending_endpoint(client):
+    res = client.get("/api/verification/pending?limit=10")
+    assert res.status_code == 200
+    assert isinstance(res.json(), list)
+
+    # Test limit validation
+    res_bad = client.get("/api/verification/pending?limit=0")
+    assert res_bad.status_code == 422
+    res_overflow = client.get("/api/verification/pending?limit=500")
+    assert res_overflow.status_code == 422
 
 def test_analytics_discovery_index(client):
     res = client.get("/api/analytics/discovery-index")
