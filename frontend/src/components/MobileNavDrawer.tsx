@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { X, Network, FileVideo, Cpu, Search, Sparkles } from 'lucide-react';
 import { NAV_CATEGORIES, NAV_ITEMS, getNavItemBadge } from './navConfig';
 import type { NavCategoryId, NavItemConfig } from './navConfig';
@@ -24,6 +24,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
   onOpenVideoWalkthrough,
   onOpenSearch
 }) => {
+  const shouldReduceMotion = useReducedMotion();
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const drawerRef = useFocusTrap<HTMLDivElement>({
@@ -43,6 +44,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
     <AnimatePresence>
       {isOpen && (
         <div
+          id="mobile-nav-drawer"
           role="dialog"
           aria-modal="true"
           aria-label="Mobile Navigation Menu"
@@ -59,10 +61,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
           <motion.div
             ref={drawerRef}
             tabIndex={-1}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+            initial={{ x: shouldReduceMotion ? 0 : '100%', opacity: shouldReduceMotion ? 0 : 1 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: shouldReduceMotion ? 0 : '100%', opacity: shouldReduceMotion ? 0 : 1 }}
+            transition={shouldReduceMotion ? { duration: 0.05 } : { type: 'spring', stiffness: 380, damping: 32 }}
             className="relative w-full max-w-sm h-full bg-[#0a0c12] border-l border-zinc-800/80 shadow-2xl flex flex-col z-10 overflow-hidden focus:outline-hidden"
           >
             <div className="flex items-center justify-between p-4 border-b border-zinc-800">
@@ -135,8 +137,9 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                           <button
                             key={item.id}
                             type="button"
+                            aria-current={isSelected ? 'page' : undefined}
                             onClick={() => handleSelect(item.id)}
-                            className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-xs text-left transition-all cursor-pointer ${
+                            className={`w-full flex items-center justify-between p-2.5 min-h-[44px] rounded-xl border text-xs text-left transition-all cursor-pointer ${
                               isSelected
                                 ? 'bg-zinc-800/90 border-sky-500/50 text-white font-medium shadow-sm'
                                 : 'bg-zinc-900/30 border-transparent text-zinc-300 hover:bg-zinc-800/50 hover:text-white'

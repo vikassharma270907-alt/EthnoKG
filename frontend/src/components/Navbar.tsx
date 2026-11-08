@@ -83,9 +83,25 @@ export const Navbar: React.FC<NavbarProps> = ({
     <>
       <header
         role="banner"
-        className="sticky top-0 z-40 bg-[#0a0c12]/92 backdrop-blur-2xl border-b border-zinc-800/80 shadow-2xl shadow-black/80 transition-all select-none"
+        className="sticky top-0 z-40 bg-[#0a0c12]/92 backdrop-blur-2xl border-b border-zinc-800/80 shadow-2xl shadow-black/80 transition-all select-none relative"
       >
-        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-500/35 to-transparent pointer-events-none" />
+        {/* Ambient Downward Light Ray */}
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[900px] max-w-[80vw] h-8 bg-gradient-to-b from-sky-500/10 via-teal-500/5 to-transparent blur-xl pointer-events-none"
+        />
+
+        {/* Top Specular Ambient Rim */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+        />
+
+        {/* Bottom Breathing Glow Beam */}
+        <div
+          aria-hidden="true"
+          className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 via-teal-400/40 to-transparent pointer-events-none shadow-[0_0_12px_rgba(56,189,248,0.5)]"
+        />
 
         <div className="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-3 lg:gap-5">
@@ -156,6 +172,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenVideoWalkthrough={onOpenVideoWalkthrough}
                 onNavigateToMining={() => setActiveTab('extraction')}
                 onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+                isMobileMenuOpen={isMobileMenuOpen}
               />
             </div>
 
