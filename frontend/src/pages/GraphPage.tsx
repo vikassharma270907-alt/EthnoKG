@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Network, Info, Download, Filter } from 'lucide-react';
+import { Info, Network } from 'lucide-react';
 import { fetchGraph } from '../api/client';
-import { GraphResponse } from '../types';
+import type { GraphResponse } from '../types';
 import { KnowledgeGraph } from '../components/KnowledgeGraph';
 
 export const GraphPage: React.FC = () => {
@@ -35,8 +35,11 @@ export const GraphPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-white font-mono">Interactive Knowledge Graph</h1>
-            <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
+            <h1 className="text-2xl font-bold text-white font-mono flex items-center gap-2">
+              <Network className="w-6 h-6 text-emerald-400" />
+              <span>Interactive Knowledge Graph</span>
+            </h1>
+            <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">
               Cytoscape Network Engine
             </span>
           </div>
@@ -46,11 +49,11 @@ export const GraphPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
+          <div className="text-xs text-slate-300 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>{graphData?.nodes?.length || 0} Entities</span>
+            <span className="font-semibold text-white font-mono">{graphData?.nodes?.length || 0} Entities</span>
             <span>•</span>
-            <span>{graphData?.edges?.length || 0} Relations</span>
+            <span className="font-semibold text-emerald-400 font-mono">{graphData?.edges?.length || 0} Relations</span>
           </div>
         </div>
       </div>
@@ -65,7 +68,7 @@ export const GraphPage: React.FC = () => {
       />
 
       {/* Helpful Instructions */}
-      <div className="bg-[#070c19] border border-slate-800 p-4 rounded-xl text-xs text-slate-400 flex items-start gap-3">
+      <div className="bg-[#070c19] border border-slate-800 p-4 rounded-2xl text-xs text-slate-400 flex items-start gap-3 shadow-lg">
         <Info className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
         <div className="space-y-1">
           <p className="font-semibold text-slate-200">How to Navigate the Graph:</p>
@@ -73,6 +76,7 @@ export const GraphPage: React.FC = () => {
             <li><strong>Click any node:</strong> Centers the view and opens the Entity Details drawer with family, connections, and metadata.</li>
             <li><strong>Click any edge:</strong> Opens the Scientific Provenance drawer displaying the verbatim text passage and DOI reference.</li>
             <li><strong>Scroll / Drag:</strong> Use your mouse wheel to zoom and drag to pan across the network space.</li>
+            <li><strong>Layout Selector:</strong> Switch between Force-Directed (CoSE), Concentric Rings, Circular Orbit, and Breadth-First tree hierarchies.</li>
           </ul>
         </div>
       </div>
