@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
-import { X, Leaf, ExternalLink, Layers, Beaker, ShieldCheck, CheckCircle2 } from 'lucide-react';
-import type { PlantDetail } from '../types';
+import { 
+  X, 
+  Leaf, 
+  ExternalLink, 
+  Layers, 
+  Beaker, 
+  ShieldCheck, 
+  CheckCircle2,
+  FileCheck2,
+  Printer,
+  Copy,
+  Download,
+  ArrowLeft
+} from 'lucide-react';
+import type { PlantDetail, SovereigntyCertificate } from '../types';
 import { fetchSovereigntyCertificate } from '../api/client';
 
 interface PlantModalProps {
@@ -10,28 +23,37 @@ interface PlantModalProps {
 
 export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
   const [isLoadingCert, setIsLoadingCert] = useState(false);
-  const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [activeCert, setActiveCert] = useState<SovereigntyCertificate | null>(null);
+  const [copiedHash, setCopiedHash] = useState(false);
 
   if (!plant) return null;
 
-  const handleFetchCert = async () => {
+  const handleOpenCert = async () => {
     setIsLoadingCert(true);
     try {
       const c = await fetchSovereigntyCertificate(plant.id);
-      const blob = new Blob([JSON.stringify(c, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${c.certificate_id}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      setDownloadSuccess(true);
-      setTimeout(() => setDownloadSuccess(false), 3000);
+      setActiveCert(c);
     } catch (err) {
       console.error('Failed to generate certificate:', err);
     } finally {
       setIsLoadingCert(false);
     }
+  };
+
+  const handleDownloadCert = (c: SovereigntyCertificate) => {
+    const blob = new Blob([JSON.stringify(c, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${c.certificate_id}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopyHash = (hash: string) => {
+    navigator.clipboard.writeText(hash);
+    setCopiedHash(true);
+    setTimeout(() => setCopiedHash(false), 2000);
   };
 
   return (
@@ -65,7 +87,92 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
         </div>
 
         {/* Content Body */}
-        <div className="p-6 space-y-6">
+        {/* Modal Body: Either Certificate View or Standard Plant Dossier */}
+        {activeCert ? (
+          <div className="p-6 space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+              <button
+                onClick={() => setActiveCert(null)}
+                className="text-xs text-zinc-300 hover:text-white flex items-center gap-1.5 font-mono cursor-pointer"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Plant Dossier</span>
+              </button>
+              <span className="text-[10px] font-mono font-bold bg-zinc-800 text-zinc-200 border border-zinc-700 px-2 py-0.5 rounded-full">
+                UN CBD Article 8(j) Validated
+              </span>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div className="bg-[#151722] p-4 rounded-xl border border-zinc-800 space-y-2">
+                <div className="flex justify-between items-center text-zinc-400">
+                  <span>Certificate ID:</span>
+                  <span className="font-mono text-white font-bold">{activeCert.certificate_id}</span>
+                </div>
+                <div className="flex justify-between items-center text-zinc-400">
+                  <span>Botanical Binomial:</span>
+                  <span className="font-mono text-white italic font-bold">{activeCert.scientific_name}</span>
+                </div>
+                <div className="flex justify-between items-center text-zinc-400">
+                  <span>Originating Traditions:</span>
+                  <span className="text-zinc-200 font-semibold">{(activeCert.certificate.originating_traditions || []).join(', ')}</span>
+                </div>
+                <div className="flex justify-between items-center text-zinc-400">
+                  <span>IUCN Red List Status:</span>
+                  <span className="text-zinc-300 font-semibold">{activeCert.certificate.iucn_red_list_status}</span>
+                </div>
+                <div className="flex justify-between items-center text-zinc-400">
+                  <span>CITES Category:</span>
+                  <span className="text-zinc-300 font-semibold">{activeCert.certificate.cites_trade_category}</span>
+                </div>
+              </div>
+
+              {/* SHA-256 Provenance Fingerprint */}
+              <div className="bg-zinc-900 border border-zinc-700 p-3.5 rounded-xl space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-zinc-200 flex items-center gap-1.5 font-mono">
+                    <FileCheck2 className="w-3.5 h-3.5 text-zinc-300" />
+                    Cryptographic SHA-256 Provenance Fingerprint:
+                  </span>
+                  <button
+                    onClick={() => handleCopyHash(activeCert.sha256_provenance_hash)}
+                    className="text-[10px] text-zinc-300 hover:text-white flex items-center gap-1 cursor-pointer font-mono"
+                  >
+                    <Copy className="w-3 h-3" />
+                    {copiedHash ? 'Copied!' : 'Copy Hash'}
+                  </button>
+                </div>
+                <p className="font-mono text-[10px] text-zinc-300 break-all bg-black/60 p-2 rounded border border-zinc-800">
+                  {activeCert.sha256_provenance_hash}
+                </p>
+              </div>
+
+              <p className="text-[11px] text-zinc-400 bg-[#151722] p-3 rounded-lg border border-zinc-800 leading-relaxed">
+                <strong className="text-zinc-200">Legal Benefit-Sharing Guarantee:</strong> In accordance with UN CBD Article 8(j) and the Nagoya Protocol, 
+                any industrial or commercial application derived from this record must adhere to Prior Informed Consent (PIC) 
+                and Mutually Agreed Terms (MAT) with the originating indigenous custodians.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-800">
+              <button
+                onClick={() => window.print()}
+                className="px-3.5 py-1.5 bg-[#151722] hover:bg-zinc-800 text-zinc-200 border border-zinc-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer font-mono"
+              >
+                <Printer className="w-3.5 h-3.5 text-zinc-300" />
+                <span>Print / PDF</span>
+              </button>
+              <button
+                onClick={() => handleDownloadCert(activeCert)}
+                className="px-3.5 py-1.5 bg-gradient-to-r from-zinc-200 to-white hover:from-white hover:to-zinc-200 text-zinc-950 font-bold rounded-lg text-xs flex items-center gap-1.5 shadow-md shadow-black/40 cursor-pointer font-mono"
+              >
+                <Download className="w-3.5 h-3.5 text-zinc-900" />
+                <span>Download JSON</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="p-6 space-y-6">
           
           {/* Common Names & Synonyms */}
           <div>
@@ -195,25 +302,31 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
             </div>
           </div>
 
-        </div>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="bg-[#151722] px-6 py-3 border-t border-zinc-800 flex items-center justify-between">
-          <button
-            onClick={handleFetchCert}
-            disabled={isLoadingCert}
-            className="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 font-mono"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-zinc-300" />
-            <span>
-              {isLoadingCert ? 'Generating...' : downloadSuccess ? 'Certificate Downloaded!' : 'Download Nagoya ABS Certificate'}
+          {!activeCert ? (
+            <button
+              onClick={handleOpenCert}
+              disabled={isLoadingCert}
+              className="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 font-mono"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-zinc-300" />
+              <span>
+                {isLoadingCert ? 'Generating...' : 'View Nagoya ABS Certificate'}
+              </span>
+            </button>
+          ) : (
+            <span className="text-[11px] text-zinc-400 font-mono">
+              Certificate Authority: EthnoKG Nagoya Protocol Registry
             </span>
-            {downloadSuccess && <CheckCircle2 className="w-3 h-3 text-white" />}
-          </button>
+          )}
 
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+            className="px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-xs font-medium transition-colors cursor-pointer font-mono"
           >
             Close Dossier
           </button>

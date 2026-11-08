@@ -100,6 +100,9 @@ def get_compound_detail(
     pubchem_url = f"https://pubchem.ncbi.nlm.nih.gov/compound/{comp.pubchem_cid}" if comp.pubchem_cid else None
     chembl_url = f"https://www.ebi.ac.uk/chembl/compound_report_card/{comp.chembl_id}/" if comp.chembl_id else None
 
+    plants_list = list(plants_map.values())
+    conditions_list = list(conditions_map.values())
+
     return {
         "id": comp.id,
         "name": comp.name,
@@ -111,8 +114,12 @@ def get_compound_detail(
         "pubchem_url": pubchem_url,
         "chembl_url": chembl_url,
         "relationships_count": len(relationships),
-        "associated_plants": list(plants_map.values()),
-        "associated_conditions": list(conditions_map.values()),
-        "evidence_records": evidence_list
+        "associated_plants": plants_list,
+        "connected_plants": plants_list,
+        "plants": plants_list,
+        "associated_conditions": conditions_list,
+        "conditions": conditions_list,
+        "evidence_records": evidence_list,
+        "evidence": evidence_list
     }
 

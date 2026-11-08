@@ -12,7 +12,8 @@ import {
   AlertTriangle,
   Copy,
   Download,
-  Fingerprint
+  Fingerprint,
+  Printer
 } from 'lucide-react';
 import { 
   fetchDiscoveryIndex, 
@@ -637,11 +638,18 @@ export const DiscoveryRadarPage: React.FC = () => {
                 Close
               </button>
               <button
+                onClick={() => window.print()}
+                className="px-3.5 py-2 rounded-lg bg-[#161822] hover:bg-zinc-800 text-zinc-200 border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer font-mono"
+              >
+                <Printer className="w-3.5 h-3.5 text-zinc-300" />
+                <span>Print / PDF</span>
+              </button>
+              <button
                 onClick={() => handleDownloadCert(activeCert)}
                 className="px-4 py-2 rounded-lg bg-zinc-200 text-zinc-950 text-xs font-bold hover:bg-white flex items-center gap-1.5 shadow-md shadow-black/40 cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Download JSON Certificate</span>
+                <span>Download JSON</span>
               </button>
             </div>
 
