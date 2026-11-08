@@ -1,20 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import cytoscape, { Core } from 'cytoscape';
+import cytoscape from 'cytoscape';
+import type { Core } from 'cytoscape';
 import { 
   ZoomIn, 
   ZoomOut, 
   RotateCcw, 
-  Maximize2, 
   Filter, 
-  Layers, 
-  Info, 
-  ExternalLink, 
-  CheckCircle, 
-  Clock, 
   X,
-  Search
+  Search,
+  Download,
+  Sparkles
 } from 'lucide-react';
-import { GraphResponse } from '../types';
+import type { GraphResponse } from '../types';
 
 interface KnowledgeGraphProps {
   graphData: GraphResponse | null;
@@ -37,6 +34,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
   const [selectedNode, setSelectedNode] = useState<any | null>(null);
   const [selectedEdge, setSelectedEdge] = useState<any | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [layoutName, setLayoutName] = useState<'cose' | 'concentric' | 'circle' | 'breadthfirst'>('cose');
 
   // Initialize and update Cytoscape
   useEffect(() => {
@@ -96,6 +94,34 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
       cyRef.current.destroy();
     }
 
+    // Layout configuration
+    let layoutConfig: any = {
+      name: layoutName,
+      animate: true,
+      animationDuration: 500,
+    };
+
+    if (layoutName === 'cose') {
+      layoutConfig = {
+        name: 'cose',
+        animate: false,
+        nodeOverlap: 20,
+        idealEdgeLength: 100,
+        componentSpacing: 100,
+        nodeRepulsion: 400000,
+        gravity: 80,
+        numIter: 1000
+      };
+    } else if (layoutName === 'concentric') {
+      layoutConfig = {
+        name: 'concentric',
+        concentric: (node: any) => node.data('raw')?.degree || 1,
+        levelWidth: () => 2,
+        padding: 40,
+        animate: true,
+      };
+    }
+
     // Initialize Cytoscape core
     const cy = cytoscape({
       container: containerRef.current,
@@ -118,8 +144,8 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             'border-opacity': 0.8,
             'overlay-padding': 6,
             'text-background-color': '#070c19',
-            'text-background-opacity': 0.8,
-            'text-background-padding': '2px',
+            'text-background-opacity': 0.85,
+            'text-background-padding': '3px',
             'text-background-shape': 'roundrectangle'
           }
         },
@@ -151,18 +177,15 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             'line-color': '#38bdf8',
             'target-arrow-color': '#38bdf8'
           }
+        },
+        {
+          selector: '.dimmed',
+          style: {
+            'opacity': 0.15
+          }
         }
       ],
-      layout: {
-        name: 'cose',
-        animate: false,
-        nodeOverlap: 20,
-        idealEdgeLength: 100,
-        componentSpacing: 100,
-        nodeRepulsion: 400000,
-        gravity: 80,
-        numIter: 1000
-      }
+      layout: layoutConfig
     });
 
     // Event listeners
@@ -199,12 +222,15 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
         cyRef.current = null;
       }
     };
-  }, [graphData]);
+  }, [graphData, layoutName]);
 
   // Handle entity search in graph
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    if (!cyRef.current || !term.trim()) return;
+    if (!cyRef.current || !term.trim()) {
+      if (cyRef.current) cyRef.current.elements().removeClass('dimmed');
+      return;
+    }
 
     const matched = cyRef.current.nodes().filter((n) => {
       const label = n.data('label') || '';
@@ -212,6 +238,9 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
     });
 
     if (matched.length > 0) {
+      cyRef.current.elements().removeClass('dimmed');
+      const neighborhood = matched.neighborhood().add(matched);
+      cyRef.current.elements().difference(neighborhood).addClass('dimmed');
       cyRef.current.center(matched);
       cyRef.current.zoom(1.4);
       matched.select();
@@ -236,11 +265,20 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
     }
   };
 
+  const handleExportPNG = () => {
+    if (!cyRef.current) return;
+    const png64 = cyRef.current.png({ full: true, bg: '#070c19', scale: 2 });
+    const a = document.createElement('a');
+    a.href = png64;
+    a.download = `ethnokg_graph_${Date.now()}.png`;
+    a.click();
+  };
+
   return (
     <div className="relative w-full h-[680px] bg-[#070c19] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
       
       {/* Top Filter & Toolbar */}
-      <div className="z-10 bg-[#0B132B]/90 backdrop-blur-md border-b border-slate-800 p-3 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+      <div className="z-10 bg-[#0B132B]/95 backdrop-blur-md border-b border-slate-800 p-3 sm:px-6 flex flex-wrap items-center justify-between gap-3">
         
         {/* Left: Search input */}
         <div className="relative w-64">
@@ -250,17 +288,17 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             placeholder="Search plant, disease, compound..."
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+            className="w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
           />
         </div>
 
-        {/* Center: Evidence Tier Filter */}
-        <div className="flex items-center gap-2">
+        {/* Center: Evidence Tier & Layout Controls */}
+        <div className="flex flex-wrap items-center gap-2">
           <Filter className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
           <select
             value={selectedEvidenceTier || ''}
             onChange={(e) => onFilterChange({ evidence_tier: e.target.value || undefined, tradition: selectedTradition })}
-            className="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+            className="bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
           >
             <option value="">All Evidence Tiers</option>
             <option value="Traditional Use Report">Traditional Use Report</option>
@@ -275,7 +313,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           <select
             value={selectedTradition || ''}
             onChange={(e) => onFilterChange({ evidence_tier: selectedEvidenceTier, tradition: e.target.value || undefined })}
-            className="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+            className="bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
           >
             <option value="">All Traditions</option>
             <option value="Ayurveda">Ayurveda</option>
@@ -285,30 +323,51 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             <option value="European Folk Medicine">European Folk Medicine</option>
             <option value="Greco-Roman & Unani">Greco-Roman & Unani</option>
           </select>
+
+          {/* Layout Selector */}
+          <select
+            value={layoutName}
+            onChange={(e) => setLayoutName(e.target.value as any)}
+            className="bg-slate-900 border border-emerald-500/30 rounded-xl px-2.5 py-1.5 text-xs text-emerald-300 focus:outline-none focus:border-emerald-400 cursor-pointer font-mono"
+            title="Graph Physics Layout"
+          >
+            <option value="cose">Force Layout (CoSE)</option>
+            <option value="concentric">Concentric Rings</option>
+            <option value="circle">Circular Orbit</option>
+            <option value="breadthfirst">Breadth-First Tree</option>
+          </select>
         </div>
 
-        {/* Right: Zoom controls */}
+        {/* Right: Zoom & Export controls */}
         <div className="flex items-center gap-1.5">
           <button
             onClick={handleZoomIn}
-            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-md border border-slate-700/80"
+            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700/80 cursor-pointer transition-colors"
             title="Zoom In"
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleZoomOut}
-            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-md border border-slate-700/80"
+            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700/80 cursor-pointer transition-colors"
             title="Zoom Out"
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleReset}
-            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-md border border-slate-700/80"
+            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700/80 cursor-pointer transition-colors"
             title="Fit to Screen"
           >
             <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={handleExportPNG}
+            className="p-1.5 bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 rounded-lg border border-emerald-500/40 cursor-pointer transition-colors flex items-center gap-1 text-[11px] font-semibold px-2.5"
+            title="Export High-Res PNG"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">PNG</span>
           </button>
         </div>
       </div>
@@ -316,29 +375,29 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
       {/* Main Canvas Area */}
       <div className="relative flex-1 w-full h-full">
         {isLoading && (
-          <div className="absolute inset-0 z-20 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center">
-            <div className="flex items-center gap-2.5 text-emerald-400 text-sm">
-              <span className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
+          <div className="absolute inset-0 z-20 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center">
+            <div className="flex items-center gap-2.5 text-emerald-400 text-sm font-semibold">
+              <span className="w-5 h-5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
               <span>Building Knowledge Graph...</span>
             </div>
           </div>
         )}
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 z-10 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-2.5 rounded-xl shadow-lg text-[11px] text-slate-300 flex flex-wrap gap-3">
+        <div className="absolute bottom-4 left-4 z-10 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-2xl shadow-xl text-[11px] text-slate-300 flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
             <span>Plant (Accepted)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-500/50"></span>
             <span>Medical Condition</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 shadow-sm shadow-cyan-500/50"></span>
             <span>Bioactive Compound</span>
           </div>
-          <div className="flex items-center gap-1.5 text-slate-400 border-l border-slate-700 pl-2">
+          <div className="flex items-center gap-1.5 text-slate-400 border-l border-slate-700 pl-2 font-mono">
             <span>{graphData?.nodes?.length || 0} nodes</span>
             <span>•</span>
             <span>{graphData?.edges?.length || 0} edges</span>
@@ -350,13 +409,13 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
 
         {/* Node Detail Drawer */}
         {selectedNode && (
-          <div className="absolute top-4 right-4 z-20 w-80 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-xl p-4 shadow-2xl text-xs space-y-3">
+          <div className="absolute top-4 right-4 z-20 w-80 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-2xl p-4 shadow-2xl text-xs space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-800">
               <div className="flex items-center gap-2">
                 <span className={`w-2.5 h-2.5 rounded-full ${selectedNode.type === 'Plant' ? 'bg-emerald-500' : selectedNode.type === 'Condition' ? 'bg-rose-500' : 'bg-cyan-500'}`} />
                 <span className="font-mono uppercase font-bold text-[10px] text-slate-400">{selectedNode.type}</span>
               </div>
-              <button onClick={() => setSelectedNode(null)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setSelectedNode(null)} className="text-slate-400 hover:text-white cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -380,7 +439,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             <div className="pt-2 border-t border-slate-800 text-[11px] text-slate-400">
               <div className="flex justify-between py-1">
                 <span>Network Degree:</span>
-                <span className="font-semibold text-white">{selectedNode.degree || 1} connections</span>
+                <span className="font-semibold text-white font-mono">{selectedNode.degree || 1} connections</span>
               </div>
             </div>
           </div>
@@ -388,19 +447,19 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
 
         {/* Edge Detail Drawer (Provenance & Evidence) */}
         {selectedEdge && (
-          <div className="absolute top-4 right-4 z-20 w-96 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-xl p-4 shadow-2xl text-xs space-y-3">
+          <div className="absolute top-4 right-4 z-20 w-96 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-2xl p-4 shadow-2xl text-xs space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-800">
               <span className="font-mono uppercase font-bold text-[10px] text-emerald-400">
                 {selectedEdge.label || 'RELATIONSHIP'}
               </span>
-              <button onClick={() => setSelectedEdge(null)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setSelectedEdge(null)} className="text-slate-400 hover:text-white cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   {selectedEdge.evidence_tier}
                 </span>
                 <span className="text-[10px] text-slate-400 font-mono">
@@ -417,7 +476,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             </div>
 
             {selectedEdge.excerpt && (
-              <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 text-[11px] text-slate-300 italic">
+              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] text-slate-300 italic leading-relaxed">
                 "{selectedEdge.excerpt}"
               </div>
             )}
