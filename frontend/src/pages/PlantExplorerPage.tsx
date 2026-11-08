@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Leaf, Search, Filter, BookOpen, ChevronRight, Layers, ExternalLink } from 'lucide-react';
+import { Leaf, Search, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { fetchPlants, fetchPlantDetail } from '../api/client';
-import { PlantBrief, PlantDetail } from '../types';
+import type { PlantBrief, PlantDetail } from '../types';
 import { PlantModal } from '../components/PlantModal';
 
 export const PlantExplorerPage: React.FC = () => {
@@ -13,7 +14,6 @@ export const PlantExplorerPage: React.FC = () => {
 
   // Modal state
   const [activePlantDetail, setActivePlantDetail] = useState<PlantDetail | null>(null);
-  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
 
   const loadPlants = () => {
     setIsLoading(true);
@@ -30,14 +30,11 @@ export const PlantExplorerPage: React.FC = () => {
   }, [searchQuery, selectedFamily, selectedTradition]);
 
   const handleOpenDetail = async (id: number) => {
-    setIsLoadingDetail(true);
     try {
       const detail = await fetchPlantDetail(id);
       setActivePlantDetail(detail);
     } catch (err) {
       console.error(err);
-    } finally {
-      setIsLoadingDetail(false);
     }
   };
 
@@ -45,39 +42,51 @@ export const PlantExplorerPage: React.FC = () => {
     <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       {/* Header */}
-      <div className="pb-4 border-b border-slate-800">
+      <div className="pb-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-white font-mono flex items-center gap-2">
+              <Leaf className="w-6 h-6 text-emerald-400" />
+              <span>Plant Intelligence Explorer</span>
+            </h1>
+            <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+              Kew MPNS / WFO
+            </span>
+          </div>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Standardized botanical catalog cross-referenced against Kew MPNS and World Flora Online. Reconciles historical synonyms without false species merging.
+          </p>
+        </div>
+
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-white font-mono">Plant Intelligence Explorer</h1>
-          <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
-            Taxonomic Authority
+          <span className="text-xs text-slate-400">Total Taxa:</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-mono text-emerald-400 font-bold">
+            {plants.length} Species
           </span>
         </div>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Standardized botanical catalog cross-referenced against Kew MPNS and World Flora Online. Reconciles historical synonyms without false species merging.
-        </p>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-[#070c19] border border-slate-800 p-4 rounded-xl flex flex-wrap items-center justify-between gap-3 shadow-md">
+      <div className="bg-[#070c19] border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xl">
         
         {/* Search */}
         <div className="relative flex-1 min-w-[240px]">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             placeholder="Search binomial, common name (e.g. Ashwagandha, Neem, Qinghao)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+            className="w-full pl-10 pr-3 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
           />
         </div>
 
         {/* Family Filter */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <select
             value={selectedFamily}
             onChange={(e) => setSelectedFamily(e.target.value)}
-            className="bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+            className="bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
           >
             <option value="">All Families</option>
             <option value="Asteraceae">Asteraceae (Daisy/Wormwood)</option>
@@ -97,7 +106,7 @@ export const PlantExplorerPage: React.FC = () => {
           <select
             value={selectedTradition}
             onChange={(e) => setSelectedTradition(e.target.value)}
-            className="bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+            className="bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
           >
             <option value="">All Traditions</option>
             <option value="Ayurveda">Ayurveda</option>
@@ -124,52 +133,57 @@ export const PlantExplorerPage: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {plants.map((plant) => (
-            <div
-              key={plant.id}
-              onClick={() => handleOpenDetail(plant.id)}
-              className="bg-[#070c19] border border-slate-800 hover:border-emerald-500/60 rounded-xl p-5 cursor-pointer group transition-all shadow-lg hover:shadow-emerald-500/5 flex flex-col justify-between"
-            >
-              <div className="space-y-2.5">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 className="text-sm font-bold text-white font-mono group-hover:text-emerald-300 transition-colors">
-                      {plant.scientific_name}
-                    </h3>
-                    <p className="text-xs text-emerald-400 font-medium">Family: {plant.family || 'Unknown'}</p>
+          <AnimatePresence>
+            {plants.map((plant, idx) => (
+              <motion.div
+                key={plant.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(idx * 0.03, 0.3) }}
+                onClick={() => handleOpenDetail(plant.id)}
+                className="bg-[#070c19] border border-slate-800 hover:border-emerald-500/60 rounded-2xl p-5 cursor-pointer group transition-all shadow-xl hover:shadow-emerald-500/10 hover:scale-[1.02] flex flex-col justify-between"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-sm font-bold text-white font-mono group-hover:text-emerald-300 transition-colors">
+                        {plant.scientific_name}
+                      </h3>
+                      <p className="text-xs text-emerald-400 font-medium">Family: {plant.family || 'Unknown'}</p>
+                    </div>
+                    <span className="text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full shrink-0">
+                      {plant.taxonomic_status}
+                    </span>
                   </div>
-                  <span className="text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full shrink-0">
-                    {plant.taxonomic_status}
+
+                  {/* Common names */}
+                  <div className="flex flex-wrap gap-1">
+                    {plant.common_names.slice(0, 3).map((cn, i) => (
+                      <span key={i} className="text-[11px] bg-slate-900 border border-slate-700/80 px-2 py-0.5 rounded-md text-slate-300">
+                        {cn}
+                      </span>
+                    ))}
+                    {plant.common_names.length > 3 && (
+                      <span className="text-[11px] text-slate-500 self-center">
+                        +{plant.common_names.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Bottom stats row */}
+                <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                  <span className="font-mono text-emerald-400 font-semibold">
+                    {plant.relationships_count} documented relations
+                  </span>
+                  <span className="flex items-center gap-1 text-[11px] text-slate-400 group-hover:text-emerald-300 transition-colors">
+                    <span>Open Dossier</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
-
-                {/* Common names */}
-                <div className="flex flex-wrap gap-1">
-                  {plant.common_names.slice(0, 3).map((cn, i) => (
-                    <span key={i} className="text-[11px] bg-slate-900 border border-slate-700/80 px-2 py-0.5 rounded text-slate-300">
-                      {cn}
-                    </span>
-                  ))}
-                  {plant.common_names.length > 3 && (
-                    <span className="text-[11px] text-slate-500 self-center">
-                      +{plant.common_names.length - 3} more
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Bottom stats row */}
-              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                <span className="font-mono text-emerald-400 font-semibold">
-                  {plant.relationships_count} documented relations
-                </span>
-                <span className="flex items-center gap-1 text-[11px] text-slate-400 group-hover:text-emerald-300 transition-colors">
-                  <span>Open Dossier</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </span>
-              </div>
-            </div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
 

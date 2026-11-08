@@ -1,6 +1,6 @@
 import React from 'react';
-import { X, Leaf, BookOpen, ShieldCheck, ExternalLink, Dna, Layers, Beaker } from 'lucide-react';
-import { PlantDetail } from '../types';
+import { X, Leaf, ExternalLink, Layers, Beaker } from 'lucide-react';
+import type { PlantDetail } from '../types';
 
 interface PlantModalProps {
   plant: PlantDetail | null;
@@ -11,7 +11,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
   if (!plant) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-[#0B132B] border border-slate-700/80 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-slate-200">
         
         {/* Header */}
@@ -34,7 +34,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -177,7 +177,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
         <div className="bg-slate-900/80 px-6 py-3 border-t border-slate-800 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
+            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors cursor-pointer"
           >
             Close Dossier
           </button>
