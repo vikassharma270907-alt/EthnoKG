@@ -8,7 +8,8 @@ import {
   Activity,
   Leaf,
   ArrowRight, 
-  Compass
+  Compass,
+  FileVideo
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BotanicalConstellation } from '../components/BotanicalConstellation';
@@ -109,6 +110,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ setActiveTab, stats, o
               <Compass className="w-4 h-4 text-teal-400" />
               <span>Discovery Radar</span>
             </button>
+
+            {onOpenVideoWalkthrough && (
+              <button
+                onClick={onOpenVideoWalkthrough}
+                className="px-6 py-3.5 rounded-xl bg-cyan-950/70 hover:bg-cyan-900/80 text-cyan-200 border border-cyan-500/50 hover:border-cyan-400 font-semibold text-sm transition-all backdrop-blur-md hover:scale-105 flex items-center gap-2 cursor-pointer shadow-lg shadow-cyan-950/50 group"
+              >
+                <FileVideo className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                <span>Presentation Tour</span>
+                <span className="text-[10px] uppercase font-mono bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-500/30">
+                  10m
+                </span>
+              </button>
+            )}
           </motion.div>
 
           {/* Quick Stats Grid with Rolling Counters */}

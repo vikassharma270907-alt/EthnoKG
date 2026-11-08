@@ -456,94 +456,96 @@ class ExtractionEngine:
         if not doc:
             return 0
 
-        for rec in records:
-            # 1. Resolve or create Plant
-            plant = db.query(Plant).filter(Plant.scientific_name == rec.scientific_name).first()
-            if not plant:
-                # Find taxon knowledge
-                taxon_meta = next((t for t in BOTANICAL_TAXA_KNOWLEDGE if t["scientific_name"] == rec.scientific_name), None)
-                plant = Plant(
-                    scientific_name=rec.scientific_name,
-                    family=taxon_meta["family"] if taxon_meta else "Plantae",
-                    genus=taxon_meta["genus"] if taxon_meta else rec.scientific_name.split()[0],
-                    species=taxon_meta["species"] if taxon_meta else "sp.",
-                    authority=taxon_meta["authority"] if taxon_meta else "",
-                    common_names=rec.plant_synonyms,
-                    taxonomic_status="Accepted",
-                    description=f"Medicinal species documented in {rec.knowledge_tradition} literature."
-                )
-                db.add(plant)
-                db.commit()
-                db.refresh(plant)
+        try:
+            for rec in records:
+                # 1. Resolve or create Plant
+                plant = db.query(Plant).filter(Plant.scientific_name == rec.scientific_name).first()
+                if not plant:
+                    # Find taxon knowledge
+                    taxon_meta = next((t for t in BOTANICAL_TAXA_KNOWLEDGE if t["scientific_name"] == rec.scientific_name), None)
+                    genus_val = taxon_meta["genus"] if taxon_meta else (rec.scientific_name.split()[0] if rec.scientific_name.strip() else "Unknown")
+                    plant = Plant(
+                        scientific_name=rec.scientific_name,
+                        family=taxon_meta["family"] if taxon_meta else "Plantae",
+                        genus=genus_val,
+                        species=taxon_meta["species"] if taxon_meta else "sp.",
+                        authority=taxon_meta["authority"] if taxon_meta else "",
+                        common_names=rec.plant_synonyms,
+                        taxonomic_status="Accepted",
+                        description=f"Medicinal species documented in {rec.knowledge_tradition} literature."
+                    )
+                    db.add(plant)
+                    db.flush()
 
-                # Add synonyms
-                for s_name in rec.plant_synonyms:
-                    syn = PlantSynonym(
+                    # Add synonyms
+                    for s_name in rec.plant_synonyms:
+                        syn = PlantSynonym(
+                            plant_id=plant.id,
+                            synonym_name=s_name,
+                            synonym_type="vernacular",
+                            taxonomic_source="Kew MPNS / EthnoKG Lexicon"
+                        )
+                        db.add(syn)
+                    db.flush()
+
+                # 2. Resolve or create Condition
+                condition = db.query(Condition).filter(Condition.name == rec.medical_condition).first()
+                if not condition:
+                    condition = Condition(
+                        name=rec.medical_condition,
+                        category="Medical Condition / Traditional Symptom",
+                        description=f"Reported health condition treated in {rec.knowledge_tradition}."
+                    )
+                    db.add(condition)
+                    db.flush()
+
+                # 3. Resolve or create Compound
+                compound = None
+                if rec.bioactive_compounds:
+                    primary_comp_name = rec.bioactive_compounds[0]
+                    compound = db.query(Compound).filter(Compound.name == primary_comp_name).first()
+                    if not compound:
+                        compound = Compound(
+                            name=primary_comp_name,
+                            biological_class="Phytochemical Metabolite"
+                        )
+                        db.add(compound)
+                        db.flush()
+
+                # 4. Check if relationship already exists
+                existing_rel = db.query(Relationship).filter(
+                    Relationship.plant_id == plant.id,
+                    Relationship.condition_id == condition.id,
+                    Relationship.document_id == document_id,
+                    Relationship.evidence_tier == rec.evidence_category
+                ).first()
+
+                if not existing_rel:
+                    rel = Relationship(
                         plant_id=plant.id,
-                        synonym_name=s_name,
-                        synonym_type="vernacular",
-                        taxonomic_source="Kew MPNS / EthnoKG Lexicon"
+                        condition_id=condition.id,
+                        compound_id=compound.id if compound else None,
+                        document_id=document_id,
+                        relation_type="REPORTED_USE_FOR",
+                        reported_use=rec.reported_use,
+                        plant_part=rec.plant_part,
+                        preparation_method=rec.preparation_method,
+                        pharmacological_activity=rec.pharmacological_activity,
+                        geographic_context=rec.geographic_context,
+                        knowledge_tradition=rec.knowledge_tradition,
+                        evidence_tier=rec.evidence_category,
+                        evidence_statement=rec.evidence_statement,
+                        supporting_excerpt=rec.supporting_excerpt,
+                        page_or_section=rec.page_or_section,
+                        extraction_confidence=rec.extraction_confidence,
+                        verification_status=rec.verification_status
                     )
-                    db.add(syn)
-                db.commit()
+                    db.add(rel)
+                    persisted_count += 1
 
-            # 2. Resolve or create Condition
-            condition = db.query(Condition).filter(Condition.name == rec.medical_condition).first()
-            if not condition:
-                condition = Condition(
-                    name=rec.medical_condition,
-                    category="Medical Condition / Traditional Symptom",
-                    description=f"Reported health condition treated in {rec.knowledge_tradition}."
-                )
-                db.add(condition)
-                db.commit()
-                db.refresh(condition)
-
-            # 3. Resolve or create Compound
-            compound = None
-            if rec.bioactive_compounds:
-                primary_comp_name = rec.bioactive_compounds[0]
-                compound = db.query(Compound).filter(Compound.name == primary_comp_name).first()
-                if not compound:
-                    compound = Compound(
-                        name=primary_comp_name,
-                        biological_class="Phytochemical Metabolite"
-                    )
-                    db.add(compound)
-                    db.commit()
-                    db.refresh(compound)
-
-            # 4. Check if relationship already exists
-            existing_rel = db.query(Relationship).filter(
-                Relationship.plant_id == plant.id,
-                Relationship.condition_id == condition.id,
-                Relationship.document_id == document_id,
-                Relationship.evidence_tier == rec.evidence_category
-            ).first()
-
-            if not existing_rel:
-                rel = Relationship(
-                    plant_id=plant.id,
-                    condition_id=condition.id,
-                    compound_id=compound.id if compound else None,
-                    document_id=document_id,
-                    relation_type="REPORTED_USE_FOR",
-                    reported_use=rec.reported_use,
-                    plant_part=rec.plant_part,
-                    preparation_method=rec.preparation_method,
-                    pharmacological_activity=rec.pharmacological_activity,
-                    geographic_context=rec.geographic_context,
-                    knowledge_tradition=rec.knowledge_tradition,
-                    evidence_tier=rec.evidence_category,
-                    evidence_statement=rec.evidence_statement,
-                    supporting_excerpt=rec.supporting_excerpt,
-                    page_or_section=rec.page_or_section,
-                    extraction_confidence=rec.extraction_confidence,
-                    verification_status=rec.verification_status
-                )
-                db.add(rel)
-                persisted_count += 1
-
-        db.commit()
-        return persisted_count
+            db.commit()
+            return persisted_count
+        except Exception:
+            db.rollback()
+            raise
 

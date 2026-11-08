@@ -1,22 +1,4 @@
 import pytest
-from fastapi.testclient import TestClient
-from app.main import app
-from app.core.database import engine, Base, SessionLocal
-from app.core.seeder import seed_database
-
-@pytest.fixture(scope="session", autouse=True)
-def setup_test_db():
-    Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
-    try:
-        seed_database(db)
-    finally:
-        db.close()
-
-@pytest.fixture
-def client():
-    with TestClient(app) as c:
-        yield c
 
 def test_healthcheck(client):
     response = client.get("/api/health")
@@ -251,6 +233,17 @@ def test_graph_entity_subgraph(client):
     data = res.json()
     assert "nodes" in data
     assert "edges" in data
+
+    # Test condition entity
+    res_cond = client.get("/api/graph/entity/cond_1")
+    assert res_cond.status_code == 200
+
+    # Test invalid entity formats
+    res_err1 = client.get("/api/graph/entity/invalid_prefix")
+    assert res_err1.status_code == 400
+
+    res_err2 = client.get("/api/graph/entity/plant_notanumber")
+    assert res_err2.status_code == 400
 
 def test_404_handlers(client):
     # Non-existent plant

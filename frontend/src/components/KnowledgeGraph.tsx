@@ -45,10 +45,10 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
     // Nodes
     graphData.nodes.forEach((n) => {
       const type = n.data.type || 'Unknown';
-      let bgColor = '#10b981'; // Plant (emerald)
-      if (type === 'Condition') bgColor = '#f43f5e'; // Condition (rose)
-      if (type === 'Compound') bgColor = '#06b6d4'; // Compound (cyan)
-      if (type === 'Tradition') bgColor = '#a855f7'; // Tradition (purple)
+      let bgColor = '#34d399'; // Plant (mint)
+      if (type === 'Condition') bgColor = '#fb7185'; // Condition (rose)
+      if (type === 'Compound') bgColor = '#38bdf8'; // Compound (cyan)
+      if (type === 'Tradition') bgColor = '#c084fc'; // Tradition (purple)
 
       const size = Math.min(65, Math.max(32, 28 + (n.data.degree || 1) * 3));
 
@@ -67,13 +67,13 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
 
     // Edges
     graphData.edges.forEach((e) => {
-      let edgeColor = '#3b82f6'; // default blue
+      let edgeColor = '#94a3b8'; // default titanium
       const tier = e.data.evidence_tier;
-      if (tier === 'Clinical Human Trial') edgeColor = '#10b981'; // green
+      if (tier === 'Clinical Human Trial') edgeColor = '#34d399'; // mint
       else if (tier === 'In-Vivo Preclinical Model') edgeColor = '#38bdf8'; // sky
       else if (tier === 'In-Vitro Experimental Bioassay') edgeColor = '#f59e0b'; // amber
-      else if (tier === 'Traditional Use Report') edgeColor = '#a855f7'; // purple
-      else if (tier === 'Ethnobotanical Field Observation') edgeColor = '#ec4899'; // pink
+      else if (tier === 'Traditional Use Report') edgeColor = '#c084fc'; // purple
+      else if (tier === 'Ethnobotanical Field Observation') edgeColor = '#f472b6'; // pink
 
       elements.push({
         group: 'edges',
@@ -130,7 +130,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           selector: 'node',
           style: {
             'label': 'data(label)',
-            'color': '#f8fafc',
+            'color': '#f4f4f5',
             'font-size': '11px',
             'font-weight': 600,
             'text-valign': 'bottom',
@@ -140,10 +140,10 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             'height': 'data(size)',
             'border-width': 2,
             'border-color': '#ffffff',
-            'border-opacity': 0.8,
+            'border-opacity': 0.85,
             'overlay-padding': 6,
-            'text-background-color': '#070c19',
-            'text-background-opacity': 0.85,
+            'text-background-color': '#111319',
+            'text-background-opacity': 0.9,
             'text-background-padding': '3px',
             'text-background-shape': 'roundrectangle'
           }
@@ -266,7 +266,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
 
   const handleExportPNG = () => {
     if (!cyRef.current) return;
-    const png64 = cyRef.current.png({ full: true, bg: '#070c19', scale: 2 });
+    const png64 = cyRef.current.png({ full: true, bg: '#0d0f14', scale: 2 });
     const a = document.createElement('a');
     a.href = png64;
     a.download = `ethnokg_graph_${Date.now()}.png`;
@@ -274,30 +274,30 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[680px] bg-[#070c19] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+    <div className="relative w-full h-[680px] bg-[#0d0f14] border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
       
       {/* Top Filter & Toolbar */}
-      <div className="z-10 bg-[#0B132B]/95 backdrop-blur-md border-b border-slate-800 p-3 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+      <div className="z-10 bg-[#111319]/95 backdrop-blur-md border-b border-zinc-800 p-3 sm:px-6 flex flex-wrap items-center justify-between gap-3">
         
         {/* Left: Search input */}
         <div className="relative w-64">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
           <input
             type="text"
             placeholder="Search plant, disease, compound..."
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+            className="w-full pl-8 pr-3 py-1.5 bg-[#161822] border border-zinc-700/80 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
           />
         </div>
 
         {/* Center: Evidence Tier & Layout Controls */}
         <div className="flex flex-wrap items-center gap-2">
-          <Filter className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
+          <Filter className="w-3.5 h-3.5 text-zinc-400 hidden sm:block" />
           <select
             value={selectedEvidenceTier || ''}
             onChange={(e) => onFilterChange({ evidence_tier: e.target.value || undefined, tradition: selectedTradition })}
-            className="bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
+            className="bg-[#161822] border border-zinc-700/80 rounded-xl px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer"
           >
             <option value="">All Evidence Tiers</option>
             <option value="Traditional Use Report">Traditional Use Report</option>
@@ -312,7 +312,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           <select
             value={selectedTradition || ''}
             onChange={(e) => onFilterChange({ evidence_tier: selectedEvidenceTier, tradition: e.target.value || undefined })}
-            className="bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
+            className="bg-[#161822] border border-zinc-700/80 rounded-xl px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer"
           >
             <option value="">All Traditions</option>
             <option value="Ayurveda">Ayurveda</option>
@@ -327,7 +327,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           <select
             value={layoutName}
             onChange={(e) => setLayoutName(e.target.value as any)}
-            className="bg-slate-900 border border-emerald-500/30 rounded-xl px-2.5 py-1.5 text-xs text-emerald-300 focus:outline-none focus:border-emerald-400 cursor-pointer font-mono"
+            className="bg-[#161822] border border-zinc-700 rounded-xl px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer font-mono"
             title="Graph Physics Layout"
           >
             <option value="cose">Force Layout (CoSE)</option>
@@ -341,28 +341,28 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
         <div className="flex items-center gap-1.5">
           <button
             onClick={handleZoomIn}
-            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700/80 cursor-pointer transition-colors"
+            className="p-1.5 bg-[#161822] hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/80 cursor-pointer transition-colors"
             title="Zoom In"
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleZoomOut}
-            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700/80 cursor-pointer transition-colors"
+            className="p-1.5 bg-[#161822] hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/80 cursor-pointer transition-colors"
             title="Zoom Out"
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleReset}
-            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700/80 cursor-pointer transition-colors"
+            className="p-1.5 bg-[#161822] hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/80 cursor-pointer transition-colors"
             title="Fit to Screen"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleExportPNG}
-            className="p-1.5 bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 rounded-lg border border-emerald-500/40 cursor-pointer transition-colors flex items-center gap-1 text-[11px] font-semibold px-2.5"
+            className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg border border-zinc-600 cursor-pointer transition-colors flex items-center gap-1 text-[11px] font-semibold px-2.5 shadow-sm"
             title="Export High-Res PNG"
           >
             <Download className="w-3.5 h-3.5" />
@@ -374,29 +374,29 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
       {/* Main Canvas Area */}
       <div className="relative flex-1 w-full h-full">
         {isLoading && (
-          <div className="absolute inset-0 z-20 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center">
-            <div className="flex items-center gap-2.5 text-emerald-400 text-sm font-semibold">
-              <span className="w-5 h-5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
-              <span>Building Knowledge Graph...</span>
+          <div className="absolute inset-0 z-20 bg-black/70 backdrop-blur-xs flex items-center justify-center">
+            <div className="flex items-center gap-2.5 text-zinc-300 text-sm font-semibold">
+              <span className="w-5 h-5 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin"></span>
+              <span className="font-mono">Building Knowledge Graph...</span>
             </div>
           </div>
         )}
 
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 z-10 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-2xl shadow-xl text-[11px] text-slate-300 flex flex-wrap items-center gap-3">
+        <div className="absolute bottom-4 left-4 z-10 bg-[#111319]/90 backdrop-blur-md border border-zinc-800 p-3 rounded-2xl shadow-xl text-[11px] text-zinc-300 flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
             <span>Plant (Accepted)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-500/50"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-400 shadow-sm shadow-rose-400/50"></span>
             <span>Medical Condition</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 shadow-sm shadow-cyan-500/50"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-sm shadow-sky-400/50"></span>
             <span>Bioactive Compound</span>
           </div>
-          <div className="flex items-center gap-1.5 text-slate-400 border-l border-slate-700 pl-2 font-mono">
+          <div className="flex items-center gap-1.5 text-zinc-500 border-l border-zinc-800 pl-2 font-mono">
             <span>{graphData?.nodes?.length || 0} nodes</span>
             <span>•</span>
             <span>{graphData?.edges?.length || 0} edges</span>
@@ -408,13 +408,13 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
 
         {/* Node Detail Drawer */}
         {selectedNode && (
-          <div className="absolute top-4 right-4 z-20 w-80 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-2xl p-4 shadow-2xl text-xs space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+          <div className="absolute top-4 right-4 z-20 w-80 bg-[#111319]/95 backdrop-blur-md border border-zinc-700 rounded-2xl p-4 shadow-2xl text-xs space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
               <div className="flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full ${selectedNode.type === 'Plant' ? 'bg-emerald-500' : selectedNode.type === 'Condition' ? 'bg-rose-500' : 'bg-cyan-500'}`} />
-                <span className="font-mono uppercase font-bold text-[10px] text-slate-400">{selectedNode.type}</span>
+                <span className={`w-2.5 h-2.5 rounded-full ${selectedNode.type === 'Plant' ? 'bg-emerald-400' : selectedNode.type === 'Condition' ? 'bg-rose-400' : 'bg-sky-400'}`} />
+                <span className="font-mono uppercase font-bold text-[10px] text-zinc-400">{selectedNode.type}</span>
               </div>
-              <button onClick={() => setSelectedNode(null)} className="text-slate-400 hover:text-white cursor-pointer">
+              <button onClick={() => setSelectedNode(null)} className="text-zinc-400 hover:text-white cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -425,17 +425,17 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
                 <p className="text-[11px] text-emerald-400 font-medium">Family: {selectedNode.family}</p>
               )}
               {selectedNode.common_names && (
-                <p className="text-[11px] text-slate-400 mt-0.5">Vernacular: {selectedNode.common_names}</p>
+                <p className="text-[11px] text-zinc-400 mt-0.5">Vernacular: {selectedNode.common_names}</p>
               )}
               {selectedNode.biological_class && (
-                <p className="text-[11px] text-cyan-400 mt-0.5">Class: {selectedNode.biological_class}</p>
+                <p className="text-[11px] text-sky-400 mt-0.5">Class: {selectedNode.biological_class}</p>
               )}
               {selectedNode.category && (
                 <p className="text-[11px] text-rose-400 mt-0.5">Category: {selectedNode.category}</p>
               )}
             </div>
 
-            <div className="pt-2 border-t border-slate-800 text-[11px] text-slate-400">
+            <div className="pt-2 border-t border-zinc-800 text-[11px] text-zinc-400">
               <div className="flex justify-between py-1">
                 <span>Network Degree:</span>
                 <span className="font-semibold text-white font-mono">{selectedNode.degree || 1} connections</span>
@@ -446,22 +446,22 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
 
         {/* Edge Detail Drawer (Provenance & Evidence) */}
         {selectedEdge && (
-          <div className="absolute top-4 right-4 z-20 w-96 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-2xl p-4 shadow-2xl text-xs space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-              <span className="font-mono uppercase font-bold text-[10px] text-emerald-400">
+          <div className="absolute top-4 right-4 z-20 w-96 bg-[#111319]/95 backdrop-blur-md border border-zinc-700 rounded-2xl p-4 shadow-2xl text-xs space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+              <span className="font-mono uppercase font-bold text-[10px] text-zinc-200">
                 {selectedEdge.label || 'RELATIONSHIP'}
               </span>
-              <button onClick={() => setSelectedEdge(null)} className="text-slate-400 hover:text-white cursor-pointer">
+              <button onClick={() => setSelectedEdge(null)} className="text-zinc-400 hover:text-white cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-sky-300 border border-zinc-700">
                   {selectedEdge.evidence_tier}
                 </span>
-                <span className="text-[10px] text-slate-400 font-mono">
+                <span className="text-[10px] text-zinc-400 font-mono">
                   Confidence: {selectedEdge.confidence ? `${Math.round(selectedEdge.confidence * 100)}%` : '92%'}
                 </span>
               </div>
@@ -470,20 +470,20 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
                 <p className="text-[11px] text-purple-300 font-medium">Tradition: {selectedEdge.tradition}</p>
               )}
               {selectedEdge.plant_part && (
-                <p className="text-[11px] text-slate-300">Organ used: {selectedEdge.plant_part} ({selectedEdge.preparation_method || 'Traditional prep'})</p>
+                <p className="text-[11px] text-zinc-300">Organ used: {selectedEdge.plant_part} ({selectedEdge.preparation_method || 'Traditional prep'})</p>
               )}
             </div>
 
             {selectedEdge.excerpt && (
-              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] text-slate-300 italic leading-relaxed">
+              <div className="bg-black/50 p-3 rounded-xl border border-zinc-800 text-[11px] text-zinc-300 italic leading-relaxed">
                 "{selectedEdge.excerpt}"
               </div>
             )}
 
-            <div className="pt-2 border-t border-slate-800 text-[11px] text-slate-400 space-y-1">
-              <p className="font-semibold text-slate-200">{selectedEdge.document_title || 'Indexed Scientific Source'}</p>
+            <div className="pt-2 border-t border-zinc-800 text-[11px] text-zinc-400 space-y-1">
+              <p className="font-semibold text-zinc-200">{selectedEdge.document_title || 'Indexed Scientific Source'}</p>
               {selectedEdge.doi && (
-                <p className="text-emerald-400 flex items-center gap-1 font-mono text-[10px]">
+                <p className="text-sky-400 flex items-center gap-1 font-mono text-[10px]">
                   <span>DOI: {selectedEdge.doi}</span>
                 </p>
               )}

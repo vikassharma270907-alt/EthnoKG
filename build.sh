@@ -22,6 +22,7 @@ npm run build
 cd ..
 
 echo "==> 3. Running automated test suite verification..."
+export PYTHONPATH=".:backend"
 python -m pytest backend/tests
 
 echo "==> EthnoKG Platform successfully built and verified for deployment!"

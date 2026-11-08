@@ -20,8 +20,7 @@ import {
   Clock, 
   FileText, 
   ExternalLink,
-  Globe2,
-  Cpu
+  Globe2
 } from 'lucide-react';
 import type { DashboardStatsResponse } from '../types';
 import { GlowCard } from '../components/GlowCard';
