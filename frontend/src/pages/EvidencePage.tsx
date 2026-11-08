@@ -20,17 +20,27 @@ export const EvidencePage: React.FC = () => {
   const [minConfidence, setMinConfidence] = useState<number>(0.7);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadEvidence = () => {
-    setIsLoading(true);
+  useEffect(() => {
+    let isSubscribed = true;
     fetchExtractionResults({
       evidence_tier: selectedTier === 'All Evidence Tiers' ? undefined : selectedTier,
       min_confidence: minConfidence,
       limit: 150
-    }).then(setRelationships).finally(() => setIsLoading(false));
-  };
+    }).then(data => {
+      if (isSubscribed) {
+        setRelationships(data);
+        setIsLoading(false);
+      }
+    }).catch(err => {
+      if (isSubscribed) {
+        console.error(err);
+        setIsLoading(false);
+      }
+    });
 
-  useEffect(() => {
-    loadEvidence();
+    return () => {
+      isSubscribed = false;
+    };
   }, [selectedTier, minConfidence]);
 
   return (
