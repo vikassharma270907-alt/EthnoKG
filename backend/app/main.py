@@ -65,6 +65,7 @@ app.include_router(api_router, prefix="/api")
 
 @app.api_route("/api/health", methods=["GET", "HEAD"])
 @app.api_route("/healthz", methods=["GET", "HEAD"])
+@app.api_route("/health", methods=["GET", "HEAD"])
 def healthcheck(response: Response, db: Session = Depends(get_db)):
     db_status = "connected"
     try:
@@ -119,7 +120,7 @@ if os.path.exists(frontend_dist):
 
     @app.api_route("/{full_path:path}", methods=["GET", "HEAD"])
     def serve_spa(full_path: str):
-        if full_path.startswith("api/") or full_path in ["docs", "openapi.json", "healthz", "redoc", "api"]:
+        if full_path.startswith("api/") or full_path in ["docs", "openapi.json", "healthz", "health", "redoc", "api"]:
             raise HTTPException(status_code=404, detail="API route not found")
         
         # Disallow hidden dotfiles and traversal probing
