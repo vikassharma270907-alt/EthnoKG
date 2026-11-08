@@ -466,8 +466,8 @@
     }
 
     .search-input:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
       background: #171c2b;
     }
 
@@ -572,9 +572,9 @@
     }
 
     .tag-pill.active {
-      border-color: #38bdf8;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      background: var(--accent-glow);
     }
 
     /* Accent Picker */
@@ -950,6 +950,75 @@
       font-family: 'JetBrains Mono', monospace !important;
       font-size: 13px !important;
       padding: 14px 16px !important;
+    }
+
+    .swagger-ui .renderedMarkdown p,
+    .swagger-ui .renderedMarkdown {
+      color: var(--text-secondary) !important;
+      font-size: 13px !important;
+    }
+
+    .swagger-ui .renderedMarkdown code {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: #38bdf8 !important;
+      padding: 2px 6px !important;
+      border-radius: 4px !important;
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+
+    .swagger-ui .response-col_description {
+      color: var(--text-secondary) !important;
+    }
+
+    .swagger-ui .response-col_description__inner div.markdown {
+      color: var(--text-muted) !important;
+    }
+
+    .swagger-ui .response-control-media-type__accept-header,
+    .swagger-ui .response-control-media-type__title {
+      color: var(--text-faint) !important;
+      font-size: 11px !important;
+    }
+
+    .swagger-ui .btn-clear {
+      background: rgba(148, 163, 184, 0.1) !important;
+      border: 1px solid var(--border-subtle) !important;
+      color: var(--text-muted) !important;
+      border-radius: 6px !important;
+      padding: 4px 10px !important;
+      font-size: 11px !important;
+    }
+
+    .swagger-ui .copy-to-clipboard button {
+      background: rgba(148, 163, 184, 0.12) !important;
+      border: 1px solid var(--border-subtle) !important;
+      border-radius: 6px !important;
+      padding: 4px !important;
+      transition: all 0.2s !important;
+    }
+
+    .swagger-ui .copy-to-clipboard button:hover {
+      background: rgba(56, 189, 248, 0.2) !important;
+      border-color: #38bdf8 !important;
+    }
+
+    .swagger-ui .download-contents {
+      background: rgba(52, 211, 153, 0.15) !important;
+      border: 1px solid rgba(52, 211, 153, 0.35) !important;
+      color: #34d399 !important;
+      border-radius: 6px !important;
+      padding: 4px 12px !important;
+      font-size: 11px !important;
+      font-weight: 600 !important;
+    }
+
+    .swagger-ui .responses-table .response-col_status .response-undocumented {
+      color: var(--text-faint) !important;
+    }
+
+    .swagger-ui .responses-header th {
+      color: var(--text-muted) !important;
+      border-bottom: 1px solid var(--border-subtle) !important;
     }
 
     /* Models & Schemas Section */
