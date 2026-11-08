@@ -177,11 +177,11 @@ export const AssistantPage: React.FC = () => {
 
             {/* Extracted Entity Tags */}
             <div className="pt-2 border-t border-zinc-800 flex flex-wrap gap-4 text-xs">
-              {response.cited_plants.length > 0 && (
+              {(response.cited_plants || []).length > 0 && (
                 <div>
                   <span className="text-[10px] uppercase font-bold text-zinc-500 block mb-1 font-mono">Referenced Botanical Taxa:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {response.cited_plants.map((p, i) => (
+                    {(response.cited_plants || []).map((p, i) => (
                       <span key={i} className="bg-zinc-800 text-emerald-300 border border-zinc-700 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold">
                         {p}
                       </span>
@@ -190,11 +190,11 @@ export const AssistantPage: React.FC = () => {
                 </div>
               )}
 
-              {response.evidence_tiers_involved.length > 0 && (
+              {(response.evidence_tiers_involved || []).length > 0 && (
                 <div>
                   <span className="text-[10px] uppercase font-bold text-zinc-500 block mb-1 font-mono">Evidence Tiers:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {response.evidence_tiers_involved.map((t, i) => (
+                    {(response.evidence_tiers_involved || []).map((t, i) => (
                       <span key={i} className="bg-zinc-800 text-purple-300 border border-zinc-700 px-2.5 py-0.5 rounded-full text-[11px] font-semibold">
                         {t}
                       </span>
@@ -205,12 +205,12 @@ export const AssistantPage: React.FC = () => {
             </div>
 
             {/* Cited Primary Sources */}
-            {response.cited_sources.length > 0 && (
+            {(response.cited_sources || []).length > 0 && (
               <div className="pt-3 border-t border-zinc-800 space-y-3">
                 <div className="flex items-center gap-2">
                   <Quote className="w-3.5 h-3.5 text-sky-400" />
                   <h4 className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wider font-mono">
-                    Verbatim Bibliographic Evidence ({response.cited_sources.length} sources)
+                    Verbatim Bibliographic Evidence ({(response.cited_sources || []).length} sources)
                   </h4>
                 </div>
                 <div className="space-y-3 max-h-72 overflow-y-auto pr-1">

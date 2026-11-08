@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from ..core.database import get_db
 from ..services.verification_service import VerificationService
@@ -140,7 +140,7 @@ def update_and_approve_relationship(
 
 @router.get("/history", response_model=List[Dict[str, Any]])
 def get_all_audit_history(
-    limit: int = 50,
+    limit: int = Query(50, ge=1, le=200),
     db: Session = Depends(get_db)
 ):
     logs = VerificationService.get_all_verification_history(db, limit=limit)

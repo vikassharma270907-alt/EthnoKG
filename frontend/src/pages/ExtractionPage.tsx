@@ -501,8 +501,8 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                   <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-zinc-800">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold text-white font-mono">{rec.scientific_name}</span>
-                      {rec.plant_synonyms.length > 0 && (
-                        <span className="text-xs text-zinc-400 italic">({rec.plant_synonyms.slice(0, 2).join(', ')})</span>
+                      {(rec.plant_synonyms || []).length > 0 && (
+                        <span className="text-xs text-zinc-400 italic">({(rec.plant_synonyms || []).slice(0, 2).join(', ')})</span>
                       )}
                       <span className="text-[10px] font-semibold bg-zinc-800 text-purple-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
                         {rec.knowledge_tradition}
@@ -531,7 +531,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                     </div>
                     <div>
                       <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Bioactive Compounds</span>
-                      <span className="font-mono text-sky-400">{rec.bioactive_compounds.join(', ') || 'Metabolite fraction'}</span>
+                      <span className="font-mono text-sky-400">{(rec.bioactive_compounds || []).join(', ') || 'Metabolite fraction'}</span>
                     </div>
                   </div>
 

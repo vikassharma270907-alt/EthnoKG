@@ -1,5 +1,7 @@
+import os
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
+from starlette.concurrency import run_in_threadpool
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from ..core.database import get_db
@@ -10,6 +12,7 @@ from ..models.relationship import Relationship
 router = APIRouter(prefix="/documents", tags=["Documents"])
 
 MAX_UPLOAD_SIZE = 15 * 1024 * 1024  # 15 MB
+ALLOWED_UPLOAD_EXTENSIONS = {".pdf", ".txt", ".md", ".csv"}
 
 @router.post("/upload", response_model=DocumentDetail)
 async def upload_document(
@@ -27,11 +30,18 @@ async def upload_document(
         raise HTTPException(status_code=413, detail="File too large. Maximum allowed size is 15 MB.")
 
     filename = file.filename or "uploaded_document"
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in ALLOWED_UPLOAD_EXTENSIONS:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Unsupported file format '{ext}'. Allowed extensions: {', '.join(sorted(ALLOWED_UPLOAD_EXTENSIONS))}"
+        )
+
     doc_title = title if title else filename
 
-    if filename.lower().endswith(".pdf"):
+    if ext == ".pdf":
         try:
-            raw_text = DocumentService.extract_text_from_pdf_bytes(contents)
+            raw_text = await run_in_threadpool(DocumentService.extract_text_from_pdf_bytes, contents)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
     else:

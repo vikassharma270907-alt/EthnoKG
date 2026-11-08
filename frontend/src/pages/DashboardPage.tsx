@@ -256,7 +256,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ stats, isLoading, 
           <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
             <div>
               <h3 className="text-sm font-bold text-white font-mono">NLP Confidence</h3>
-              <p className="text-[11px] text-zinc-400">Mean: {(stats.avg_extraction_confidence * 100).toFixed(1)}%</p>
+              <p className="text-[11px] text-zinc-400">Mean: {((stats?.avg_extraction_confidence ?? 0) * 100).toFixed(1)}%</p>
             </div>
             <span className="text-[10px] font-semibold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded font-mono">
               Calibrated
@@ -308,7 +308,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ stats, isLoading, 
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/80 text-zinc-300">
-              {stats.recent_documents.map((doc) => (
+              {(stats?.recent_documents || []).map((doc) => (
                 <tr key={doc.id} className="hover:bg-zinc-800/40 transition-colors">
                   <td className="py-3 font-medium text-white max-w-sm truncate flex items-center gap-2">
                     <FileText className="w-3.5 h-3.5 text-zinc-500 shrink-0" />

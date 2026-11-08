@@ -29,6 +29,10 @@ export default defineConfig({
       '/api': {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
+      },
+      '/healthz': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
       }
     }
   },
@@ -39,7 +43,10 @@ export default defineConfig({
       output: {
         manualChunks(id: string) {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('/react/') || id.includes('/react-dom/') || id.endsWith('/react') || id.endsWith('/react-dom')) {
               return 'vendor-react';
             }
             if (id.includes('cytoscape')) {
@@ -50,9 +57,6 @@ export default defineConfig({
             }
             if (id.includes('framer-motion')) {
               return 'vendor-motion';
-            }
-            if (id.includes('lucide-react')) {
-              return 'vendor-icons';
             }
           }
         }

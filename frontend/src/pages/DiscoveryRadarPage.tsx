@@ -102,11 +102,12 @@ export const DiscoveryRadarPage: React.FC = () => {
 
   // Filtered discovery items
   const filteredDiscovery = discoveryItems.filter((item) => {
+    const query = (searchQuery || '').toLowerCase();
     const matchesSearch = 
-      item.plant_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.condition_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.compound_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.tradition.toLowerCase().includes(searchQuery.toLowerCase());
+      (item.plant_name || '').toLowerCase().includes(query) ||
+      (item.condition_name || '').toLowerCase().includes(query) ||
+      (item.compound_name || '').toLowerCase().includes(query) ||
+      (item.tradition || '').toLowerCase().includes(query);
 
     const matchesStage = 
       stageFilter === 'ALL' ||

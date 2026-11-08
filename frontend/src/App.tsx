@@ -13,6 +13,7 @@ import { VerificationPage } from './pages/VerificationPage';
 import { MethodologyPage } from './pages/MethodologyPage';
 import { SourcesPage } from './pages/SourcesPage';
 import { VideoWalkthroughModal } from './components/VideoWalkthroughModal';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { fetchDashboardStats } from './api/client';
 import type { DashboardStatsResponse } from './types';
 
@@ -73,43 +74,45 @@ export function App() {
 
       {/* Main Content View */}
       <main className="flex-1 py-8 relative z-10">
-        {activeTab === 'landing' && (
-          <LandingPage 
-            setActiveTab={setActiveTab} 
-            stats={stats} 
-            onOpenVideoWalkthrough={() => setIsVideoModalOpen(true)}
-          />
-        )}
-        {activeTab === 'dashboard' && (
-          <DashboardPage stats={stats} isLoading={isLoadingStats} setActiveTab={setActiveTab} />
-        )}
-        {activeTab === 'discovery' && (
-          <DiscoveryRadarPage />
-        )}
-        {activeTab === 'extraction' && (
-          <ExtractionPage setActiveTab={setActiveTab} onExtractionComplete={refreshStats} />
-        )}
-        {activeTab === 'plants' && (
-          <PlantExplorerPage />
-        )}
-        {activeTab === 'graph' && (
-          <GraphPage />
-        )}
-        {activeTab === 'evidence' && (
-          <EvidencePage />
-        )}
-        {activeTab === 'assistant' && (
-          <AssistantPage />
-        )}
-        {activeTab === 'verification' && (
-          <VerificationPage />
-        )}
-        {activeTab === 'methodology' && (
-          <MethodologyPage />
-        )}
-        {activeTab === 'sources' && (
-          <SourcesPage />
-        )}
+        <ErrorBoundary fallbackTitle="View Rendering Interrupted">
+          {activeTab === 'landing' && (
+            <LandingPage 
+              setActiveTab={setActiveTab} 
+              stats={stats} 
+              onOpenVideoWalkthrough={() => setIsVideoModalOpen(true)}
+            />
+          )}
+          {activeTab === 'dashboard' && (
+            <DashboardPage stats={stats} isLoading={isLoadingStats} setActiveTab={setActiveTab} />
+          )}
+          {activeTab === 'discovery' && (
+            <DiscoveryRadarPage />
+          )}
+          {activeTab === 'extraction' && (
+            <ExtractionPage setActiveTab={setActiveTab} onExtractionComplete={refreshStats} />
+          )}
+          {activeTab === 'plants' && (
+            <PlantExplorerPage />
+          )}
+          {activeTab === 'graph' && (
+            <GraphPage />
+          )}
+          {activeTab === 'evidence' && (
+            <EvidencePage />
+          )}
+          {activeTab === 'assistant' && (
+            <AssistantPage />
+          )}
+          {activeTab === 'verification' && (
+            <VerificationPage />
+          )}
+          {activeTab === 'methodology' && (
+            <MethodologyPage />
+          )}
+          {activeTab === 'sources' && (
+            <SourcesPage />
+          )}
+        </ErrorBoundary>
       </main>
 
       {/* Footer */}

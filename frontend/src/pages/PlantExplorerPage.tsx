@@ -168,14 +168,14 @@ export const PlantExplorerPage: React.FC = () => {
 
                   {/* Common names */}
                   <div className="flex flex-wrap gap-1">
-                    {plant.common_names.slice(0, 3).map((cn, i) => (
+                    {(plant.common_names || []).slice(0, 3).map((cn, i) => (
                       <span key={i} className="text-[11px] bg-[#161822] border border-zinc-700/80 px-2 py-0.5 rounded-md text-zinc-300">
                         {cn}
                       </span>
                     ))}
-                    {plant.common_names.length > 3 && (
+                    {(plant.common_names || []).length > 3 && (
                       <span className="text-[11px] text-zinc-500 self-center">
-                        +{plant.common_names.length - 3} more
+                        +{(plant.common_names || []).length - 3} more
                       </span>
                     )}
                   </div>

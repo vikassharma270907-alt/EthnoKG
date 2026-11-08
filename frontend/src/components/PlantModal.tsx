@@ -71,12 +71,12 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
           <div>
             <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Vernacular & Historical Synonyms</h4>
             <div className="flex flex-wrap gap-1.5">
-              {plant.common_names.map((cn, i) => (
+              {(plant.common_names || []).map((cn, i) => (
                 <span key={i} className="text-xs bg-[#161822] border border-zinc-750 px-2.5 py-1 rounded-md text-zinc-200">
                   {cn}
                 </span>
               ))}
-              {plant.synonyms.map((s, i) => (
+              {(plant.synonyms || []).map((s, i) => (
                 <span key={`syn_${i}`} className="text-xs bg-[#161822]/60 border border-zinc-800 px-2.5 py-1 rounded-md text-zinc-400 italic">
                   {s.synonym_name} ({s.synonym_type})
                 </span>
@@ -88,19 +88,19 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
             <div className="bg-[#161822] border border-zinc-800 p-3 rounded-xl">
               <span className="text-[10px] uppercase text-zinc-400 font-semibold block font-mono">Relations</span>
-              <span className="text-lg font-bold text-emerald-400 font-mono">{plant.relationships_count}</span>
+              <span className="text-lg font-bold text-emerald-400 font-mono">{plant.relationships_count ?? 0}</span>
             </div>
             <div className="bg-[#161822] border border-zinc-800 p-3 rounded-xl">
               <span className="text-[10px] uppercase text-zinc-400 font-semibold block font-mono">Conditions</span>
-              <span className="text-lg font-bold text-rose-400 font-mono">{plant.reported_conditions.length}</span>
+              <span className="text-lg font-bold text-rose-400 font-mono">{(plant.reported_conditions || []).length}</span>
             </div>
             <div className="bg-[#161822] border border-zinc-800 p-3 rounded-xl">
               <span className="text-[10px] uppercase text-zinc-400 font-semibold block font-mono">Compounds</span>
-              <span className="text-lg font-bold text-sky-400 font-mono">{plant.reported_compounds.length}</span>
+              <span className="text-lg font-bold text-sky-400 font-mono">{(plant.reported_compounds || []).length}</span>
             </div>
             <div className="bg-[#161822] border border-zinc-800 p-3 rounded-xl">
               <span className="text-[10px] uppercase text-zinc-400 font-semibold block font-mono">Publications</span>
-              <span className="text-lg font-bold text-purple-400 font-mono">{plant.supporting_publications.length}</span>
+              <span className="text-lg font-bold text-purple-400 font-mono">{(plant.supporting_publications || []).length}</span>
             </div>
           </div>
 
@@ -112,8 +112,8 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
                 <span>Plant Parts Documented</span>
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {plant.parts_used.length > 0 ? (
-                  plant.parts_used.map((part, i) => (
+                {(plant.parts_used || []).length > 0 ? (
+                  (plant.parts_used || []).map((part, i) => (
                     <span key={i} className="text-xs bg-zinc-800 text-emerald-300 border border-zinc-700 px-2 py-0.5 rounded">
                       {part}
                     </span>
@@ -130,8 +130,8 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
                 <span>Preparation Methods</span>
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {plant.preparation_methods.length > 0 ? (
-                  plant.preparation_methods.map((prep, i) => (
+                {(plant.preparation_methods || []).length > 0 ? (
+                  (plant.preparation_methods || []).map((prep, i) => (
                     <span key={i} className="text-xs bg-zinc-800 text-sky-300 border border-zinc-700 px-2 py-0.5 rounded">
                       {prep}
                     </span>
@@ -148,7 +148,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
             <div>
               <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Reported Health Indications</h4>
               <div className="flex flex-wrap gap-1.5">
-                {plant.reported_conditions.map((cond, i) => (
+                {(plant.reported_conditions || []).map((cond, i) => (
                   <span key={i} className="text-xs bg-rose-500/10 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded-md">
                     {cond}
                   </span>
@@ -159,7 +159,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
             <div>
               <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Key Bioactive Compounds</h4>
               <div className="flex flex-wrap gap-1.5">
-                {plant.reported_compounds.map((comp, i) => (
+                {(plant.reported_compounds || []).map((comp, i) => (
                   <span key={i} className="text-xs bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2.5 py-1 rounded-md font-mono">
                     {comp}
                   </span>
@@ -172,7 +172,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
           <div>
             <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Supporting Scientific Publications</h4>
             <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-              {plant.supporting_publications.map((pub, i) => (
+              {(plant.supporting_publications || []).map((pub, i) => (
                 <div key={i} className="bg-[#161822] border border-zinc-800 p-3 rounded-lg text-xs space-y-1">
                   <div className="flex items-start justify-between gap-2">
                     <p className="font-semibold text-white">{pub.title}</p>

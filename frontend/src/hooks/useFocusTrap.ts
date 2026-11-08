@@ -28,6 +28,8 @@ export function useFocusTrap<T extends HTMLElement>({
 
     // Save previous active element before opening
     previousActiveElement.current = document.activeElement as HTMLElement;
+    const prevElement = previousActiveElement.current;
+    const returnElement = returnFocusRef?.current;
 
     const container = containerRef.current;
     if (!container) return;
@@ -91,10 +93,10 @@ export function useFocusTrap<T extends HTMLElement>({
       window.removeEventListener('keydown', handleKeyDown);
 
       // Restore focus to return element or trigger
-      if (returnFocusRef?.current) {
-        returnFocusRef.current.focus();
-      } else if (previousActiveElement.current && typeof previousActiveElement.current.focus === 'function') {
-        previousActiveElement.current.focus();
+      if (returnElement) {
+        returnElement.focus();
+      } else if (prevElement && typeof prevElement.focus === 'function') {
+        prevElement.focus();
       }
     };
   }, [isOpen, onClose, initialFocusRef, returnFocusRef]);
