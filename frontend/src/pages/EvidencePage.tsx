@@ -61,7 +61,7 @@ export const EvidencePage: React.FC = () => {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-[#111319]/90 border border-zinc-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl backdrop-blur-xl">
+      <div className="bg-[#101218]/90 border border-zinc-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl backdrop-blur-xl">
         
         {/* Tier Tabs */}
         <div className="flex flex-wrap gap-1.5">
@@ -72,7 +72,7 @@ export const EvidencePage: React.FC = () => {
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 selectedTier === tier
                   ? 'bg-zinc-200 text-zinc-950 shadow-md font-bold'
-                  : 'bg-[#161822] border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800'
+                  : 'bg-[#151722] border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800'
               }`}
             >
               {tier}
@@ -81,7 +81,7 @@ export const EvidencePage: React.FC = () => {
         </div>
 
         {/* Confidence slider */}
-        <div className="flex items-center gap-3 text-xs text-zinc-300 bg-[#161822] px-3.5 py-1.5 rounded-xl border border-zinc-800 font-mono">
+        <div className="flex items-center gap-3 text-xs text-zinc-300 bg-[#151722] px-3.5 py-1.5 rounded-xl border border-zinc-800 font-mono">
           <span>Min Confidence:</span>
           <input
             type="range"
@@ -92,14 +92,14 @@ export const EvidencePage: React.FC = () => {
             onChange={(e) => setMinConfidence(parseFloat(e.target.value))}
             className="w-24 accent-zinc-200 cursor-pointer"
           />
-          <span className="text-sky-400 font-bold">{Math.round(minConfidence * 100)}%</span>
+          <span className="text-white font-bold">{Math.round(minConfidence * 100)}%</span>
         </div>
 
       </div>
 
       {/* Notice Banner */}
-      <div className="bg-amber-500/10 border border-amber-500/20 p-3.5 rounded-xl text-xs text-amber-300/90 flex items-center gap-2">
-        <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400" />
+      <div className="bg-zinc-900/90 border border-zinc-700/80 p-3.5 rounded-xl text-xs text-zinc-300 flex items-center gap-2">
+        <AlertTriangle className="w-4 h-4 shrink-0 text-zinc-400" />
         <span>
           <strong className="text-white">Scientific Principle:</strong> A reported traditional use does not automatically demonstrate clinical effectiveness. Each evidence category maintains its distinct evidential weight.
         </span>
@@ -112,7 +112,7 @@ export const EvidencePage: React.FC = () => {
           <p className="text-zinc-400 text-xs font-mono">Querying evidence database...</p>
         </div>
       ) : relationships.length === 0 ? (
-        <div className="bg-[#111319] border border-zinc-800 rounded-2xl p-12 text-center text-zinc-400">
+        <div className="bg-[#101218] border border-zinc-800 rounded-2xl p-12 text-center text-zinc-400 font-mono">
           <Database className="w-8 h-8 mx-auto mb-2 text-zinc-600" />
           <p className="text-sm">No evidence records match the selected tier or confidence threshold.</p>
         </div>
@@ -130,23 +130,23 @@ export const EvidencePage: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold text-white font-mono">{rel.plant_scientific_name}</span>
                     <span className="text-xs text-zinc-500">→</span>
-                    <span className="text-sm font-semibold text-rose-400 font-mono">{rel.condition_name || 'General Health'}</span>
-                    <span className="text-[10px] font-semibold bg-zinc-800 text-purple-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
+                    <span className="text-sm font-semibold text-zinc-200 font-mono">{rel.condition_name || 'General Health'}</span>
+                    <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
                       {rel.knowledge_tradition}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-semibold bg-zinc-800 text-emerald-300 border border-zinc-700 px-2.5 py-0.5 rounded-full font-mono">
+                    <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700 px-2.5 py-0.5 rounded-full font-mono">
                       {rel.evidence_tier}
                     </span>
-                    <span className="text-xs font-mono text-sky-400 font-semibold">
+                    <span className="text-xs font-mono text-zinc-300 font-semibold">
                       Confidence: {Math.round(rel.extraction_confidence * 100)}%
                     </span>
                     <span className={`text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full font-mono ${
                       rel.verification_status === 'approved' 
-                        ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' 
-                        : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                        ? 'bg-zinc-800 text-zinc-200 border border-zinc-600' 
+                        : 'bg-zinc-900 text-zinc-400 border border-zinc-700'
                     }`}>
                       {rel.verification_status}
                     </span>
@@ -161,19 +161,19 @@ export const EvidencePage: React.FC = () => {
                   </div>
                   <div>
                     <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Reported Compound</span>
-                    <span className="text-sky-400 font-mono">{rel.compound_name || 'Phytochemical extract'}</span>
+                    <span className="text-zinc-200 font-mono">{rel.compound_name || 'Phytochemical extract'}</span>
                   </div>
                   <div>
                     <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Pharmacological Activity</span>
-                    <span className="text-zinc-200">{rel.pharmacological_activity || 'Empirical bioactivity'}</span>
+                    <span className="text-zinc-300">{rel.pharmacological_activity || 'Empirical bioactivity'}</span>
                   </div>
                 </div>
 
                 {/* Verbatim Excerpt */}
                 {rel.supporting_excerpt && (
-                  <div className="bg-[#161822] p-3.5 rounded-xl border border-zinc-800 text-xs">
+                  <div className="bg-[#151722] p-3.5 rounded-xl border border-zinc-800 text-xs">
                     <div className="flex items-center gap-1.5 text-zinc-300 font-bold uppercase text-[10px] mb-1 font-mono">
-                      <Quote className="w-3 h-3 text-sky-400" />
+                      <Quote className="w-3 h-3 text-zinc-400" />
                       <span>Verbatim Literature Excerpt</span>
                     </div>
                     <p className="text-zinc-300 italic leading-relaxed">
@@ -183,7 +183,7 @@ export const EvidencePage: React.FC = () => {
                 )}
 
                 {/* Source Provenance */}
-                <div className="flex flex-wrap items-center justify-between text-[11px] text-zinc-400 pt-1">
+                <div className="flex flex-wrap items-center justify-between text-[11px] text-zinc-400 pt-1 font-mono">
                   <div className="flex items-center gap-2">
                     <BookOpen className="w-3.5 h-3.5 text-zinc-500" />
                     <span>{rel.document_title || 'Indexed Ethnopharmacological Document'}</span>
@@ -194,7 +194,7 @@ export const EvidencePage: React.FC = () => {
                       href={`https://doi.org/${rel.document_doi}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-sky-400 hover:text-sky-300 flex items-center gap-1 font-mono text-[10px]"
+                      className="text-zinc-300 hover:text-white flex items-center gap-1 font-mono text-[10px]"
                     >
                       <span>DOI: {rel.document_doi}</span>
                       <ExternalLink className="w-3 h-3" />

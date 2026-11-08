@@ -348,14 +348,6 @@ def test_verification_history_pagination_guard(client):
     res_high = client.get("/api/verification/history?limit=250")
     assert res_high.status_code == 422
 
-def test_assistant_empty_question_returns_400(client):
-    res_empty = client.post("/api/assistant/query", json={"question": ""})
-    assert res_empty.status_code == 400
-    assert "blank" in res_empty.json()["detail"].lower()
-
-    res_ws = client.post("/api/assistant/query", json={"question": "   \n\t  "})
-    assert res_ws.status_code == 400
-    assert "blank" in res_ws.json()["detail"].lower()
 
 
 

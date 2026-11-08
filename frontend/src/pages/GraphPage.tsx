@@ -46,7 +46,7 @@ export const GraphPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-white font-mono flex items-center gap-2">
-              <Network className="w-6 h-6 text-sky-400" />
+              <Network className="w-5 h-5 text-zinc-300" />
               <span>Interactive Knowledge Graph</span>
             </h1>
             <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
@@ -59,11 +59,11 @@ export const GraphPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="text-xs text-zinc-300 bg-[#111319] border border-zinc-800 px-3 py-1.5 rounded-xl flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="font-semibold text-white font-mono">{graphData?.nodes?.length || 0} Entities</span>
+          <div className="text-xs text-zinc-300 bg-[#101218] border border-zinc-800 px-3 py-1.5 rounded-xl flex items-center gap-2 font-mono">
+            <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.8)] animate-pulse"></span>
+            <span className="font-semibold text-white">{graphData?.nodes?.length || 0} Entities</span>
             <span>•</span>
-            <span className="font-semibold text-sky-400 font-mono">{graphData?.edges?.length || 0} Relations</span>
+            <span className="font-semibold text-zinc-300">{graphData?.edges?.length || 0} Relations</span>
           </div>
         </div>
       </div>
@@ -78,10 +78,10 @@ export const GraphPage: React.FC = () => {
       />
 
       {/* Helpful Instructions */}
-      <div className="bg-[#111319]/90 border border-zinc-800 p-4 rounded-2xl text-xs text-zinc-400 flex items-start gap-3 shadow-xl">
-        <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+      <div className="bg-[#101218]/90 border border-zinc-800 p-4 rounded-2xl text-xs text-zinc-400 flex items-start gap-3 shadow-xl">
+        <Info className="w-4 h-4 text-zinc-300 shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <p className="font-semibold text-zinc-200">How to Navigate the Graph:</p>
+          <p className="font-semibold text-zinc-200 font-mono">How to Navigate the Graph:</p>
           <ul className="list-disc list-inside space-y-0.5 text-[11px] text-zinc-400">
             <li><strong>Click any node:</strong> Centers the view and opens the Entity Details drawer with family, connections, and metadata.</li>
             <li><strong>Click any edge:</strong> Opens the Scientific Provenance drawer displaying the verbatim text passage and DOI reference.</li>

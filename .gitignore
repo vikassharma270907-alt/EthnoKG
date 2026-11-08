@@ -34,9 +34,14 @@ scripts/ralph/
 # Media & Video Temp Outputs
 video_production/recordings/
 video_production/scenes/
+video_production/graphics/
 video_production/*.mp4
 video_production/*.mp3
 video_production/*.webm
+video_production/*.jpg
+video_production/*.png
+video_production/generate_thumbnail.py
+video_production/print_timestamps.py
 /EthnoKG_Complete_Project_Walkthrough.mp4
 *.webm
 *.mp3

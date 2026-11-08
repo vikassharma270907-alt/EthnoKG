@@ -29,29 +29,29 @@ export const SourcesPage: React.FC = () => {
       </div>
 
       {/* Ethics & Responsible Research Principles */}
-      <div className="bg-[#111319]/90 border border-amber-500/30 rounded-2xl p-6 shadow-2xl space-y-4 backdrop-blur-xl">
-        <div className="flex items-center gap-2 text-amber-400 font-bold text-sm uppercase tracking-wider font-mono">
-          <AlertTriangle className="w-5 h-5 shrink-0" />
+      <div className="bg-[#101218]/90 border border-zinc-700/80 rounded-2xl p-6 shadow-2xl space-y-4 backdrop-blur-xl">
+        <div className="flex items-center gap-2 text-zinc-200 font-bold text-sm uppercase tracking-wider font-mono">
+          <AlertTriangle className="w-5 h-5 shrink-0 text-zinc-300" />
           <span>EthnoHack 2026 Responsible Research & Ethics Policy</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
 
-          <div className="bg-[#161822] p-4 rounded-xl border border-zinc-800 space-y-2">
+          <div className="bg-[#151722] p-4 rounded-xl border border-zinc-800 space-y-2">
             <h4 className="font-semibold text-white font-mono">1. Indigenous IP & Sovereignty</h4>
             <p className="text-zinc-400 leading-relaxed">
               Traditional knowledge originates within indigenous communities. EthnoKG preserves explicit cultural attribution (Ayurveda, TCM, African Folk) and adheres to Nagoya Protocol benefit-sharing principles.
             </p>
           </div>
 
-          <div className="bg-[#161822] p-4 rounded-xl border border-zinc-800 space-y-2">
+          <div className="bg-[#151722] p-4 rounded-xl border border-zinc-800 space-y-2">
             <h4 className="font-semibold text-white font-mono">2. Biodiversity & Habitat Protection</h4>
             <p className="text-zinc-400 leading-relaxed">
               To prevent illegal wild-harvesting and over-exploitation of endangered medicinal taxa, EthnoKG restricts high-resolution geospatial coordinates for threatened species listed under IUCN or CITES appendices.
             </p>
           </div>
 
-          <div className="bg-[#161822] p-4 rounded-xl border border-zinc-800 space-y-2">
+          <div className="bg-[#151722] p-4 rounded-xl border border-zinc-800 space-y-2">
             <h4 className="font-semibold text-white font-mono">3. Strict Non-Diagnostic Scope</h4>
             <p className="text-zinc-400 leading-relaxed">
               EthnoKG is exclusively a literature-mining and scientific discovery platform. It never generates clinical diagnoses, dosage instructions, or prescriptions. Traditional lore is never represented as proven clinical efficacy.
@@ -65,7 +65,7 @@ export const SourcesPage: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
-            <Database className="w-4 h-4 text-sky-400" />
+            <Database className="w-4 h-4 text-zinc-300" />
             <span>Authoritative Data Sources & Reference Registries</span>
           </h3>
           <span className="text-xs text-zinc-500 font-mono">{sources.length} active integrations</span>
@@ -85,7 +85,7 @@ export const SourcesPage: React.FC = () => {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <h4 className="text-sm font-bold text-white font-mono">{src.name}</h4>
-                      <p className="text-[11px] text-sky-400 font-medium">{src.organization}</p>
+                      <p className="text-[11px] text-zinc-400 font-medium">{src.organization}</p>
                     </div>
                     <a
                       href={src.url}
@@ -114,7 +114,7 @@ export const SourcesPage: React.FC = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-zinc-500 font-medium">Status:</span>
-                    <span className="text-emerald-400 font-semibold">{src.integration_status}</span>
+                    <span className="text-zinc-200 font-semibold">{src.integration_status}</span>
                   </div>
                 </div>
               </GlowCard>
