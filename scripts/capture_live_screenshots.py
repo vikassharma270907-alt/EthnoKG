@@ -2,7 +2,7 @@ import time
 import os
 from playwright.sync_api import sync_playwright
 
-ARTIFACT_DIR = r"C:\Users\vikas sharma\.gemini\antigravity\brain\76540095-b0da-4692-aaed-89aab89f08f1"
+ARTIFACT_DIR = r"C:\Users\vikas sharma\.gemini\antigravity\brain\9eb030d3-fe72-48cf-89a1-9a628229aae7"
 BASE_URL = "https://ethnokg-platform.onrender.com"
 
 def run():

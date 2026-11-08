@@ -17,11 +17,51 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { fetchDashboardStats } from './api/client';
 import type { DashboardStatsResponse } from './types';
 
+const VALID_TABS = [
+  'landing',
+  'dashboard',
+  'discovery',
+  'plants',
+  'graph',
+  'extraction',
+  'evidence',
+  'assistant',
+  'verification',
+  'methodology',
+  'sources'
+];
+
+function getInitialTab(): string {
+  if (typeof window === 'undefined') return 'landing';
+  const path = window.location.pathname.replace(/^\/+/, '').split('/')[0].toLowerCase();
+  if (!path || path === 'index.html') return 'landing';
+  if (VALID_TABS.includes(path)) return path;
+  return 'landing';
+}
+
 export function App() {
-  const [activeTab, setActiveTab] = useState<string>('landing');
+  const [activeTab, setActiveTabState] = useState<string>(getInitialTab);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [stats, setStats] = useState<DashboardStatsResponse | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
+
+  const setActiveTab = useCallback((tab: string) => {
+    setActiveTabState(tab);
+    if (typeof window !== 'undefined') {
+      const targetPath = tab === 'landing' ? '/' : `/${tab}`;
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState(null, '', targetPath);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setActiveTabState(getInitialTab());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const refreshStats = useCallback(() => {
     setIsLoadingStats(true);

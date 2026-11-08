@@ -45,22 +45,23 @@ export const NavActionCluster: React.FC<NavActionClusterProps> = ({
         </button>
       )}
 
-      <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800 text-[10px] text-zinc-300 select-none">
+      <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800 text-[10px] text-zinc-300 select-none shadow-inner">
         <span className="relative flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.9)]"></span>
         </span>
-        <span className="font-mono text-zinc-300 font-medium">100% Traceable</span>
+        <span className="font-mono text-zinc-300 font-medium tracking-tight">100% Traceable</span>
       </div>
 
       <button
         type="button"
         onClick={onNavigateToMining}
-        className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-zinc-200 via-slate-100 to-zinc-300 hover:from-white hover:to-zinc-200 text-zinc-950 transition-all shadow-md shadow-black/60 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.02] flex items-center gap-1.5 cursor-pointer shrink-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400"
+        className="relative px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-zinc-100 text-zinc-950 transition-all shadow-md shadow-black/60 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5 cursor-pointer shrink-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 group overflow-hidden"
       >
-        <Cpu className="w-3.5 h-3.5 text-zinc-950 stroke-[2.4]" />
-        <span className="hidden md:inline">Mine Literature</span>
-        <span className="md:hidden">Mine</span>
+        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-sky-300/30 to-transparent pointer-events-none" />
+        <Cpu className="w-3.5 h-3.5 text-zinc-950 stroke-[2.4] relative z-10" />
+        <span className="hidden md:inline relative z-10">Mine Literature</span>
+        <span className="md:hidden relative z-10">Mine</span>
       </button>
 
       <button
