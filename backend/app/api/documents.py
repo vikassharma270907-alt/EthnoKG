@@ -9,6 +9,8 @@ from ..models.relationship import Relationship
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
 
+MAX_UPLOAD_SIZE = 15 * 1024 * 1024  # 15 MB
+
 @router.post("/upload", response_model=DocumentDetail)
 async def upload_document(
     file: UploadFile = File(...),
@@ -20,12 +22,18 @@ async def upload_document(
     license: Optional[str] = Form("Open Access"),
     db: Session = Depends(get_db)
 ):
-    contents = await file.read()
+    contents = await file.read(MAX_UPLOAD_SIZE + 1)
+    if len(contents) > MAX_UPLOAD_SIZE:
+        raise HTTPException(status_code=413, detail="File too large. Maximum allowed size is 15 MB.")
+
     filename = file.filename or "uploaded_document"
     doc_title = title if title else filename
 
     if filename.lower().endswith(".pdf"):
-        raw_text = DocumentService.extract_text_from_pdf_bytes(contents)
+        try:
+            raw_text = DocumentService.extract_text_from_pdf_bytes(contents)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
     else:
         try:
             raw_text = contents.decode("utf-8")

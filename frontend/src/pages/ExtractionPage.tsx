@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { runExtraction, uploadDocument, fetchDocuments } from '../api/client';
 import type { DocumentBrief, ExtractionRunResponse } from '../types';
 import { fireExtractionSuccess } from '../utils/confetti';
+import { GlowCard } from '../components/GlowCard';
 
 interface ExtractionPageProps {
   setActiveTab: (tab: string) => void;
@@ -156,37 +157,37 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
     <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       {/* Page Header */}
-      <div className="pb-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="pb-4 border-b border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-white font-mono">12-Stage Literature Mining Engine</h1>
-            <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full shadow-xs">
+            <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
               Automated NLP Pipeline
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-zinc-400 mt-0.5">
             Ingest scientific papers, historical treatises, or ethnobotanical survey texts to extract standardized botanical taxa, ailments, bioactive compounds, and evidence tiers.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-400">
-            <Cpu className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#161822] border border-zinc-800 text-xs text-zinc-400 font-mono">
+            <Cpu className="w-3.5 h-3.5 text-sky-400" />
             <span>F1-Score: <strong>0.938</strong></span>
           </span>
         </div>
       </div>
 
       {/* 12-Stage Interactive Pipeline Visualizer Banner */}
-      <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 shadow-xl">
+      <div className="bg-[#111319]/90 border border-zinc-800 rounded-2xl p-5 shadow-2xl backdrop-blur-xl">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-emerald-400" />
+            <Layers className="w-4 h-4 text-sky-400" />
             <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
               Deterministic 12-Stage Verification Pipeline
             </h3>
           </div>
-          <span className="text-[11px] font-mono text-slate-400">
+          <span className="text-[11px] font-mono text-zinc-400">
             {isProcessing ? `Running Stage ${currentStageIdx + 1} of 12...` : 'Ready for Ingestion'}
           </span>
         </div>
@@ -201,18 +202,18 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                 key={i}
                 className={`p-2 rounded-xl border text-[11px] transition-all flex items-center gap-2 ${
                   isCurrent 
-                    ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 font-bold shadow-md shadow-emerald-500/30 animate-pulse'
+                    ? 'bg-zinc-800 border-zinc-500 text-white font-bold shadow-md shadow-black/40 animate-pulse'
                     : isCompleted 
-                    ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300'
-                    : 'bg-slate-900/60 border-slate-800/80 text-slate-500'
+                    ? 'bg-zinc-850 border-zinc-700 text-emerald-300'
+                    : 'bg-[#161822] border-zinc-800 text-zinc-500'
                 }`}
               >
                 {isCompleted ? (
                   <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 ) : isCurrent ? (
-                  <RefreshCw className="w-3.5 h-3.5 text-emerald-300 animate-spin shrink-0" />
+                  <RefreshCw className="w-3.5 h-3.5 text-sky-400 animate-spin shrink-0" />
                 ) : (
-                  <span className="w-3.5 h-3.5 rounded-full border border-slate-700 inline-block shrink-0" />
+                  <span className="w-3.5 h-3.5 rounded-full border border-zinc-700 inline-block shrink-0" />
                 )}
                 <span className="truncate">{stg}</span>
               </div>
@@ -222,13 +223,13 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
       </div>
 
       {/* Input Mode Selector Tabs */}
-      <div className="bg-[#070c19] border border-slate-800 p-1.5 rounded-xl flex flex-wrap gap-1.5 max-w-2xl">
+      <div className="bg-[#111319] border border-zinc-800 p-1.5 rounded-xl flex flex-wrap gap-1.5 max-w-2xl">
         <button
           onClick={() => { setMode('sample'); setErrorMsg(null); }}
           className={`flex-1 min-w-[130px] py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
             mode === 'sample' 
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 shadow-md font-bold' 
-              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              ? 'bg-zinc-200 text-zinc-950 font-bold shadow-md shadow-black/40' 
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
           }`}
         >
           <BookOpen className="w-3.5 h-3.5" />
@@ -239,8 +240,8 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
           onClick={() => { setMode('upload'); setErrorMsg(null); }}
           className={`flex-1 min-w-[130px] py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
             mode === 'upload' 
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 shadow-md font-bold' 
-              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              ? 'bg-zinc-200 text-zinc-950 font-bold shadow-md shadow-black/40' 
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
           }`}
         >
           <Upload className="w-3.5 h-3.5" />
@@ -251,8 +252,8 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
           onClick={() => { setMode('text'); setErrorMsg(null); }}
           className={`flex-1 min-w-[130px] py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
             mode === 'text' 
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 shadow-md font-bold' 
-              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              ? 'bg-zinc-200 text-zinc-950 font-bold shadow-md shadow-black/40' 
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
           }`}
         >
           <FileText className="w-3.5 h-3.5" />
@@ -261,19 +262,19 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
       </div>
 
       {/* Input Configuration Box */}
-      <div className="bg-[#070c19]/90 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-5">
+      <div className="bg-[#111319]/90 backdrop-blur-xl border border-zinc-800 rounded-2xl p-6 shadow-2xl space-y-5">
         
         {/* Mode 1: Indexed Literature Collection */}
         {mode === 'sample' && (
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5 font-mono">
                 Select from Indexed Literature Collection
               </label>
               <select
                 value={selectedDocId || ''}
                 onChange={(e) => setSelectedDocId(Number(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                className="w-full bg-[#161822] border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-zinc-500 cursor-pointer"
               >
                 {indexedDocs.map((doc) => (
                   <option key={doc.id} value={doc.id}>
@@ -284,12 +285,12 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
             </div>
 
             {selectedDocId && (
-              <div className="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 text-xs text-slate-300 space-y-1">
-                <span className="text-[10px] uppercase font-bold text-emerald-400">Selected Source Document:</span>
+              <div className="bg-[#161822] p-4 rounded-xl border border-zinc-800 text-xs text-zinc-300 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-sky-400 font-mono">Selected Source Document:</span>
                 <p className="font-semibold text-white">
                   {indexedDocs.find((d) => d.id === selectedDocId)?.title}
                 </p>
-                <p className="text-[11px] text-slate-400 italic">
+                <p className="text-[11px] text-zinc-400 italic">
                   DOI: {indexedDocs.find((d) => d.id === selectedDocId)?.doi || 'Indexed Local Archive'} | License: CC-BY 4.0 Open Access
                 </p>
               </div>
@@ -298,16 +299,16 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
             <button
               onClick={handleRunSample}
               disabled={isProcessing}
-              className="py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-emerald-600/25 hover:shadow-emerald-500/40 hover:scale-[1.02] flex items-center gap-2 cursor-pointer"
+              className="py-3 px-6 bg-gradient-to-r from-zinc-200 via-slate-100 to-zinc-300 hover:from-white hover:to-zinc-200 text-zinc-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-black/50 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-40"
             >
               {isProcessing ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-4 h-4 animate-spin text-zinc-950" />
                   <span>Executing 12-Stage Pipeline...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                  <Sparkles className="w-4 h-4 text-zinc-950 stroke-[2.5]" />
                   <span>Start Literature Mining Pipeline</span>
                 </>
               )}
@@ -319,7 +320,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
         {mode === 'upload' && (
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5 font-mono">
                 Document Title (Optional)
               </label>
               <input
@@ -327,19 +328,19 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                 placeholder="e.g. Ethnobotanical survey of antipyretic plants..."
                 value={docTitleInput}
                 onChange={(e) => setDocTitleInput(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500"
+                className="w-full bg-[#161822] border border-zinc-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
 
-            <div className="border-2 border-dashed border-slate-700 hover:border-emerald-500/60 rounded-xl p-8 text-center transition-colors bg-slate-950/40">
-              <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-              <p className="text-xs text-slate-200 font-medium">Click to select or drag PDF / TXT research paper</p>
-              <p className="text-[11px] text-slate-500 mt-1">Supports full-text open-access papers, surveys, and monographs</p>
+            <div className="border-2 border-dashed border-zinc-700 hover:border-zinc-500 rounded-xl p-8 text-center transition-colors bg-[#161822]/60">
+              <Upload className="w-8 h-8 text-zinc-500 mx-auto mb-2" />
+              <p className="text-xs text-zinc-200 font-medium">Click to select or drag PDF / TXT research paper</p>
+              <p className="text-[11px] text-zinc-500 mt-1">Supports full-text open-access papers, surveys, and monographs</p>
               <input
                 type="file"
                 accept=".pdf,.txt"
                 onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                className="mt-3 text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-emerald-400 hover:file:bg-slate-700 cursor-pointer"
+                className="mt-3 text-xs text-zinc-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700 cursor-pointer"
               />
             </div>
 
@@ -352,16 +353,16 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
             <button
               onClick={handleFileUploadAndRun}
               disabled={isProcessing || !selectedFile}
-              className="py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 disabled:opacity-50 text-slate-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-emerald-600/25 hover:scale-[1.02] flex items-center gap-2 cursor-pointer"
+              className="py-3 px-6 bg-gradient-to-r from-zinc-200 via-slate-100 to-zinc-300 hover:from-white hover:to-zinc-200 disabled:opacity-40 text-zinc-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-black/50 hover:scale-[1.02] flex items-center gap-2 cursor-pointer"
             >
               {isProcessing ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-4 h-4 animate-spin text-zinc-950" />
                   <span>Parsing Document & Extracting...</span>
                 </>
               ) : (
                 <>
-                  <Upload className="w-4 h-4 stroke-[2.5]" />
+                  <Upload className="w-4 h-4 text-zinc-950 stroke-[2.5]" />
                   <span>Upload & Run Mining Pipeline</span>
                 </>
               )}
@@ -374,7 +375,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
           <div className="space-y-4">
             {/* Quick Presets */}
             <div>
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+              <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider block mb-2 font-mono">
                 Quick One-Click Demo Presets:
               </span>
               <div className="flex flex-wrap gap-2">
@@ -386,9 +387,9 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                       setTextInput(p.text);
                       setDocTitleInput(p.title);
                     }}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 border border-slate-700/80 hover:border-emerald-500/50 text-slate-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#161822] hover:bg-zinc-800 border border-zinc-700/80 hover:border-zinc-500 text-zinc-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5"
                   >
-                    <Sparkles className="w-3 h-3 text-emerald-400" />
+                    <Sparkles className="w-3 h-3 text-sky-400" />
                     <span>{p.label}</span>
                   </button>
                 ))}
@@ -396,7 +397,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5 font-mono">
                 Paste Ethnopharmacological Text Excerpt
               </label>
               <textarea
@@ -404,11 +405,11 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
                 placeholder="Paste paragraph containing plant name, traditional preparation, ailment, or bioassay results..."
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-xs text-white focus:outline-none focus:border-emerald-500 leading-relaxed font-mono"
+                className="w-full bg-[#161822] border border-zinc-700 rounded-xl p-3.5 text-xs text-white focus:outline-none focus:border-zinc-500 leading-relaxed font-mono"
               />
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-slate-500">
+            <div className="flex items-center justify-between text-[11px] text-zinc-500 font-mono">
               <span>{textInput.length} characters</span>
               <span>Anchored to Kew MPNS Taxonomy</span>
             </div>
@@ -416,16 +417,16 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
             <button
               onClick={handleRunText}
               disabled={isProcessing || !textInput.trim()}
-              className="py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 disabled:opacity-50 text-slate-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-emerald-600/25 hover:scale-[1.02] flex items-center gap-2 cursor-pointer"
+              className="py-3 px-6 bg-gradient-to-r from-zinc-200 via-slate-100 to-zinc-300 hover:from-white hover:to-zinc-200 disabled:opacity-40 text-zinc-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-black/50 hover:scale-[1.02] flex items-center gap-2 cursor-pointer"
             >
               {isProcessing ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-4 h-4 animate-spin text-zinc-950" />
                   <span>Mining Text...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                  <Sparkles className="w-4 h-4 text-zinc-950 stroke-[2.5]" />
                   <span>Execute Mining Pipeline</span>
                 </>
               )}
@@ -435,7 +436,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
 
         {/* Error message */}
         {errorMsg && (
-          <div className="p-3 bg-rose-950/40 border border-rose-800/80 rounded-xl text-xs text-rose-300 flex items-center gap-2">
+          <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
             <span>{errorMsg}</span>
           </div>
@@ -456,11 +457,11 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
               <div>
                 <h2 className="text-xl font-bold text-white font-mono flex items-center gap-2.5">
                   <span>Extracted Structured Knowledge</span>
-                  <span className="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2.5 py-0.5 rounded-full font-bold">
+                  <span className="text-xs bg-zinc-800 text-emerald-300 border border-zinc-700 px-2.5 py-0.5 rounded-full font-bold font-mono">
                     {extractionResult.extracted_count} Claims Identified
                   </span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">Source: {extractionResult.document_title || 'Direct Excerpt'}</p>
+                <p className="text-xs text-zinc-400 mt-0.5">Source: {extractionResult.document_title || 'Direct Excerpt'}</p>
               </div>
 
               <div className="flex items-center gap-2">
@@ -473,7 +474,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                 </button>
                 <button
                   onClick={() => setActiveTab('graph')}
-                  className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105"
+                  className="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105"
                 >
                   <span>View in Graph</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -484,30 +485,28 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
             {/* Cards for each record */}
             <div className="grid grid-cols-1 gap-4">
               {extractionResult.results.map((rec, idx) => (
-                <motion.div 
+                <GlowCard 
                   key={idx}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.08 }}
-                  className="bg-[#070c19] border border-slate-800 hover:border-emerald-500/40 rounded-2xl p-5 shadow-xl space-y-3 transition-colors"
+                  glowColor="mint"
+                  className="p-5 space-y-3"
                 >
                   {/* Header row */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-800/80">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-zinc-800">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold text-white font-mono">{rec.scientific_name}</span>
                       {rec.plant_synonyms.length > 0 && (
-                        <span className="text-xs text-slate-400 italic">({rec.plant_synonyms.slice(0, 2).join(', ')})</span>
+                        <span className="text-xs text-zinc-400 italic">({rec.plant_synonyms.slice(0, 2).join(', ')})</span>
                       )}
-                      <span className="text-[10px] font-semibold bg-purple-500/15 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold bg-zinc-800 text-purple-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
                         {rec.knowledge_tradition}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold bg-zinc-800 text-emerald-300 border border-zinc-700 px-2.5 py-0.5 rounded-full font-mono">
                         {rec.evidence_category}
                       </span>
-                      <span className="text-xs font-mono text-cyan-400 font-bold bg-cyan-950/40 border border-cyan-800/40 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono text-sky-400 font-bold bg-[#161822] border border-zinc-700 px-2 py-0.5 rounded-md">
                         Confidence: {Math.round(rec.extraction_confidence * 100)}%
                       </span>
                     </div>
@@ -516,35 +515,35 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                   {/* Details grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                     <div>
-                      <span className="text-[10px] uppercase text-slate-500 font-semibold block">Indication / Condition</span>
+                      <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Indication / Condition</span>
                       <span className="font-semibold text-rose-400">{rec.medical_condition}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-500 font-semibold block">Organ & Preparation</span>
-                      <span className="text-slate-300">{rec.plant_part} | {rec.preparation_method}</span>
+                      <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Organ & Preparation</span>
+                      <span className="text-zinc-300">{rec.plant_part} | {rec.preparation_method}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-500 font-semibold block">Bioactive Compounds</span>
-                      <span className="font-mono text-cyan-400">{rec.bioactive_compounds.join(', ') || 'Metabolite fraction'}</span>
+                      <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Bioactive Compounds</span>
+                      <span className="font-mono text-sky-400">{rec.bioactive_compounds.join(', ') || 'Metabolite fraction'}</span>
                     </div>
                   </div>
 
                   {/* Verbatim Supporting Excerpt */}
-                  <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800/80 text-xs">
-                    <span className="text-[10px] uppercase font-bold text-emerald-400 block mb-1">
+                  <div className="bg-[#161822] p-3.5 rounded-xl border border-zinc-800 text-xs">
+                    <span className="text-[10px] uppercase font-bold text-emerald-400 block mb-1 font-mono">
                       Verbatim Supporting Source Excerpt:
                     </span>
-                    <p className="text-slate-300 italic leading-relaxed">
+                    <p className="text-zinc-300 italic leading-relaxed">
                       "{rec.supporting_excerpt}"
                     </p>
                   </div>
 
                   {/* Provenance footer */}
-                  <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-500 pt-1">
+                  <div className="flex flex-wrap items-center justify-between text-[11px] text-zinc-500 pt-1 font-mono">
                     <span>Section: {rec.page_or_section || 'Results section'}</span>
                     <span>Verification Status: <strong className="text-amber-400 uppercase font-mono">{rec.verification_status}</strong></span>
                   </div>
-                </motion.div>
+                </GlowCard>
               ))}
             </div>
 

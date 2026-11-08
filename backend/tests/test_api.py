@@ -7,10 +7,18 @@ def test_healthcheck(client):
     assert data["status"] == "healthy"
     assert data["database"] == "connected"
 
+    # Test HEAD request for Render health check
+    head_res = client.head("/api/health")
+    assert head_res.status_code == 200
+
 def test_healthz_alias(client):
     response = client.get("/healthz")
     assert response.status_code == 200
     assert response.json()["status"] == "healthy"
+
+    # Test HEAD request for Render health check
+    head_res = client.head("/healthz")
+    assert head_res.status_code == 200
 
 def test_dashboard_stats(client):
     response = client.get("/api/dashboard/stats")

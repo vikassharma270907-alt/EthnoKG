@@ -19,6 +19,9 @@ async def lifespan(app: FastAPI):
     db = SessionLocal()
     try:
         seed_database(db)
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
     yield
@@ -44,8 +47,8 @@ app.add_middleware(
 # Mount all API routers under /api
 app.include_router(api_router, prefix="/api")
 
-@app.get("/api/health")
-@app.get("/healthz")
+@app.api_route("/api/health", methods=["GET", "HEAD"])
+@app.api_route("/healthz", methods=["GET", "HEAD"])
 def healthcheck(db: Session = Depends(get_db)):
     db_status = "connected"
     try:

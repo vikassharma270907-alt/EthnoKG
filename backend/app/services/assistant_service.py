@@ -133,11 +133,15 @@ class AssistantService:
             evidence_tiers.add(r.evidence_tier)
 
             excerpt_text = r.supporting_excerpt or "Verbatim excerpt recorded in indexed publication."
+            doc_title = doc.title if doc else "Indexed Scientific Literature"
+            doc_authors = doc.authors if doc else "Academic Researchers"
+            doc_year = doc.publication_year if doc else None
+            doc_doi = doc.doi if doc else None
             cited_sources.append(CitedSource(
-                document_title=doc.title,
-                authors=doc.authors,
-                year=doc.publication_year,
-                doi=doc.doi,
+                document_title=doc_title,
+                authors=doc_authors,
+                year=doc_year,
+                doi=doc_doi,
                 excerpt=excerpt_text,
                 evidence_tier=r.evidence_tier
             ))
