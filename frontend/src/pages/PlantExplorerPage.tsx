@@ -57,7 +57,7 @@ export const PlantExplorerPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-white font-mono flex items-center gap-2">
-              <Leaf className="w-6 h-6 text-emerald-400" />
+              <Leaf className="w-5 h-5 text-zinc-300" />
               <span>Plant Intelligence Explorer</span>
             </h1>
             <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
@@ -70,15 +70,15 @@ export const PlantExplorerPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-400">Total Taxa:</span>
-          <span className="px-2.5 py-0.5 rounded-full bg-[#161822] border border-zinc-800 text-xs font-mono text-emerald-400 font-bold">
+          <span className="text-xs text-zinc-400 font-mono">Total Taxa:</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#151722] border border-zinc-700 text-xs font-mono text-zinc-200 font-bold">
             {plants.length} Species
           </span>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-[#111319]/90 border border-zinc-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xl backdrop-blur-xl">
+      <div className="bg-[#101218]/90 border border-zinc-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xl backdrop-blur-xl">
         
         {/* Search */}
         <div className="relative flex-1 min-w-[240px]">
@@ -88,7 +88,7 @@ export const PlantExplorerPage: React.FC = () => {
             placeholder="Search binomial, common name (e.g. Ashwagandha, Neem, Qinghao)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 bg-[#161822] border border-zinc-700/80 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+            className="w-full pl-10 pr-3 py-2 bg-[#151722] border border-zinc-700/80 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
           />
         </div>
 
@@ -97,7 +97,7 @@ export const PlantExplorerPage: React.FC = () => {
           <select
             value={selectedFamily}
             onChange={(e) => setSelectedFamily(e.target.value)}
-            className="bg-[#161822] border border-zinc-700/80 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer"
+            className="bg-[#151722] border border-zinc-700/80 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer font-mono"
           >
             <option value="">All Families</option>
             <option value="Asteraceae">Asteraceae (Daisy/Wormwood)</option>
@@ -117,7 +117,7 @@ export const PlantExplorerPage: React.FC = () => {
           <select
             value={selectedTradition}
             onChange={(e) => setSelectedTradition(e.target.value)}
-            className="bg-[#161822] border border-zinc-700/80 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer"
+            className="bg-[#151722] border border-zinc-700/80 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer font-mono"
           >
             <option value="">All Traditions</option>
             <option value="Ayurveda">Ayurveda</option>
@@ -135,10 +135,10 @@ export const PlantExplorerPage: React.FC = () => {
       {isLoading ? (
         <div className="py-20 text-center">
           <div className="w-8 h-8 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-          <p className="text-zinc-400 text-xs">Querying botanical database...</p>
+          <p className="text-zinc-400 text-xs font-mono">Querying botanical database...</p>
         </div>
       ) : plants.length === 0 ? (
-        <div className="bg-[#111319] border border-zinc-800 rounded-2xl p-12 text-center text-zinc-400">
+        <div className="bg-[#101218] border border-zinc-800 rounded-2xl p-12 text-center text-zinc-400 font-mono">
           <Leaf className="w-8 h-8 mx-auto mb-2 text-zinc-600" />
           <p className="text-sm">No plant species matching your query.</p>
         </div>
@@ -149,19 +149,19 @@ export const PlantExplorerPage: React.FC = () => {
               <GlowCard
                 key={plant.id}
                 interactive
-                glowColor="mint"
+                glowColor="silver"
                 onClick={() => handleOpenDetail(plant.id)}
                 className="p-5 flex flex-col justify-between group"
               >
                 <div className="space-y-2.5">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-sm font-bold text-white font-mono group-hover:text-emerald-300 transition-colors">
+                      <h3 className="text-sm font-bold text-white font-mono group-hover:text-zinc-200 transition-colors">
                         {plant.scientific_name}
                       </h3>
-                      <p className="text-xs text-emerald-400 font-medium">Family: {plant.family || 'Unknown'}</p>
+                      <p className="text-xs text-zinc-400 font-medium">Family: {plant.family || 'Unknown'}</p>
                     </div>
-                    <span className="text-[10px] font-semibold bg-zinc-800 text-emerald-300 border border-zinc-700 px-2 py-0.5 rounded-full shrink-0 font-mono">
+                    <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700 px-2 py-0.5 rounded-full shrink-0 font-mono">
                       {plant.taxonomic_status}
                     </span>
                   </div>
@@ -169,7 +169,7 @@ export const PlantExplorerPage: React.FC = () => {
                   {/* Common names */}
                   <div className="flex flex-wrap gap-1">
                     {(plant.common_names || []).slice(0, 3).map((cn, i) => (
-                      <span key={i} className="text-[11px] bg-[#161822] border border-zinc-700/80 px-2 py-0.5 rounded-md text-zinc-300">
+                      <span key={i} className="text-[11px] bg-[#151722] border border-zinc-700/80 px-2 py-0.5 rounded-md text-zinc-300">
                         {cn}
                       </span>
                     ))}
@@ -183,7 +183,7 @@ export const PlantExplorerPage: React.FC = () => {
 
                 {/* Bottom stats row */}
                 <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
-                  <span className="font-mono text-emerald-400 font-semibold">
+                  <span className="font-mono text-zinc-300 font-semibold">
                     {plant.relationships_count} documented relations
                   </span>
                   <span className="flex items-center gap-1 text-[11px] text-zinc-400 group-hover:text-white transition-colors">
