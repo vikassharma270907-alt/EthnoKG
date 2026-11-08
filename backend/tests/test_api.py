@@ -69,6 +69,15 @@ def test_assistant_query(client):
     assert len(data["cited_sources"]) > 0
     assert "medical_disclaimer" in data
 
+def test_assistant_empty_query_returns_400(client):
+    res_empty = client.post("/api/assistant/query", json={"question": ""})
+    assert res_empty.status_code == 400
+    assert "blank or whitespace-only" in res_empty.json()["detail"]
+
+    res_ws = client.post("/api/assistant/query", json={"question": "   \n\t  "})
+    assert res_ws.status_code == 400
+    assert "blank or whitespace-only" in res_ws.json()["detail"]
+
 def test_verification_api(client):
     # Fetch pending relations
     res = client.get("/api/extraction/results?status=pending")
@@ -338,6 +347,15 @@ def test_verification_history_pagination_guard(client):
     # Invalid limit (exceeds max 200)
     res_high = client.get("/api/verification/history?limit=250")
     assert res_high.status_code == 422
+
+def test_assistant_empty_question_returns_400(client):
+    res_empty = client.post("/api/assistant/query", json={"question": ""})
+    assert res_empty.status_code == 400
+    assert "blank" in res_empty.json()["detail"].lower()
+
+    res_ws = client.post("/api/assistant/query", json={"question": "   \n\t  "})
+    assert res_ws.status_code == 400
+    assert "blank" in res_ws.json()["detail"].lower()
 
 
 
