@@ -286,6 +286,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             type="text"
             placeholder="Search plant, disease, compound..."
             value={searchTerm}
+            aria-label="Search entities in knowledge graph"
             onChange={(e) => handleSearch(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 bg-[#161822] border border-zinc-700/80 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
           />
@@ -296,6 +297,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           <Filter className="w-3.5 h-3.5 text-zinc-400 hidden sm:block" />
           <select
             value={selectedEvidenceTier || ''}
+            aria-label="Filter by evidence tier"
             onChange={(e) => onFilterChange({ evidence_tier: e.target.value || undefined, tradition: selectedTradition })}
             className="bg-[#161822] border border-zinc-700/80 rounded-xl px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer"
           >
@@ -311,6 +313,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           {/* Tradition Filter */}
           <select
             value={selectedTradition || ''}
+            aria-label="Filter by knowledge tradition"
             onChange={(e) => onFilterChange({ evidence_tier: selectedEvidenceTier, tradition: e.target.value || undefined })}
             className="bg-[#161822] border border-zinc-700/80 rounded-xl px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer"
           >
@@ -326,6 +329,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           {/* Layout Selector */}
           <select
             value={layoutName}
+            aria-label="Select graph physics layout"
             onChange={(e) => setLayoutName(e.target.value as any)}
             className="bg-[#161822] border border-zinc-700 rounded-xl px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-zinc-500 cursor-pointer font-mono"
             title="Graph Physics Layout"
@@ -341,6 +345,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
         <div className="flex items-center gap-1.5">
           <button
             onClick={handleZoomIn}
+            aria-label="Zoom in graph"
             className="p-1.5 bg-[#161822] hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/80 cursor-pointer transition-colors"
             title="Zoom In"
           >
@@ -348,6 +353,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           </button>
           <button
             onClick={handleZoomOut}
+            aria-label="Zoom out graph"
             className="p-1.5 bg-[#161822] hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/80 cursor-pointer transition-colors"
             title="Zoom Out"
           >
@@ -355,6 +361,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           </button>
           <button
             onClick={handleReset}
+            aria-label="Fit graph to screen"
             className="p-1.5 bg-[#161822] hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/80 cursor-pointer transition-colors"
             title="Fit to Screen"
           >
@@ -362,6 +369,7 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           </button>
           <button
             onClick={handleExportPNG}
+            aria-label="Export graph image as PNG"
             className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg border border-zinc-600 cursor-pointer transition-colors flex items-center gap-1 text-[11px] font-semibold px-2.5 shadow-sm"
             title="Export High-Res PNG"
           >
