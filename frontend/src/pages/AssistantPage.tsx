@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { 
   Sparkles, 
   Send, 
-  BookOpen, 
   ExternalLink, 
   ShieldAlert, 
-  HelpCircle, 
-  Leaf, 
-  AlertCircle,
-  RefreshCw
+  RefreshCw,
+  Quote,
+  Clock,
+  CheckCircle2
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { queryAssistant } from '../api/client';
-import { AssistantQueryResponse } from '../types';
+import type { AssistantQueryResponse } from '../types';
 
 export const AssistantPage: React.FC = () => {
   const [question, setQuestion] = useState('');
@@ -35,7 +35,7 @@ export const AssistantPage: React.FC = () => {
     try {
       const res = await queryAssistant(q);
       setResponse(res);
-      setHistory((prev) => [{ q, a: res }, ...prev]);
+      setHistory((prev) => [{ q, a: res }, ...prev.slice(0, 5)]);
       if (!qText) setQuestion('');
     } catch (err) {
       console.error(err);
@@ -48,20 +48,32 @@ export const AssistantPage: React.FC = () => {
     <div className="space-y-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       
       {/* Header */}
-      <div className="pb-4 border-b border-slate-800">
+      <div className="pb-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-white font-mono flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-emerald-400" />
+              <span>Grounded Research Assistant</span>
+            </h1>
+            <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+              Zero-Hallucination RAG
+            </span>
+          </div>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Ask questions against indexed ethnobotanical papers. The assistant cites exact source excerpts, reports evidence tiers, and enforces zero-hallucination.
+          </p>
+        </div>
+
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-white font-mono">AI Research Assistant</h1>
-          <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
-            Grounded RAG Engine
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-400">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Kew Taxa & DOI Grounded</span>
           </span>
         </div>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Ask questions against indexed ethnobotanical papers. The assistant cites exact source excerpts, reports evidence tiers, and enforces zero-hallucination.
-        </p>
       </div>
 
       {/* Input Box */}
-      <div className="bg-[#070c19] border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+      <div className="bg-[#070c19] border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-4">
         <div className="relative">
           <textarea
             rows={3}
@@ -74,27 +86,27 @@ export const AssistantPage: React.FC = () => {
               }
             }}
             placeholder="Ask a scientific question (e.g. 'What traditional uses and in-vitro evidence exist for fever?')..."
-            className="w-full bg-slate-900 border border-slate-700/80 rounded-xl p-3.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 leading-relaxed font-sans"
+            className="w-full bg-slate-900 border border-slate-700/80 rounded-xl p-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 leading-relaxed font-sans"
           />
           <button
             onClick={() => handleAsk()}
             disabled={isQuerying || !question.trim()}
-            className="absolute right-3 bottom-3 p-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-slate-950 font-bold rounded-lg transition-colors shadow-md"
+            className="absolute right-3 bottom-3 p-2.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 disabled:opacity-40 text-slate-950 font-bold rounded-xl transition-all shadow-md cursor-pointer hover:scale-105"
             title="Send Query"
           >
-            {isQuerying ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {isQuerying ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 stroke-[2.5]" />}
           </button>
         </div>
 
         {/* Sample Prompts */}
         <div className="space-y-1.5 pt-1">
           <span className="text-[10px] uppercase font-bold text-slate-500 block">Suggested Research Queries:</span>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {sampleQuestions.map((sq, i) => (
               <button
                 key={i}
                 onClick={() => handleAsk(sq)}
-                className="text-[11px] bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg text-left transition-colors"
+                className="text-[11px] bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 text-slate-300 hover:text-white px-3 py-1.5 rounded-xl text-left transition-all cursor-pointer"
               >
                 {sq}
               </button>
@@ -104,98 +116,129 @@ export const AssistantPage: React.FC = () => {
       </div>
 
       {/* Active Response Display */}
-      {response && (
-        <div className="bg-[#070c19] border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5 animate-in fade-in">
-          
-          {/* Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-bold text-white font-mono">Grounded Literature Synthesis</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-slate-400 font-mono">Confidence: {Math.round(response.confidence * 100)}%</span>
-              <span className="text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
-                Verified RAG
-              </span>
-            </div>
-          </div>
-
-          {/* Answer Body */}
-          <div className="text-xs text-slate-200 leading-relaxed space-y-3 font-sans whitespace-pre-line">
-            {response.answer}
-          </div>
-
-          {/* Extracted Entity Tags */}
-          <div className="pt-2 border-t border-slate-800/80 flex flex-wrap gap-4 text-xs">
-            {response.cited_plants.length > 0 && (
-              <div>
-                <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1">Referenced Taxa:</span>
-                <div className="flex flex-wrap gap-1">
-                  {response.cited_plants.map((p, i) => (
-                    <span key={i} className="bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-2 py-0.5 rounded text-[11px] font-mono">
-                      {p}
-                    </span>
-                  ))}
-                </div>
+      <AnimatePresence>
+        {response && (
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="bg-[#070c19] border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-5"
+          >
+            {/* Header */}
+            <div className="flex flex-wrap items-center justify-between pb-3 border-b border-slate-800 gap-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold text-white font-mono">Grounded Literature Synthesis</span>
               </div>
-            )}
-
-            {response.evidence_tiers_involved.length > 0 && (
-              <div>
-                <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1">Evidence Tiers:</span>
-                <div className="flex flex-wrap gap-1">
-                  {response.evidence_tiers_involved.map((t, i) => (
-                    <span key={i} className="bg-purple-500/10 text-purple-300 border border-purple-500/20 px-2 py-0.5 rounded text-[11px]">
-                      {t}
-                    </span>
-                  ))}
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-400 font-mono">Confidence: <strong className="text-cyan-400 font-bold">{Math.round(response.confidence * 100)}%</strong></span>
+                <span className="text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                  Verified RAG
+                </span>
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Cited Primary Sources */}
-          {response.cited_sources.length > 0 && (
-            <div className="pt-3 border-t border-slate-800/80 space-y-2">
-              <h4 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                Bibliographic Evidence ({response.cited_sources.length} sources)
-              </h4>
-              <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                {response.cited_sources.map((src, i) => (
-                  <div key={i} className="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs space-y-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="font-semibold text-white">{src.document_title}</span>
-                      {src.doi && (
-                        <a
-                          href={`https://doi.org/${src.doi}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-emerald-400 hover:text-emerald-300 shrink-0 flex items-center gap-1 font-mono text-[10px]"
-                        >
-                          <span>DOI</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-slate-400">
-                      {src.authors} ({src.year || 'n.d.'}) — <span className="text-emerald-400 font-semibold">{src.evidence_tier}</span>
-                    </p>
-                    <p className="text-[11px] text-slate-300 italic bg-slate-900/60 p-2 rounded border border-slate-800/50 mt-1">
-                      "{src.excerpt}"
-                    </p>
+            {/* Answer Body */}
+            <div className="text-xs text-slate-200 leading-relaxed space-y-3 font-sans whitespace-pre-line bg-slate-900/40 p-4 rounded-xl border border-slate-800/80">
+              {response.answer}
+            </div>
+
+            {/* Extracted Entity Tags */}
+            <div className="pt-2 border-t border-slate-800/80 flex flex-wrap gap-4 text-xs">
+              {response.cited_plants.length > 0 && (
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1">Referenced Botanical Taxa:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {response.cited_plants.map((p, i) => (
+                      <span key={i} className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold">
+                        {p}
+                      </span>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
+
+              {response.evidence_tiers_involved.length > 0 && (
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1">Evidence Tiers:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {response.evidence_tiers_involved.map((t, i) => (
+                      <span key={i} className="bg-purple-500/15 text-purple-300 border border-purple-500/30 px-2.5 py-0.5 rounded-full text-[11px] font-semibold">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Medical Disclaimer Banner */}
-          <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl text-[11px] text-amber-300/90 flex items-start gap-2">
-            <ShieldAlert className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
-            <span>{response.medical_disclaimer}</span>
+            {/* Cited Primary Sources */}
+            {response.cited_sources.length > 0 && (
+              <div className="pt-3 border-t border-slate-800/80 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Quote className="w-3.5 h-3.5 text-emerald-400" />
+                  <h4 className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
+                    Verbatim Bibliographic Evidence ({response.cited_sources.length} sources)
+                  </h4>
+                </div>
+                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                  {response.cited_sources.map((src, i) => (
+                    <div key={i} className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="font-semibold text-white">{src.document_title}</span>
+                        {src.doi && (
+                          <a
+                            href={`https://doi.org/${src.doi}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-emerald-400 hover:text-emerald-300 shrink-0 flex items-center gap-1 font-mono text-[10px]"
+                          >
+                            <span>DOI</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-400">
+                        {src.authors} ({src.year || 'n.d.'}) — <span className="text-emerald-400 font-semibold">{src.evidence_tier}</span>
+                      </p>
+                      <p className="text-[11px] text-slate-300 italic bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/50">
+                        "{src.excerpt}"
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Medical Disclaimer Banner */}
+            <div className="bg-amber-500/10 border border-amber-500/20 p-3.5 rounded-xl text-[11px] text-amber-300/90 flex items-start gap-2.5">
+              <ShieldAlert className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+              <span>{response.medical_disclaimer}</span>
+            </div>
+
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Query History */}
+      {history.length > 1 && (
+        <div className="space-y-3 pt-4 border-t border-slate-800">
+          <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold">
+            <Clock className="w-4 h-4" />
+            <span>Recent Session Queries</span>
           </div>
-
+          <div className="space-y-2">
+            {history.slice(1).map((h, idx) => (
+              <div 
+                key={idx}
+                onClick={() => setResponse(h.a)}
+                className="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 p-3 rounded-xl cursor-pointer text-xs text-slate-300 flex items-center justify-between transition-colors"
+              >
+                <span className="truncate max-w-lg font-medium">{h.q}</span>
+                <span className="text-[10px] text-emerald-400 font-mono">Confidence: {Math.round(h.a.confidence * 100)}%</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
