@@ -58,7 +58,7 @@ export function App() {
       {/* Ambient Cool Grey & Dark Background Mesh */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-gradient-to-b from-zinc-700/10 via-zinc-800/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/3 left-1/5 w-[500px] h-[400px] bg-sky-900/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/5 w-[500px] h-[400px] bg-zinc-800/10 rounded-full blur-3xl" />
         <div className="absolute top-2/3 right-1/4 w-[600px] h-[500px] bg-zinc-800/10 rounded-full blur-3xl" />
       </div>
 

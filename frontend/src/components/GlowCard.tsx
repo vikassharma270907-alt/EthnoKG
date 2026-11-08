@@ -31,18 +31,18 @@ export const GlowCard: React.FC<GlowCardProps> = ({
 
   const glowColorsMap = {
     silver: 'rgba(244, 244, 245, 0.12)',
-    cyan: 'rgba(56, 189, 248, 0.18)',
-    mint: 'rgba(52, 211, 153, 0.16)',
-    amber: 'rgba(251, 191, 36, 0.16)',
-    purple: 'rgba(192, 132, 252, 0.16)'
+    cyan: 'rgba(228, 228, 231, 0.14)',
+    mint: 'rgba(212, 212, 216, 0.12)',
+    amber: 'rgba(228, 228, 231, 0.12)',
+    purple: 'rgba(212, 212, 216, 0.12)'
   };
 
   const borderHighlightMap = {
-    silver: 'hover:border-zinc-500/60',
-    cyan: 'hover:border-sky-500/60',
-    mint: 'hover:border-emerald-500/60',
-    amber: 'hover:border-amber-500/60',
-    purple: 'hover:border-purple-500/60'
+    silver: 'hover:border-zinc-400/60',
+    cyan: 'hover:border-zinc-400/60',
+    mint: 'hover:border-zinc-400/60',
+    amber: 'hover:border-zinc-400/60',
+    purple: 'hover:border-zinc-400/60'
   };
 
   return (
