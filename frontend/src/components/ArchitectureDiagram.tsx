@@ -16,32 +16,32 @@ export const ArchitectureDiagram: React.FC = () => {
       title: "12-Stage AI Extraction",
       desc: "NER, Taxon Resolver & S-P-O Tuples",
       icon: Cpu,
-      accent: "text-sky-400",
-      iconBg: "bg-sky-500/10 text-sky-400 border-sky-500/30",
+      accent: "text-zinc-100",
+      iconBg: "bg-zinc-800/90 text-zinc-100 border-zinc-700",
       stepNum: "02"
     },
     {
       title: "Evidence & Curation",
       desc: "6-Tier Stratification & Nagoya Audit",
       icon: ShieldCheck,
-      accent: "text-amber-400",
-      iconBg: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+      accent: "text-zinc-200",
+      iconBg: "bg-zinc-800/90 text-zinc-200 border-zinc-700",
       stepNum: "03"
     },
     {
       title: "Knowledge Graph",
       desc: "Multi-relational NetworkX & Cytoscape",
       icon: Network,
-      accent: "text-purple-400",
-      iconBg: "bg-purple-500/10 text-purple-400 border-purple-500/30",
+      accent: "text-zinc-100",
+      iconBg: "bg-zinc-800/90 text-zinc-100 border-zinc-700",
       stepNum: "04"
     },
     {
       title: "Research Discovery",
       desc: "Grounded RAG & Reverse Pharmacology",
       icon: Compass,
-      accent: "text-teal-400",
-      iconBg: "bg-teal-500/10 text-teal-400 border-teal-500/30",
+      accent: "text-white",
+      iconBg: "bg-zinc-800/90 text-white border-zinc-600",
       stepNum: "05"
     }
   ];
