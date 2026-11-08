@@ -125,8 +125,8 @@ export const DiscoveryRadarPage: React.FC = () => {
       <div className="bg-[#111319]/90 border border-zinc-800/90 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-xl">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-semibold font-mono">
-              <Compass className="w-3.5 h-3.5 text-sky-400 animate-spin" style={{ animationDuration: '10s' }} />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-700/80 text-zinc-300 text-xs font-semibold font-mono">
+              <Compass className="w-3.5 h-3.5 text-zinc-300 animate-spin" style={{ animationDuration: '10s' }} />
               Reverse Pharmacology & Translational AI
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-mono tracking-tight">
@@ -147,11 +147,11 @@ export const DiscoveryRadarPage: React.FC = () => {
             <div className="flex sm:flex-col gap-2 shrink-0">
               <div className="bg-[#161822] border border-zinc-700/80 px-4 py-2.5 rounded-xl text-center shadow-inner">
                 <span className="text-xs text-zinc-400 block font-sans">Hallucination Rate</span>
-                <span className="text-xl font-bold font-mono text-emerald-400">0.00%</span>
+                <span className="text-xl font-bold font-mono text-white">0.00%</span>
               </div>
               <div className="bg-[#161822] border border-zinc-700/80 px-4 py-2.5 rounded-xl text-center shadow-inner">
                 <span className="text-xs text-zinc-400 block font-sans">Taxon Accuracy</span>
-                <span className="text-xl font-bold font-mono text-sky-400">94.1%</span>
+                <span className="text-xl font-bold font-mono text-zinc-200">94.1%</span>
               </div>
             </div>
           </div>
@@ -191,7 +191,7 @@ export const DiscoveryRadarPage: React.FC = () => {
                 : 'bg-zinc-800/80 text-zinc-400 hover:text-white hover:bg-zinc-800'
             }`}
           >
-            <Fingerprint className="w-4 h-4 text-emerald-400" />
+            <Fingerprint className="w-4 h-4 text-zinc-300" />
             <span>Nagoya Sovereignty Ledger</span>
           </button>
 
