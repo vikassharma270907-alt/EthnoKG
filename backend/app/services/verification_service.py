@@ -126,3 +126,7 @@ class VerificationService:
     @staticmethod
     def get_verification_history(db: Session, relationship_id: int) -> List[VerificationLog]:
         return db.query(VerificationLog).filter(VerificationLog.relationship_id == relationship_id).order_by(VerificationLog.created_at.desc()).all()
+
+    @staticmethod
+    def get_all_verification_history(db: Session, limit: int = 50) -> List[VerificationLog]:
+        return db.query(VerificationLog).order_by(VerificationLog.created_at.desc()).limit(limit).all()

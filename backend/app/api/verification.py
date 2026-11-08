@@ -138,6 +138,26 @@ def update_and_approve_relationship(
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
+@router.get("/history", response_model=List[Dict[str, Any]])
+def get_all_audit_history(
+    limit: int = 50,
+    db: Session = Depends(get_db)
+):
+    logs = VerificationService.get_all_verification_history(db, limit=limit)
+    return [
+        {
+            "id": l.id,
+            "relationship_id": l.relationship_id,
+            "previous_status": l.previous_status,
+            "new_status": l.new_status,
+            "reviewer_name": l.reviewer_name,
+            "curator_notes": l.curator_notes,
+            "corrections_json": l.corrections_json,
+            "created_at": l.created_at
+        }
+        for l in logs
+    ]
+
 @router.get("/history/{relationship_id}", response_model=List[Dict[str, Any]])
 def get_audit_history(
     relationship_id: int,

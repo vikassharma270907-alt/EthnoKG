@@ -9,7 +9,8 @@ import {
   Sparkles, 
   BookOpen, 
   FileText, 
-  Globe2 
+  Globe2,
+  Compass 
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -23,6 +24,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, pending
   const navItems = [
     { id: 'landing', label: 'Overview', icon: Globe2 },
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+    { id: 'discovery', label: 'Discovery Radar', icon: Compass },
     { id: 'extraction', label: 'Literature Mining', icon: Search },
     { id: 'plants', label: 'Plant Intelligence', icon: Leaf },
     { id: 'graph', label: 'Knowledge Graph', icon: Network },

@@ -10,7 +10,11 @@ import type {
   ExtractionRunResponse,
   GraphResponse,
   AssistantQueryResponse,
-  SourceItem
+  SourceItem,
+  DiscoveryIndexItem,
+  ConvergenceItem,
+  EvaluationBenchmarkResponse,
+  SovereigntyCertificate
 } from '../types';
 
 const rawBase = (import.meta as any).env?.VITE_API_URL as string | undefined;
@@ -219,3 +223,29 @@ export async function fetchSources(): Promise<SourceItem[]> {
   if (!res.ok) throw new Error(`Failed to fetch sources: ${res.statusText}`);
   return res.json();
 }
+
+export async function fetchDiscoveryIndex(): Promise<DiscoveryIndexItem[]> {
+  const res = await fetch(`${API_BASE}/analytics/discovery-index`);
+  if (!res.ok) throw new Error(`Failed to fetch discovery index: ${res.statusText}`);
+  return res.json();
+}
+
+export async function fetchConvergence(): Promise<ConvergenceItem[]> {
+  const res = await fetch(`${API_BASE}/analytics/convergence`);
+  if (!res.ok) throw new Error(`Failed to fetch convergence: ${res.statusText}`);
+  return res.json();
+}
+
+export async function fetchEvaluationBenchmark(): Promise<EvaluationBenchmarkResponse> {
+  const res = await fetch(`${API_BASE}/analytics/evaluation-benchmark`);
+  if (!res.ok) throw new Error(`Failed to fetch evaluation benchmark: ${res.statusText}`);
+  return res.json();
+}
+
+export async function fetchSovereigntyCertificate(plantId: number): Promise<SovereigntyCertificate> {
+  const res = await fetch(`${API_BASE}/analytics/sovereignty-certificate/${plantId}`);
+  if (!res.ok) throw new Error(`Failed to fetch sovereignty certificate: ${res.statusText}`);
+  return res.json();
+}
+
+
