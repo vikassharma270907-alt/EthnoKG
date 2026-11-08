@@ -178,18 +178,18 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#161822] border border-zinc-800 text-xs text-zinc-400 font-mono">
-            <Cpu className="w-3.5 h-3.5 text-sky-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#14161f] border border-zinc-800 text-xs text-zinc-300 font-mono">
+            <Cpu className="w-3.5 h-3.5 text-zinc-200" />
             <span>F1-Score: <strong>0.938</strong></span>
           </span>
         </div>
       </div>
 
       {/* 12-Stage Interactive Pipeline Visualizer Banner */}
-      <div className="bg-[#111319]/90 border border-zinc-800 rounded-2xl p-5 shadow-2xl backdrop-blur-xl">
+      <div className="bg-[#101218]/90 border border-zinc-800 rounded-2xl p-5 shadow-2xl backdrop-blur-xl">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-sky-400" />
+            <Layers className="w-4 h-4 text-zinc-300" />
             <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
               Deterministic 12-Stage Verification Pipeline
             </h3>
@@ -209,16 +209,16 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                 key={i}
                 className={`p-2 rounded-xl border text-[11px] transition-all flex items-center gap-2 ${
                   isCurrent 
-                    ? 'bg-zinc-800 border-zinc-500 text-white font-bold shadow-md shadow-black/40 animate-pulse'
+                    ? 'bg-zinc-800 border-zinc-400 text-white font-bold shadow-md shadow-black/40 animate-pulse'
                     : isCompleted 
-                    ? 'bg-zinc-850 border-zinc-700 text-emerald-300'
-                    : 'bg-[#161822] border-zinc-800 text-zinc-500'
+                    ? 'bg-zinc-900 border-zinc-700 text-zinc-200'
+                    : 'bg-[#141620] border-zinc-800/80 text-zinc-500'
                 }`}
               >
                 {isCompleted ? (
-                  <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-zinc-200 shrink-0" />
                 ) : isCurrent ? (
-                  <RefreshCw className="w-3.5 h-3.5 text-sky-400 animate-spin shrink-0" />
+                  <RefreshCw className="w-3.5 h-3.5 text-white animate-spin shrink-0" />
                 ) : (
                   <span className="w-3.5 h-3.5 rounded-full border border-zinc-700 inline-block shrink-0" />
                 )}
@@ -230,7 +230,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
       </div>
 
       {/* Input Mode Selector Tabs */}
-      <div className="bg-[#111319] border border-zinc-800 p-1.5 rounded-xl flex flex-wrap gap-1.5 max-w-2xl">
+      <div className="bg-[#101218] border border-zinc-800 p-1.5 rounded-xl flex flex-wrap gap-1.5 max-w-2xl">
         <button
           onClick={() => { setMode('sample'); setErrorMsg(null); }}
           className={`flex-1 min-w-[130px] py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
@@ -269,7 +269,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
       </div>
 
       {/* Input Configuration Box */}
-      <div className="bg-[#111319]/90 backdrop-blur-xl border border-zinc-800 rounded-2xl p-6 shadow-2xl space-y-5">
+      <div className="bg-[#101218]/90 backdrop-blur-xl border border-zinc-800 rounded-2xl p-6 shadow-2xl space-y-5">
         
         {/* Mode 1: Indexed Literature Collection */}
         {mode === 'sample' && (
@@ -281,7 +281,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
               <select
                 value={selectedDocId || ''}
                 onChange={(e) => setSelectedDocId(Number(e.target.value))}
-                className="w-full bg-[#161822] border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-zinc-500 cursor-pointer"
+                className="w-full bg-[#151722] border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-zinc-500 cursor-pointer"
               >
                 {indexedDocs.map((doc) => (
                   <option key={doc.id} value={doc.id}>
@@ -292,8 +292,8 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
             </div>
 
             {selectedDocId && (
-              <div className="bg-[#161822] p-4 rounded-xl border border-zinc-800 text-xs text-zinc-300 space-y-1">
-                <span className="text-[10px] uppercase font-bold text-sky-400 font-mono">Selected Source Document:</span>
+              <div className="bg-[#151722] p-4 rounded-xl border border-zinc-800 text-xs text-zinc-300 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-zinc-300 font-mono">Selected Source Document:</span>
                 <p className="font-semibold text-white">
                   {indexedDocs.find((d) => d.id === selectedDocId)?.title}
                 </p>
@@ -335,12 +335,12 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                 placeholder="e.g. Ethnobotanical survey of antipyretic plants..."
                 value={docTitleInput}
                 onChange={(e) => setDocTitleInput(e.target.value)}
-                className="w-full bg-[#161822] border border-zinc-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-zinc-500"
+                className="w-full bg-[#151722] border border-zinc-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
 
-            <div className="border-2 border-dashed border-zinc-700 hover:border-zinc-500 rounded-xl p-8 text-center transition-colors bg-[#161822]/60">
-              <Upload className="w-8 h-8 text-zinc-500 mx-auto mb-2" />
+            <div className="border-2 border-dashed border-zinc-700 hover:border-zinc-500 rounded-xl p-8 text-center transition-colors bg-[#151722]/60">
+              <Upload className="w-8 h-8 text-zinc-400 mx-auto mb-2" />
               <p className="text-xs text-zinc-200 font-medium">Click to select or drag PDF / TXT research paper</p>
               <p className="text-[11px] text-zinc-500 mt-1">Supports full-text open-access papers, surveys, and monographs</p>
               <input
@@ -352,7 +352,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
             </div>
 
             {selectedFile && (
-              <p className="text-xs text-emerald-400 font-medium">
+              <p className="text-xs text-zinc-200 font-medium font-mono">
                 Ready to parse: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)
               </p>
             )}
@@ -394,9 +394,9 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                       setTextInput(p.text);
                       setDocTitleInput(p.title);
                     }}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#161822] hover:bg-zinc-800 border border-zinc-700/80 hover:border-zinc-500 text-zinc-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#151722] hover:bg-zinc-800 border border-zinc-700/80 hover:border-zinc-500 text-zinc-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5"
                   >
-                    <Sparkles className="w-3 h-3 text-sky-400" />
+                    <Sparkles className="w-3 h-3 text-zinc-300" />
                     <span>{p.label}</span>
                   </button>
                 ))}
@@ -412,7 +412,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
                 placeholder="Paste paragraph containing plant name, traditional preparation, ailment, or bioassay results..."
-                className="w-full bg-[#161822] border border-zinc-700 rounded-xl p-3.5 text-xs text-white focus:outline-none focus:border-zinc-500 leading-relaxed font-mono"
+                className="w-full bg-[#151722] border border-zinc-700 rounded-xl p-3.5 text-xs text-white focus:outline-none focus:border-zinc-500 leading-relaxed font-mono"
               />
             </div>
 
@@ -443,8 +443,8 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
 
         {/* Error message */}
         {errorMsg && (
-          <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+          <div className="p-3 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-zinc-300 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-zinc-400" />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -464,7 +464,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
               <div>
                 <h2 className="text-xl font-bold text-white font-mono flex items-center gap-2.5">
                   <span>Extracted Structured Knowledge</span>
-                  <span className="text-xs bg-zinc-800 text-emerald-300 border border-zinc-700 px-2.5 py-0.5 rounded-full font-bold font-mono">
+                  <span className="text-xs bg-zinc-800 text-zinc-200 border border-zinc-700 px-2.5 py-0.5 rounded-full font-bold font-mono">
                     {extractionResult.extracted_count} Claims Identified
                   </span>
                 </h2>
@@ -474,14 +474,14 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setActiveTab('verification')}
-                  className="px-3.5 py-2 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105"
+                  className="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-zinc-300" />
                   <span>Open Verification Queue</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('graph')}
-                  className="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105"
+                  className="px-3.5 py-2 bg-zinc-200 hover:bg-white text-zinc-950 font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105 shadow-md shadow-black/40"
                 >
                   <span>View in Graph</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -494,7 +494,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
               {extractionResult.results.map((rec, idx) => (
                 <GlowCard 
                   key={idx}
-                  glowColor="mint"
+                  glowColor="silver"
                   className="p-5 space-y-3"
                 >
                   {/* Header row */}
@@ -504,16 +504,16 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                       {(rec.plant_synonyms || []).length > 0 && (
                         <span className="text-xs text-zinc-400 italic">({(rec.plant_synonyms || []).slice(0, 2).join(', ')})</span>
                       )}
-                      <span className="text-[10px] font-semibold bg-zinc-800 text-purple-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
+                      <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
                         {rec.knowledge_tradition}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-semibold bg-zinc-800 text-emerald-300 border border-zinc-700 px-2.5 py-0.5 rounded-full font-mono">
+                      <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700 px-2.5 py-0.5 rounded-full font-mono">
                         {rec.evidence_category}
                       </span>
-                      <span className="text-xs font-mono text-sky-400 font-bold bg-[#161822] border border-zinc-700 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono text-white font-bold bg-[#141620] border border-zinc-700 px-2 py-0.5 rounded-md">
                         Confidence: {Math.round(rec.extraction_confidence * 100)}%
                       </span>
                     </div>
@@ -523,7 +523,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                     <div>
                       <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Indication / Condition</span>
-                      <span className="font-semibold text-rose-400">{rec.medical_condition}</span>
+                      <span className="font-semibold text-zinc-100">{rec.medical_condition}</span>
                     </div>
                     <div>
                       <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Organ & Preparation</span>
@@ -531,13 +531,13 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                     </div>
                     <div>
                       <span className="text-[10px] uppercase text-zinc-500 font-semibold block font-mono">Bioactive Compounds</span>
-                      <span className="font-mono text-sky-400">{(rec.bioactive_compounds || []).join(', ') || 'Metabolite fraction'}</span>
+                      <span className="font-mono text-zinc-200">{(rec.bioactive_compounds || []).join(', ') || 'Metabolite fraction'}</span>
                     </div>
                   </div>
 
                   {/* Verbatim Supporting Excerpt */}
-                  <div className="bg-[#161822] p-3.5 rounded-xl border border-zinc-800 text-xs">
-                    <span className="text-[10px] uppercase font-bold text-emerald-400 block mb-1 font-mono">
+                  <div className="bg-[#141620] p-3.5 rounded-xl border border-zinc-800 text-xs">
+                    <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1 font-mono">
                       Verbatim Supporting Source Excerpt:
                     </span>
                     <p className="text-zinc-300 italic leading-relaxed">
@@ -548,7 +548,7 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
                   {/* Provenance footer */}
                   <div className="flex flex-wrap items-center justify-between text-[11px] text-zinc-500 pt-1 font-mono">
                     <span>Section: {rec.page_or_section || 'Results section'}</span>
-                    <span>Verification Status: <strong className="text-amber-400 uppercase font-mono">{rec.verification_status}</strong></span>
+                    <span>Verification Status: <strong className="text-zinc-300 uppercase font-mono">{rec.verification_status}</strong></span>
                   </div>
                 </GlowCard>
               ))}
