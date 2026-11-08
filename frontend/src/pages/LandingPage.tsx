@@ -7,7 +7,8 @@ import {
   CheckCircle2, 
   Activity,
   Leaf,
-  ArrowRight
+  ArrowRight,
+  Compass
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BotanicalConstellation } from '../components/BotanicalConstellation';
@@ -273,6 +274,34 @@ export const LandingPage: React.FC<LandingPageProps> = ({ setActiveTab, stats })
             </div>
             <h4 className="text-sm font-bold text-white group-hover:text-amber-300">Human Verification Workspace</h4>
             <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">Curator review loop allowing domain experts to inspect verbatim excerpts, approve/reject extractions, and edit binomials.</p>
+          </div>
+
+          <div 
+            onClick={() => setActiveTab('discovery')}
+            className="bg-slate-900/60 backdrop-blur-md border border-slate-800 hover:border-emerald-500/50 rounded-2xl p-5 cursor-pointer group transition-all hover:scale-[1.02] shadow-xl sm:col-span-2 lg:col-span-3"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all">
+                  <Compass className="w-6 h-6 animate-spin" style={{ animationDuration: '12s' }} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm font-bold text-white group-hover:text-cyan-300">Discovery Radar & Sovereignty Ledger</h4>
+                    <span className="text-[10px] font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded-full font-mono">
+                      Novel Feature
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                    Reverse pharmacology translational opportunity scores, automated cross-tradition convergence detection across 6 continents, and downloadable cryptographic SHA-256 Sovereignty Certificates under the UN Nagoya Protocol.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-cyan-400 text-xs font-semibold shrink-0 group-hover:translate-x-1 transition-transform">
+                <span>Explore Radar</span>
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
           </div>
 
         </div>
