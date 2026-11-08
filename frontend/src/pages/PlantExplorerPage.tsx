@@ -15,18 +15,28 @@ export const PlantExplorerPage: React.FC = () => {
   // Modal state
   const [activePlantDetail, setActivePlantDetail] = useState<PlantDetail | null>(null);
 
-  const loadPlants = () => {
-    setIsLoading(true);
+  useEffect(() => {
+    let isSubscribed = true;
     fetchPlants({
       query: searchQuery || undefined,
       family: selectedFamily || undefined,
       tradition: selectedTradition || undefined,
       limit: 100
-    }).then(setPlants).finally(() => setIsLoading(false));
-  };
+    }).then(data => {
+      if (isSubscribed) {
+        setPlants(data);
+        setIsLoading(false);
+      }
+    }).catch(err => {
+      if (isSubscribed) {
+        console.error(err);
+        setIsLoading(false);
+      }
+    });
 
-  useEffect(() => {
-    loadPlants();
+    return () => {
+      isSubscribed = false;
+    };
   }, [searchQuery, selectedFamily, selectedTradition]);
 
   const handleOpenDetail = async (id: number) => {

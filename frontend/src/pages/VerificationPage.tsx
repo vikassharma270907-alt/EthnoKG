@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   ShieldCheck, 
   Check, 
@@ -31,18 +31,18 @@ export const VerificationPage: React.FC = () => {
   // Active modal for editing
   const [activeRel, setActiveRel] = useState<RelationshipDetail | null>(null);
 
-  const loadData = () => {
+  const loadData = useCallback(() => {
     setIsLoading(true);
     fetchExtractionResults({
       status: filterStatus || undefined,
       min_confidence: minConfidence,
       limit: 100
     }).then(setRelationships).finally(() => setIsLoading(false));
-  };
+  }, [filterStatus, minConfidence]);
 
   useEffect(() => {
     loadData();
-  }, [filterStatus, minConfidence]);
+  }, [loadData]);
 
   const handleQuickApprove = async (rel: RelationshipDetail) => {
     try {
