@@ -307,8 +307,11 @@ def generate_sovereignty_certificate(plant_id: int, db: Session = Depends(get_db
     return {
         "certificate_id": f"ETHNO-SOV-{plant.id:04d}-{sha256_fingerprint[:8].upper()}",
         "sha256_provenance_hash": sha256_fingerprint,
+        "certificate_sha256": sha256_fingerprint,
         "plant_id": plant.id,
         "scientific_name": plant.scientific_name,
+        "plant_name": plant.scientific_name,
+        "benefit_sharing_standard": "UN Nagoya Protocol on Access and Benefit-Sharing (ABS)",
         "common_names": plant.common_names,
         "certificate": certificate_payload
     }
