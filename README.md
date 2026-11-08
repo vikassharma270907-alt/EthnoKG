@@ -1,8 +1,11 @@
 # EthnoKG: Turning Traditional Knowledge into Traceable Scientific Evidence
 
 [![EthnoHack 2026](https://img.shields.io/badge/EthnoHack-2026_Hackathon-059669.svg?style=flat-square)](https://share.gemini.google/FodORMUIxst1)
+[![Live Demo](https://img.shields.io/badge/Live_Production_URL-ethnokg--platform.onrender.com-0284c7.svg?style=flat-square&logo=render)](https://ethnokg-platform.onrender.com)
+[![CI/CD Quality Gate](https://github.com/vikassharma270907-alt/EthnoKG/actions/workflows/ci.yml/badge.svg)](https://github.com/vikassharma270907-alt/EthnoKG/actions)
+[![Test Coverage](https://img.shields.io/badge/Coverage-86.36%25-brightgreen.svg?style=flat-square)](#)
 [![Track](https://img.shields.io/badge/Track-Traditional_Knowledge_Mining-3b82f6.svg?style=flat-square)](#)
-[![Python](https://img.shields.io/badge/Python-3.14+-blue.svg?style=flat-square&logo=python)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.11_%7C_3.12_%7C_3.14-blue.svg?style=flat-square&logo=python)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-19-61dafb.svg?style=flat-square&logo=react)](https://react.dev)
 [![Cytoscape](https://img.shields.io/badge/Cytoscape.js-3.30+-ea580c.svg?style=flat-square)](https://js.cytoscape.org)
