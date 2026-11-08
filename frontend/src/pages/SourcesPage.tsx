@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Database, ShieldCheck, Globe, ExternalLink, AlertTriangle, FileText, CheckCircle2 } from 'lucide-react';
+import { Database, ExternalLink, AlertTriangle } from 'lucide-react';
 import { fetchSources } from '../api/client';
-import { SourceItem } from '../types';
+import type { SourceItem } from '../types';
 
 export const SourcesPage: React.FC = () => {
   const [sources, setSources] = useState<SourceItem[]>([]);
@@ -18,7 +18,7 @@ export const SourcesPage: React.FC = () => {
       <div className="pb-4 border-b border-slate-800">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white font-mono">Data Sources Registry & Ethics</h1>
-          <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">
             Nagoya Protocol Aligned
           </span>
         </div>
@@ -77,7 +77,7 @@ export const SourcesPage: React.FC = () => {
             {sources.map((src) => (
               <div 
                 key={src.id}
-                className="bg-[#070c19] border border-slate-800 rounded-xl p-5 shadow-lg space-y-3 flex flex-col justify-between"
+                className="bg-[#070c19] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-3 flex flex-col justify-between hover:border-slate-700 transition-colors"
               >
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
