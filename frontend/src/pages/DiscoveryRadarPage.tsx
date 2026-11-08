@@ -270,13 +270,7 @@ export const DiscoveryRadarPage: React.FC = () => {
                   <div className="space-y-3">
                     {/* Top Row: Score & Stage Badge */}
                     <div className="flex items-start justify-between gap-2">
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded border ${
-                        item.stage_badge.includes('Preclinical')
-                          ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
-                          : item.stage_badge.includes('Clinical')
-                          ? 'bg-sky-500/10 text-sky-300 border-sky-500/30'
-                          : 'bg-purple-500/10 text-purple-300 border-purple-500/30'
-                      }`}>
+                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded border bg-zinc-800/90 text-zinc-200 border-zinc-700 font-mono">
                         {item.stage_badge}
                       </span>
 
@@ -289,11 +283,11 @@ export const DiscoveryRadarPage: React.FC = () => {
                     {/* Plant & Indication */}
                     <div>
                       <h3 className="text-base font-bold text-white font-mono flex items-center gap-2">
-                        <Leaf className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <Leaf className="w-4 h-4 text-zinc-300 shrink-0" />
                         <span className="italic">{item.plant_name}</span>
                       </h3>
                       <p className="text-xs text-zinc-400 mt-0.5">
-                        {item.common_names.slice(0, 3).join(', ')} • <span className="text-sky-300">{item.tradition}</span>
+                        {item.common_names.slice(0, 3).join(', ')} • <span className="text-zinc-300">{item.tradition}</span>
                       </p>
                     </div>
 
@@ -305,7 +299,7 @@ export const DiscoveryRadarPage: React.FC = () => {
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-zinc-400">Bioactive Scaffold:</span>
-                        <span className="font-semibold text-sky-400 font-mono">{item.compound_name}</span>
+                        <span className="font-semibold text-zinc-200 font-mono">{item.compound_name}</span>
                       </div>
                     </div>
 
@@ -313,26 +307,26 @@ export const DiscoveryRadarPage: React.FC = () => {
                     <div className="grid grid-cols-4 gap-1.5 pt-1 text-center">
                       <div className="bg-[#161822] border border-zinc-800 p-1.5 rounded">
                         <span className="text-[10px] text-zinc-500 block">Tradition</span>
-                        <span className="text-xs font-bold font-mono text-purple-300">{item.evidence_counts.traditional}</span>
+                        <span className="text-xs font-bold font-mono text-zinc-300">{item.evidence_counts.traditional}</span>
                       </div>
                       <div className="bg-[#161822] border border-zinc-800 p-1.5 rounded">
                         <span className="text-[10px] text-zinc-500 block">In-Vitro</span>
-                        <span className="text-xs font-bold font-mono text-emerald-300">{item.evidence_counts.in_vitro}</span>
+                        <span className="text-xs font-bold font-mono text-zinc-200">{item.evidence_counts.in_vitro}</span>
                       </div>
                       <div className="bg-[#161822] border border-zinc-800 p-1.5 rounded">
                         <span className="text-[10px] text-zinc-500 block">In-Vivo</span>
-                        <span className="text-xs font-bold font-mono text-amber-300">{item.evidence_counts.in_vivo}</span>
+                        <span className="text-xs font-bold font-mono text-zinc-200">{item.evidence_counts.in_vivo}</span>
                       </div>
                       <div className="bg-[#161822] border border-zinc-800 p-1.5 rounded">
                         <span className="text-[10px] text-zinc-500 block">Clinical</span>
-                        <span className="text-xs font-bold font-mono text-sky-300">{item.evidence_counts.clinical}</span>
+                        <span className="text-xs font-bold font-mono text-white">{item.evidence_counts.clinical}</span>
                       </div>
                     </div>
 
                     {/* Conservation Risk */}
                     <div className="flex items-center justify-between text-[11px] pt-1">
                       <span className="text-zinc-400 flex items-center gap-1">
-                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                        <AlertTriangle className="w-3.5 h-3.5 text-zinc-400" />
                         IUCN Status:
                       </span>
                       <span className="font-semibold text-zinc-200">{item.conservation_status}</span>
@@ -350,9 +344,9 @@ export const DiscoveryRadarPage: React.FC = () => {
                   <div className="pt-2 border-t border-zinc-800 flex items-center justify-between gap-2">
                     <button
                       onClick={() => handleOpenCertificate(item.plant_id)}
-                      className="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="text-xs text-zinc-300 hover:text-white font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <ShieldCheck className="w-3.5 h-3.5 text-zinc-300" />
                       <span>Nagoya Certificate</span>
                     </button>
 
