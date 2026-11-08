@@ -297,3 +297,59 @@ export interface EvaluationBenchmarkResponse {
   eval_timestamp: string;
   summary_table: BenchmarkRow[];
 }
+
+export interface BotanicalTaxonResolution {
+  query: string;
+  matched: boolean;
+  confidence: number;
+  scientific_name?: string;
+  genus?: string;
+  species?: string;
+  authority?: string;
+  family?: string;
+  kew_status?: string;
+  resolution_type?: string;
+  knowledge_tradition?: string;
+  common_names?: string[];
+  verified_bioactive_compounds?: string[];
+  principal_traditional_uses?: string[];
+  plant_id?: number | null;
+  source?: string;
+  message?: string;
+  suggestion?: string;
+  kew_powo_url?: string;
+}
+
+export interface CompoundDetail extends CompoundBrief {
+  pubchem_url?: string;
+  chembl_url?: string;
+  associated_plants: Array<{
+    id: number;
+    scientific_name: string;
+    common_names: string[];
+  }>;
+  associated_conditions: Array<{
+    id: number;
+    name: string;
+    category: string;
+  }>;
+  evidence_records: Array<{
+    relationship_id: number;
+    plant_name: string;
+    condition_name: string;
+    evidence_tier: string;
+    evidence_statement?: string;
+    tradition?: string;
+    confidence: number;
+    verification_status: string;
+    document_title?: string;
+    doi?: string;
+  }>;
+}
+
+export interface GraphCacheStats {
+  cached_queries: number;
+  cache_hits: number;
+  cache_misses: number;
+  ttl_seconds: number;
+}

@@ -6,7 +6,6 @@ import {
   Layers, 
   Beaker, 
   ShieldCheck, 
-  CheckCircle2,
   FileCheck2,
   Printer,
   Copy,
