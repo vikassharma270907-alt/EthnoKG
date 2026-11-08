@@ -1,0 +1,72 @@
+# ========================================================
+# EthnoKG: Render Multi-Service Blueprint Configuration
+# Deploy with one click via Render Blueprints (render.yaml)
+# ========================================================
+
+databases:
+  - name: ethnokg-db
+    databaseName: ethnokg
+    user: ethnokg_user
+    plan: free
+    region: oregon
+    ipAllowList: [] # Secure: private network connectivity only
+
+services:
+  # ------------------------------------------------------
+  # 1. Backend Web Service (FastAPI + SQLAlchemy + NetworkX)
+  # ------------------------------------------------------
+  - type: web
+    name: ethnokg-backend
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt && alembic upgrade head"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ethnokg-db
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+      - key: APP_NAME
+        value: EthnoKG
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEFAULT_CONFIDENCE_THRESHOLD
+        value: "0.75"
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: ethnokg-frontend
+          property: host
+      - key: CORS_ORIGINS
+        value: '["https://ethnokg-frontend.onrender.com","http://localhost:5173","http://localhost:3000"]'
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: USE_LLM_EXTRACTION
+        value: "false"
+
+  # ------------------------------------------------------
+  # 2. Frontend Web Service (React 19 + Vite + Tailwind + Cytoscape)
+  # ------------------------------------------------------
+  - type: web
+    name: ethnokg-frontend
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    startCommand: "npm run start"
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: ethnokg-backend
+          property: host

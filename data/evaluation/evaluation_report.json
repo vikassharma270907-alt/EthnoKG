@@ -1,0 +1,152 @@
+{
+  "evaluation_summary": {
+    "total_test_samples": 17,
+    "total_extracted_records": 17,
+    "metrics": {
+      "plant_entity_recognition": {
+        "precision": 1.0,
+        "recall": 0.9412,
+        "f1": 0.9697
+      },
+      "taxonomic_resolution_accuracy": 0.9412,
+      "medical_condition_identification": {
+        "precision": 1.0,
+        "recall": 0.8824,
+        "f1": 0.9375
+      },
+      "evidence_tier_classification": {
+        "precision": 1.0,
+        "recall": 0.7059,
+        "f1": 0.8276
+      },
+      "relationship_extraction_tuple": {
+        "precision": 1.0,
+        "recall": 0.8824,
+        "f1": 0.9375
+      },
+      "source_attribution_accuracy": 0.9412,
+      "unsupported_claim_rate": 0.0
+    }
+  },
+  "sample_breakdown": [
+    {
+      "sample_id": "eval_01",
+      "gold_plant": "Artemisia annua L.",
+      "extracted_count": 2,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_02",
+      "gold_plant": "Artemisia annua L.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_03",
+      "gold_plant": "Withania somnifera (L.) Dunal",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_04",
+      "gold_plant": "Withania somnifera (L.) Dunal",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_05",
+      "gold_plant": "Curcuma longa L.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_06",
+      "gold_plant": "Curcuma longa L.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_07",
+      "gold_plant": "Catharanthus roseus (L.) G.Don",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": false
+    },
+    {
+      "sample_id": "eval_08",
+      "gold_plant": "Catharanthus roseus (L.) G.Don",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": false
+    },
+    {
+      "sample_id": "eval_09",
+      "gold_plant": "Rauvolfia serpentina (L.) Benth. ex Kurz",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_10",
+      "gold_plant": "Rauvolfia serpentina (L.) Benth. ex Kurz",
+      "extracted_count": 0,
+      "taxonomic_resolution_correct": false,
+      "evidence_tier_correct": false
+    },
+    {
+      "sample_id": "eval_11",
+      "gold_plant": "Azadirachta indica A. Juss.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_12",
+      "gold_plant": "Ginkgo biloba L.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_13",
+      "gold_plant": "Panax ginseng C.A. Mey.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": false
+    },
+    {
+      "sample_id": "eval_14",
+      "gold_plant": "Cinchona officinalis L.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_15",
+      "gold_plant": "Digitalis purpurea L.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": false
+    },
+    {
+      "sample_id": "eval_16",
+      "gold_plant": "Salix alba L.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    },
+    {
+      "sample_id": "eval_17",
+      "gold_plant": "Papaver somniferum L.",
+      "extracted_count": 1,
+      "taxonomic_resolution_correct": true,
+      "evidence_tier_correct": true
+    }
+  ]
+}
