@@ -97,7 +97,7 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
               type="button"
               onClick={() => handleScrollStep('left')}
               aria-label="Scroll tabs left"
-              className="p-1.5 rounded-lg bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 shadow-lg shadow-black/80 backdrop-blur-md transition-all cursor-pointer hover:scale-105 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400"
+              className="p-1.5 rounded-lg bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 shadow-lg shadow-black/80 backdrop-blur-md transition-all cursor-pointer hover:scale-105 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
@@ -135,7 +135,7 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
               tabIndex={isActive ? 0 : -1}
               onClick={() => setActiveTab(item.id)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className={`relative group shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 ${
+              className={`relative group shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 ${
                 isActive
                   ? 'text-white font-semibold'
                   : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/40'
@@ -150,19 +150,19 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
               )}
 
               {isActive && (
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-gradient-to-r from-sky-400 to-teal-400 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-gradient-to-r from-white via-zinc-200 to-zinc-400 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.7)]" />
               )}
 
               <Icon
                 className={`w-3.5 h-3.5 relative z-10 transition-transform duration-200 group-hover:scale-110 ${
-                  isActive ? 'text-sky-400' : 'text-zinc-400 group-hover:text-zinc-200'
+                  isActive ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-200'
                 }`}
               />
 
               <span className="relative z-10 whitespace-nowrap">{item.label}</span>
 
               {badgeValue !== undefined && (
-                <span className="relative z-10 ml-0.5 px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
+                <span className="relative z-10 ml-0.5 px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-zinc-800 text-zinc-200 border border-zinc-700 animate-pulse">
                   {badgeValue}
                 </span>
               )}
@@ -194,7 +194,7 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
               type="button"
               onClick={() => handleScrollStep('right')}
               aria-label="Scroll tabs right"
-              className="p-1.5 rounded-lg bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 shadow-lg shadow-black/80 backdrop-blur-md transition-all cursor-pointer hover:scale-105 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400"
+              className="p-1.5 rounded-lg bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 shadow-lg shadow-black/80 backdrop-blur-md transition-all cursor-pointer hover:scale-105 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>

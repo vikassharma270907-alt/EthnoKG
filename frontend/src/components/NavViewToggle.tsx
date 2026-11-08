@@ -21,7 +21,7 @@ export const NavViewToggle: React.FC<NavViewToggleProps> = ({ mode, onModeChange
         aria-checked={mode === 'slide'}
         aria-label="Slide rail carousel navigation"
         onClick={() => onModeChange('slide')}
-        className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 ${
+        className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 ${
           mode === 'slide' ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
         }`}
       >
@@ -34,7 +34,7 @@ export const NavViewToggle: React.FC<NavViewToggleProps> = ({ mode, onModeChange
         )}
         <ChevronsLeftRight
           className={`w-3.5 h-3.5 relative z-10 transition-colors ${
-            mode === 'slide' ? 'text-sky-400' : 'text-zinc-400'
+            mode === 'slide' ? 'text-white' : 'text-zinc-400'
           }`}
         />
         <span className="relative z-10 hidden sm:inline">Slide</span>
@@ -46,7 +46,7 @@ export const NavViewToggle: React.FC<NavViewToggleProps> = ({ mode, onModeChange
         aria-checked={mode === 'list'}
         aria-label="Categorized grid list navigation"
         onClick={() => onModeChange('list')}
-        className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 ${
+        className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 ${
           mode === 'list' ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
         }`}
       >
@@ -59,7 +59,7 @@ export const NavViewToggle: React.FC<NavViewToggleProps> = ({ mode, onModeChange
         )}
         <LayoutGrid
           className={`w-3.5 h-3.5 relative z-10 transition-colors ${
-            mode === 'list' ? 'text-sky-400' : 'text-zinc-400'
+            mode === 'list' ? 'text-white' : 'text-zinc-400'
           }`}
         />
         <span className="relative z-10 hidden sm:inline">List</span>
