@@ -149,95 +149,26 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
     playbackSpeedRef.current = playbackSpeed;
   }, [playbackSpeed]);
 
-  // Load chapter audio when chapter changes
   useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.src = currentChapter.audioSrc;
-      audio.playbackRate = playbackSpeedRef.current;
-      audio.currentTime = 0;
+    if (!isOpen) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      setIsPlaying(false);
       setCurrentTime(0);
+      return;
+    }
+
+    if (audioRef.current) {
+      audioRef.current.src = currentChapter.audioSrc;
+      audioRef.current.playbackRate = playbackSpeedRef.current;
+      audioRef.current.load();
       if (isPlayingRef.current) {
-        audio.play().catch(() => setIsPlaying(false));
+        audioRef.current.play().catch(console.error);
       }
     }
-  }, [currentChapterIndex, currentChapter.audioSrc]);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.playbackRate = playbackSpeed;
-    }
-  }, [playbackSpeed]);
-
-  // Handle Play / Pause toggle
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().then(() => setIsPlaying(true)).catch(err => {
-        console.error('Audio playback failed:', err);
-        setIsPlaying(false);
-      });
-    }
-  };
-
-  const nextChapter = () => {
-    if (currentChapterIndex < CHAPTERS.length - 1) {
-      setCurrentChapterIndex(prev => prev + 1);
-    }
-  };
-
-  const prevChapter = () => {
-    if (currentChapterIndex > 0) {
-      setCurrentChapterIndex(prev => prev - 1);
-    }
-  };
-
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration || currentChapter.duration);
-    }
-  };
-
-  const handleEnded = () => {
-    if (currentChapterIndex < CHAPTERS.length - 1) {
-      setCurrentChapterIndex(prev => prev + 1);
-    } else {
-      setIsPlaying(false);
-    }
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = parseFloat(e.target.value);
-    setCurrentTime(time);
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
-    }
-  };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const changeSpeed = (speed: number) => {
-    setPlaybackSpeed(speed);
-    if (audioRef.current) {
-      audioRef.current.playbackRate = speed;
-    }
-  };
-
-  const handleJumpToFeature = (targetTab?: string) => {
-    if (targetTab) {
-      setActiveTab(targetTab);
-      onClose();
-    }
-  };
+  }, [currentChapterIndex, isOpen, currentChapter.audioSrc]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -250,6 +181,73 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(console.error);
+    }
+  };
+
+  const nextChapter = () => {
+    if (currentChapterIndex < CHAPTERS.length - 1) {
+      setCurrentChapterIndex(prev => prev + 1);
+      setCurrentTime(0);
+    }
+  };
+
+  const prevChapter = () => {
+    if (currentChapterIndex > 0) {
+      setCurrentChapterIndex(prev => prev - 1);
+      setCurrentTime(0);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration || currentChapter.duration);
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = parseFloat(e.target.value);
+    setCurrentTime(target);
+    if (audioRef.current) {
+      audioRef.current.currentTime = target;
+    }
+  };
+
+  const toggleMute = () => {
+    if (!audioRef.current) return;
+    audioRef.current.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
+
+  const changeSpeed = (spd: number) => {
+    setPlaybackSpeed(spd);
+    if (audioRef.current) {
+      audioRef.current.playbackRate = spd;
+    }
+  };
+
+  const handleEnded = () => {
+    if (currentChapterIndex < CHAPTERS.length - 1) {
+      nextChapter();
+    } else {
+      setIsPlaying(false);
+    }
+  };
+
+  const handleJumpToFeature = (tab?: string) => {
+    if (tab) {
+      setActiveTab(tab);
+      onClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   const formatTime = (secs: number) => {
@@ -261,7 +259,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
   const totalPresentationSeconds = CHAPTERS.reduce((acc, c) => acc + c.duration, 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/85 backdrop-blur-2xl animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-2xl animate-fade-in">
       
       {/* Hidden Audio Element */}
       <audio 
@@ -270,27 +268,27 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
         onEnded={handleEnded}
       />
 
-      <div className="relative w-full max-w-7xl h-[92vh] flex flex-col bg-[#070b19] border border-slate-800/80 rounded-2xl shadow-2xl shadow-emerald-950/50 overflow-hidden text-slate-100">
+      <div className="relative w-full max-w-7xl h-[92vh] flex flex-col bg-[#0e1017] border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden text-zinc-100">
         
         {/* Top Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-[#141620] backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-500 text-slate-950 shadow-md shadow-emerald-500/20">
-              <FileVideo className="w-5 h-5 stroke-[2.5]" />
+            <div className="p-2 rounded-xl bg-gradient-to-tr from-zinc-700 to-zinc-500 text-white shadow-md">
+              <FileVideo className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold tracking-tight text-white font-mono">
-                  Ethno<span className="text-emerald-400">KG</span> Video Walkthrough & Presentation
+                  Ethno<span className="text-sky-400">KG</span> Video Walkthrough & Presentation
                 </h2>
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
                   10-Min Deep Dive
                 </span>
-                <span className="hidden sm:inline-block text-[10px] font-semibold text-slate-400 bg-slate-800/80 border border-slate-700/60 px-2 py-0.5 rounded-full">
+                <span className="hidden sm:inline-block text-[10px] font-semibold text-zinc-400 bg-zinc-850 border border-zinc-750 px-2 py-0.5 rounded-full font-mono">
                   Voice: WisprFlow / Andrew Neural
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-zinc-400 font-mono">
                 Chapter {currentChapterIndex + 1} of {CHAPTERS.length}: {currentChapter.title}
               </p>
             </div>
@@ -301,17 +299,17 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
             <a
               href="/walkthrough/EthnoKG_Complete_Project_Walkthrough.mp4"
               download="EthnoKG_Complete_Project_Walkthrough.mp4"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white transition-all shadow-xs"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#161822] hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white transition-all shadow-xs"
               title="Download standalone 1080p MP4 file"
             >
-              <Download className="w-3.5 h-3.5 text-cyan-400" />
+              <Download className="w-3.5 h-3.5 text-sky-400" />
               <span>Download MP4</span>
             </a>
 
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
+              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
               title="Close Walkthrough"
             >
               <X className="w-5 h-5" />
@@ -323,11 +321,11 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
         <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
           
           {/* Left / Center: Cinema Stage */}
-          <div className="flex-1 flex flex-col bg-[#050813] relative overflow-hidden">
+          <div className="flex-1 flex flex-col bg-[#090a0f] relative overflow-hidden">
             
             {/* Visual Display Screen */}
             <div className="flex-1 relative flex items-center justify-center p-4 sm:p-6 overflow-hidden">
-              <div className="relative w-full h-full max-h-[64vh] aspect-video rounded-xl overflow-hidden border border-slate-800/90 shadow-2xl shadow-cyan-950/20 bg-slate-950 group">
+              <div className="relative w-full h-full max-h-[64vh] aspect-video rounded-xl overflow-hidden border border-zinc-800 shadow-2xl bg-black group">
                 <img 
                   src={currentChapter.slideImage} 
                   alt={currentChapter.title}
@@ -335,9 +333,9 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                 />
 
                 {/* Top Corner Chapter Pill */}
-                <div className="absolute top-4 left-4 flex items-center gap-2 bg-slate-950/85 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl shadow-lg">
+                <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/85 backdrop-blur-md border border-zinc-800 px-3 py-1.5 rounded-xl shadow-lg">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span className="text-xs font-semibold text-slate-200 font-mono">
+                  <span className="text-xs font-semibold text-zinc-200 font-mono">
                     {currentChapter.id.toUpperCase()} • CHAPTER {currentChapterIndex + 1}/{CHAPTERS.length}
                   </span>
                 </div>
@@ -346,20 +344,20 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                 {currentChapter.targetTab && (
                   <button
                     onClick={() => handleJumpToFeature(currentChapter.targetTab)}
-                    className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 backdrop-blur-md shadow-lg transition-all hover:scale-105"
+                    className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 border border-zinc-600 backdrop-blur-md shadow-lg transition-all hover:scale-105 cursor-pointer"
                   >
                     <span>{currentChapter.featureName || 'Explore Live'}</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
                   </button>
                 )}
 
                 {/* Animated Waveform Bars (When audio is playing) */}
                 {isPlaying && (
-                  <div className="absolute bottom-4 right-4 flex items-end gap-1 bg-slate-950/80 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-800">
-                    <span className="text-[10px] font-mono text-cyan-400 mr-1.5 font-bold">Wispr Audio</span>
+                  <div className="absolute bottom-4 right-4 flex items-end gap-1 bg-black/80 backdrop-blur-md px-3 py-2 rounded-xl border border-zinc-800">
+                    <span className="text-[10px] font-mono text-sky-400 mr-1.5 font-bold">Wispr Audio</span>
                     <span className="w-1 bg-emerald-400 rounded-full animate-bounce h-3"></span>
-                    <span className="w-1 bg-teal-400 rounded-full animate-bounce h-5 [animation-delay:0.1s]"></span>
-                    <span className="w-1 bg-cyan-400 rounded-full animate-bounce h-4 [animation-delay:0.2s]"></span>
+                    <span className="w-1 bg-sky-400 rounded-full animate-bounce h-5 [animation-delay:0.1s]"></span>
+                    <span className="w-1 bg-zinc-300 rounded-full animate-bounce h-4 [animation-delay:0.2s]"></span>
                     <span className="w-1 bg-emerald-300 rounded-full animate-bounce h-6 [animation-delay:0.15s]"></span>
                     <span className="w-1 bg-teal-300 rounded-full animate-bounce h-2 [animation-delay:0.25s]"></span>
                   </div>
@@ -368,11 +366,11 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
             </div>
 
             {/* Bottom Audio Player Bar */}
-            <div className="px-6 py-4 bg-slate-900/90 border-t border-slate-800/80 flex flex-col gap-3">
+            <div className="px-6 py-4 bg-[#111319] border-t border-zinc-800 flex flex-col gap-3">
               
               {/* Scrubbing Bar */}
               <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-slate-400 w-10 text-right">
+                <span className="text-xs font-mono text-zinc-400 w-10 text-right">
                   {formatTime(currentTime)}
                 </span>
                 <input 
@@ -382,9 +380,9 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   step="0.1"
                   value={currentTime}
                   onChange={handleSeek}
-                  className="flex-1 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400 hover:h-2 transition-all"
+                  className="flex-1 h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-zinc-200 hover:h-2 transition-all"
                 />
-                <span className="text-xs font-mono text-slate-400 w-10">
+                <span className="text-xs font-mono text-zinc-400 w-10">
                   {formatTime(duration || currentChapter.duration)}
                 </span>
               </div>
@@ -396,20 +394,20 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={toggleMute}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
                   >
                     {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4" />}
                   </button>
 
-                  <div className="flex items-center gap-1 bg-slate-950/80 border border-slate-800 rounded-lg p-0.5 text-xs">
+                  <div className="flex items-center gap-1 bg-[#161822] border border-zinc-800 rounded-lg p-0.5 text-xs">
                     {[1.0, 1.25, 1.5].map(spd => (
                       <button
                         key={spd}
                         onClick={() => changeSpeed(spd)}
-                        className={`px-2 py-0.5 rounded-md text-[11px] font-mono transition-colors ${
+                        className={`px-2 py-0.5 rounded-md text-[11px] font-mono transition-colors cursor-pointer ${
                           playbackSpeed === spd 
-                            ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40' 
-                            : 'text-slate-400 hover:text-slate-200'
+                            ? 'bg-zinc-800 text-white font-bold border border-zinc-600' 
+                            : 'text-zinc-400 hover:text-zinc-200'
                         }`}
                       >
                         {spd}x
@@ -423,14 +421,14 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   <button 
                     onClick={prevChapter}
                     disabled={currentChapterIndex === 0}
-                    className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                    className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
                   >
                     <SkipBack className="w-5 h-5" />
                   </button>
 
                   <button 
                     onClick={togglePlay}
-                    className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 flex items-center justify-center shadow-lg shadow-emerald-500/30 hover:scale-105 transition-all"
+                    className="w-12 h-12 rounded-2xl bg-zinc-200 hover:bg-white text-zinc-950 flex items-center justify-center shadow-lg shadow-black/50 hover:scale-105 transition-all cursor-pointer"
                   >
                     {isPlaying ? (
                       <Pause className="w-6 h-6 fill-current stroke-[2.5]" />
@@ -442,7 +440,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   <button 
                     onClick={nextChapter}
                     disabled={currentChapterIndex === CHAPTERS.length - 1}
-                    className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                    className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
                   >
                     <SkipForward className="w-5 h-5" />
                   </button>
@@ -452,10 +450,10 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleJumpToFeature(currentChapter.targetTab)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 text-emerald-300 border border-emerald-500/40 transition-all flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <span>{currentChapter.featureName || 'Explore Live'}</span>
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="w-3 h-3 text-sky-400" />
                   </button>
                 </div>
 
@@ -466,18 +464,18 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
           </div>
 
           {/* Right Sidebar: Chapter Playlist */}
-          <div className="w-full lg:w-96 border-t lg:border-t-0 lg:border-l border-slate-800/80 bg-slate-900/40 flex flex-col">
+          <div className="w-full lg:w-96 border-t lg:border-t-0 lg:border-l border-zinc-800 bg-[#111319] flex flex-col">
             
-            <div className="p-4 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between">
+            <div className="p-4 border-b border-zinc-800 bg-[#141620] flex items-center justify-between">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
                   Chapter Directory
                 </h3>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-zinc-400 font-mono">
                   9 Chapters • ~{Math.round(totalPresentationSeconds / 60)} Minutes Total
                 </p>
               </div>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded-md">
+              <span className="text-[10px] font-mono text-sky-400 bg-zinc-800 border border-zinc-700 px-2 py-0.5 rounded-md">
                 30 FPS • 1080p
               </span>
             </div>
@@ -491,33 +489,33 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                     onClick={() => setCurrentChapterIndex(idx)}
                     className={`p-3 rounded-xl border transition-all cursor-pointer ${
                       isSelected 
-                        ? 'bg-slate-800/90 border-emerald-500/50 shadow-md shadow-emerald-950/30' 
-                        : 'bg-slate-900/40 border-slate-800/60 hover:bg-slate-850 hover:border-slate-700/80'
+                        ? 'bg-zinc-800 text-white border-zinc-600 shadow-md' 
+                        : 'bg-[#161822] border-zinc-800 hover:bg-zinc-850 hover:border-zinc-700'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className={`text-[11px] font-mono font-bold ${isSelected ? 'text-emerald-400' : 'text-slate-400'}`}>
+                          <span className={`text-[11px] font-mono font-bold ${isSelected ? 'text-sky-400' : 'text-zinc-500'}`}>
                             {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
                           </span>
-                          <h4 className={`text-xs font-semibold ${isSelected ? 'text-white' : 'text-slate-300'}`}>
+                          <h4 className={`text-xs font-semibold ${isSelected ? 'text-white' : 'text-zinc-300'}`}>
                             {ch.title.replace(/^CHAPTER \d+ \/ \d+ • /, '')}
                           </h4>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">
+                        <p className="text-[11px] text-zinc-400 mt-1 line-clamp-1">
                           {ch.subtitle}
                         </p>
                       </div>
 
                       <div className="flex flex-col items-end gap-1">
-                        <span className="text-[10px] font-mono text-slate-400">
+                        <span className="text-[10px] font-mono text-zinc-500">
                           {formatTime(ch.duration)}
                         </span>
                         {isSelected && isPlaying && (
                           <span className="flex h-2 w-2 relative">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-400"></span>
                           </span>
                         )}
                       </div>
@@ -528,13 +526,13 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
             </div>
 
             {/* Sidebar Bottom Card */}
-            <div className="p-4 border-t border-slate-800/80 bg-slate-950/60">
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs flex flex-col gap-2">
-                <div className="flex items-center gap-2 text-emerald-400 font-semibold text-[11px]">
+            <div className="p-4 border-t border-zinc-800 bg-[#0e1017]">
+              <div className="p-3 rounded-xl bg-[#161822] border border-zinc-800 text-xs flex flex-col gap-2">
+                <div className="flex items-center gap-2 text-emerald-400 font-semibold text-[11px] font-mono">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>EthnoHack 2026 Judge Guarantee</span>
                 </div>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-zinc-400">
                   Every claim is backed by 100% verbatim literature citations with 0.00% unsupported statements.
                 </p>
               </div>
