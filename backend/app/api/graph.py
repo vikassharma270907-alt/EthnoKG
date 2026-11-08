@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from ..core.database import get_db
 from ..services.graph_service import GraphService
@@ -36,9 +36,17 @@ def get_entity_subgraph(
     plant_id = None
     cond_id = None
     if entity_id.startswith("plant_"):
-        plant_id = int(entity_id.split("_")[1])
+        try:
+            plant_id = int(entity_id.split("_")[1])
+        except (IndexError, ValueError):
+            raise HTTPException(status_code=400, detail="Invalid plant entity format. Expected 'plant_{id}'.")
     elif entity_id.startswith("cond_"):
-        cond_id = int(entity_id.split("_")[1])
+        try:
+            cond_id = int(entity_id.split("_")[1])
+        except (IndexError, ValueError):
+            raise HTTPException(status_code=400, detail="Invalid condition entity format. Expected 'cond_{id}'.")
+    else:
+        raise HTTPException(status_code=400, detail="Unsupported entity format. Expected 'plant_{id}' or 'cond_{id}'.")
 
     return GraphService.get_cytoscape_graph(
         db=db,

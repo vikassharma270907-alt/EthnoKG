@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, case
 from ..core.database import get_db
 from ..models.plant import Plant
 from ..models.condition import Condition
@@ -41,25 +41,20 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         if standard_tier not in evidence_dist:
             evidence_dist[standard_tier] = 0
 
-    # Confidence distribution
-    all_confs = db.query(Relationship.extraction_confidence).all()
+    # Confidence distribution via single aggregate query
+    conf_buckets = db.query(
+        func.count(case((Relationship.extraction_confidence >= 0.90, 1))),
+        func.count(case(((Relationship.extraction_confidence >= 0.80) & (Relationship.extraction_confidence < 0.90), 1))),
+        func.count(case(((Relationship.extraction_confidence >= 0.70) & (Relationship.extraction_confidence < 0.80), 1))),
+        func.count(case(((Relationship.extraction_confidence < 0.70) & (Relationship.extraction_confidence.isnot(None)), 1))),
+    ).first()
+
     conf_dist = {
-        "0.90-1.00": 0,
-        "0.80-0.89": 0,
-        "0.70-0.79": 0,
-        "<0.70": 0
+        "0.90-1.00": conf_buckets[0] if conf_buckets else 0,
+        "0.80-0.89": conf_buckets[1] if conf_buckets else 0,
+        "0.70-0.79": conf_buckets[2] if conf_buckets else 0,
+        "<0.70": conf_buckets[3] if conf_buckets else 0
     }
-    for (c,) in all_confs:
-        if c is None:
-            continue
-        if c >= 0.90:
-            conf_dist["0.90-1.00"] += 1
-        elif c >= 0.80:
-            conf_dist["0.80-0.89"] += 1
-        elif c >= 0.70:
-            conf_dist["0.70-0.79"] += 1
-        else:
-            conf_dist["<0.70"] += 1
 
     # Traditions distribution
     trad_rows = db.query(Relationship.knowledge_tradition, func.count(Relationship.id)).group_by(Relationship.knowledge_tradition).all()

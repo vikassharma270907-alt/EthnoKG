@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from ..core.database import get_db
 from ..models.plant import Plant
 from ..models.condition import Condition
@@ -95,7 +95,12 @@ def get_discovery_index(db: Session = Depends(get_db)):
     Highlights compounds with rich traditional consensus and in-vitro confirmation, 
     but with unmet clinical trial translation (highest potential for drug discovery).
     """
-    relationships = db.query(Relationship).all()
+    relationships = db.query(Relationship).options(
+        joinedload(Relationship.plant),
+        joinedload(Relationship.condition),
+        joinedload(Relationship.compound),
+        joinedload(Relationship.document)
+    ).all()
     
     # Group by plant and condition
     plant_cond_map: Dict[str, Dict[str, Any]] = {}
@@ -205,7 +210,12 @@ def get_cross_cultural_convergence(db: Session = Depends(get_db)):
     independently discovered therapeutic utility (Cross-Cultural Convergence).
     In ethnopharmacology, independent cross-tradition convergence is the highest empirical predictor of bioactive efficacy.
     """
-    relationships = db.query(Relationship).all()
+    relationships = db.query(Relationship).options(
+        joinedload(Relationship.plant),
+        joinedload(Relationship.condition),
+        joinedload(Relationship.compound),
+        joinedload(Relationship.document)
+    ).all()
     
     # Map condition to distinct traditions and plants
     condition_convergence: Dict[str, Dict[str, Any]] = {}

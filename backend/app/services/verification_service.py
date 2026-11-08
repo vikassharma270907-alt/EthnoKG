@@ -1,6 +1,6 @@
 import json
 from typing import Optional, Dict, Any, List
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from ..models.relationship import Relationship
 from ..models.verification import VerificationLog
 from ..models.plant import Plant
@@ -16,7 +16,17 @@ class VerificationService:
         reviewer_name: str = "Curator", 
         notes: Optional[str] = None
     ) -> Relationship:
-        rel = db.query(Relationship).filter(Relationship.id == relationship_id).first()
+        rel = (
+            db.query(Relationship)
+            .options(
+                joinedload(Relationship.plant),
+                joinedload(Relationship.condition),
+                joinedload(Relationship.compound),
+                joinedload(Relationship.document)
+            )
+            .filter(Relationship.id == relationship_id)
+            .first()
+        )
         if not rel:
             raise ValueError(f"Relationship ID {relationship_id} not found.")
 
@@ -43,7 +53,17 @@ class VerificationService:
         reviewer_name: str = "Curator", 
         reason: Optional[str] = None
     ) -> Relationship:
-        rel = db.query(Relationship).filter(Relationship.id == relationship_id).first()
+        rel = (
+            db.query(Relationship)
+            .options(
+                joinedload(Relationship.plant),
+                joinedload(Relationship.condition),
+                joinedload(Relationship.compound),
+                joinedload(Relationship.document)
+            )
+            .filter(Relationship.id == relationship_id)
+            .first()
+        )
         if not rel:
             raise ValueError(f"Relationship ID {relationship_id} not found.")
 
@@ -69,13 +89,23 @@ class VerificationService:
         relationship_id: int,
         update_data: RelationshipUpdate
     ) -> Relationship:
-        rel = db.query(Relationship).filter(Relationship.id == relationship_id).first()
+        rel = (
+            db.query(Relationship)
+            .options(
+                joinedload(Relationship.plant),
+                joinedload(Relationship.condition),
+                joinedload(Relationship.compound),
+                joinedload(Relationship.document)
+            )
+            .filter(Relationship.id == relationship_id)
+            .first()
+        )
         if not rel:
             raise ValueError(f"Relationship ID {relationship_id} not found.")
 
         changes = {}
 
-        if update_data.plant_name and update_data.plant_name != rel.plant.scientific_name:
+        if update_data.plant_name and (not rel.plant or update_data.plant_name != rel.plant.scientific_name):
             plant = db.query(Plant).filter(Plant.scientific_name == update_data.plant_name).first()
             if plant:
                 changes["plant_id"] = {"old": rel.plant_id, "new": plant.id}

@@ -1,6 +1,6 @@
 import re
 from typing import List, Dict, Any, Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from ..models.plant import Plant
 from ..models.condition import Condition
 from ..models.compound import Compound
@@ -69,8 +69,14 @@ class AssistantService:
             if comp.name.lower() in q_lower:
                 matched_compounds.append(comp)
 
-        # Query relevant relationships
-        rel_query = db.query(Relationship)
+        # Query relevant relationships with eager loading
+        eager_opts = [
+            joinedload(Relationship.plant),
+            joinedload(Relationship.condition),
+            joinedload(Relationship.compound),
+            joinedload(Relationship.document)
+        ]
+        rel_query = db.query(Relationship).options(*eager_opts)
         if matched_plants:
             rel_query = rel_query.filter(Relationship.plant_id.in_([p.id for p in matched_plants]))
         if matched_conditions:
@@ -80,7 +86,7 @@ class AssistantService:
 
         # If no strict intersections, look up by condition or plant alone
         if not relationships and (matched_plants or matched_conditions):
-            fallback_q = db.query(Relationship)
+            fallback_q = db.query(Relationship).options(*eager_opts)
             if matched_plants:
                 fallback_q = fallback_q.filter(Relationship.plant_id.in_([p.id for p in matched_plants]))
             elif matched_conditions:

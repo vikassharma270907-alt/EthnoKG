@@ -1,5 +1,6 @@
 from typing import Optional, List
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from ..core.database import get_db
 from ..models.condition import Condition
@@ -28,16 +29,23 @@ def list_conditions(
     conds = q.order_by(Condition.name.asc()).offset(skip).limit(limit).all()
 
     output = []
-    for c in conds:
-        rel_count = db.query(Relationship).filter(Relationship.condition_id == c.id).count()
-        output.append(ConditionBrief(
-            id=c.id,
-            name=c.name,
-            category=c.category,
-            icd11_code=c.icd11_code,
-            umls_cui=c.umls_cui,
-            description=c.description,
-            relationships_count=rel_count
-        ))
+    if conds:
+        cond_ids = [c.id for c in conds]
+        counts_map = dict(
+            db.query(Relationship.condition_id, func.count(Relationship.id))
+            .filter(Relationship.condition_id.in_(cond_ids))
+            .group_by(Relationship.condition_id)
+            .all()
+        )
+        for c in conds:
+            output.append(ConditionBrief(
+                id=c.id,
+                name=c.name,
+                category=c.category,
+                icd11_code=c.icd11_code,
+                umls_cui=c.umls_cui,
+                description=c.description,
+                relationships_count=counts_map.get(c.id, 0)
+            ))
     return output
 

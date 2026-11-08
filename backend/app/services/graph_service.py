@@ -1,6 +1,6 @@
 import networkx as nx
 from typing import Optional, Dict, Any, List
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from ..models.plant import Plant
 from ..models.condition import Condition
 from ..models.compound import Compound
@@ -20,8 +20,13 @@ class GraphService:
     ) -> nx.MultiDiGraph:
         G = nx.MultiDiGraph()
 
-        # Query relationships
-        q = db.query(Relationship)
+        # Query relationships with eager loading
+        q = db.query(Relationship).options(
+            joinedload(Relationship.plant),
+            joinedload(Relationship.condition),
+            joinedload(Relationship.compound),
+            joinedload(Relationship.document)
+        )
         if plant_id:
             q = q.filter(Relationship.plant_id == plant_id)
         if condition_id:
@@ -37,6 +42,8 @@ class GraphService:
 
         for r in relationships:
             plant = r.plant
+            if not plant:
+                continue
             cond = r.condition
             comp = r.compound
             doc = r.document

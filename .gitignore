@@ -30,6 +30,15 @@ scripts/antigravity-sync.*
 scripts/ralph/
 # Media & Video Temp Outputs
 video_production/recordings/
+video_production/scenes/
+video_production/*.mp4
+video_production/*.mp3
+video_production/*.webm
+/EthnoKG_Complete_Project_Walkthrough.mp4
 *.webm
 *.mp3
+
+# Whitelist public walkthrough assets for frontend deployment
+!frontend/public/walkthrough/*.mp3
+!frontend/public/walkthrough/*.mp4
 

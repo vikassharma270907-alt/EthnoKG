@@ -52,20 +52,33 @@ export function App() {
   }, [activeTab]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#070b19] text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen flex flex-col bg-[#090a0f] text-zinc-100 font-sans selection:bg-zinc-700 selection:text-white relative overflow-x-hidden">
       
-      {/* Navbar with live badge & video walkthrough trigger */}
-      <Navbar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        pendingCount={stats?.pending_verifications || 0} 
-        onOpenVideoWalkthrough={() => setIsVideoModalOpen(true)}
-      />
+      {/* Ambient Cool Grey & Dark Background Mesh */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-gradient-to-b from-zinc-700/10 via-zinc-800/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/5 w-[500px] h-[400px] bg-sky-900/10 rounded-full blur-3xl" />
+        <div className="absolute top-2/3 right-1/4 w-[600px] h-[500px] bg-zinc-800/10 rounded-full blur-3xl" />
+      </div>
+
+      {/* Navbar with live badge */}
+      <div className="relative z-50">
+        <Navbar 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          pendingCount={stats?.pending_verifications || 0} 
+          onOpenVideoWalkthrough={() => setIsVideoModalOpen(true)}
+        />
+      </div>
 
       {/* Main Content View */}
-      <main className="flex-1 py-8">
+      <main className="flex-1 py-8 relative z-10">
         {activeTab === 'landing' && (
-          <LandingPage setActiveTab={setActiveTab} stats={stats} />
+          <LandingPage 
+            setActiveTab={setActiveTab} 
+            stats={stats} 
+            onOpenVideoWalkthrough={() => setIsVideoModalOpen(true)}
+          />
         )}
         {activeTab === 'dashboard' && (
           <DashboardPage stats={stats} isLoading={isLoadingStats} setActiveTab={setActiveTab} />
@@ -100,13 +113,15 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <Footer setActiveTab={setActiveTab} />
+      <div className="relative z-10">
+        <Footer setActiveTab={setActiveTab} />
+      </div>
 
-      {/* Interactive 10-Minute Video Walkthrough & Presentation Modal */}
-      <VideoWalkthroughModal 
-        isOpen={isVideoModalOpen} 
-        onClose={() => setIsVideoModalOpen(false)} 
-        setActiveTab={setActiveTab} 
+      {/* Interactive 10-Minute Video Walkthrough Modal */}
+      <VideoWalkthroughModal
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        setActiveTab={setActiveTab}
       />
 
     </div>

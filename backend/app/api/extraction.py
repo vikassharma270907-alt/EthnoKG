@@ -1,6 +1,6 @@
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from ..core.database import get_db
 from ..models.document import Document
 from ..models.relationship import Relationship
@@ -76,7 +76,12 @@ def get_extraction_results(
     limit: int = Query(100, ge=1, le=500),
     db: Session = Depends(get_db)
 ):
-    q = db.query(Relationship)
+    q = db.query(Relationship).options(
+        joinedload(Relationship.plant),
+        joinedload(Relationship.condition),
+        joinedload(Relationship.compound),
+        joinedload(Relationship.document)
+    )
     if status:
         q = q.filter(Relationship.verification_status == status)
     if plant_id:
@@ -127,7 +132,17 @@ def get_relationship_by_id(
     relationship_id: int,
     db: Session = Depends(get_db)
 ):
-    r = db.query(Relationship).filter(Relationship.id == relationship_id).first()
+    r = (
+        db.query(Relationship)
+        .options(
+            joinedload(Relationship.plant),
+            joinedload(Relationship.condition),
+            joinedload(Relationship.compound),
+            joinedload(Relationship.document)
+        )
+        .filter(Relationship.id == relationship_id)
+        .first()
+    )
     if not r:
         raise HTTPException(status_code=404, detail=f"Relationship {relationship_id} not found.")
 
