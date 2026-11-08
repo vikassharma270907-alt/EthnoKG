@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, CornerDownLeft, Sparkles, FileVideo, Cpu, ArrowRight } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { NAV_ITEMS } from './navConfig';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export interface PaletteAction {
   id: string;
@@ -34,6 +35,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const isKeyboardNav = useRef(false);
+
+  const modalRef = useFocusTrap<HTMLDivElement>({
+    isOpen,
+    onClose,
+    initialFocusRef: inputRef
+  });
 
   const actions: PaletteAction[] = useMemo(() => {
     const list: PaletteAction[] = [];
@@ -104,23 +112,29 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     );
   }, [query, actions]);
 
-  useEffect(() => {
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setSelectedIndex(0);
+  }
+
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) {
-      const timer = setTimeout(() => {
-        setQuery('');
-        setSelectedIndex(0);
-        inputRef.current?.focus();
-      }, 0);
-      return () => clearTimeout(timer);
+      setQuery('');
+      setSelectedIndex(0);
     }
-  }, [isOpen]);
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
+      isKeyboardNav.current = true;
       setSelectedIndex((prev) => (prev + 1) % Math.max(1, filteredActions.length));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
+      isKeyboardNav.current = true;
       setSelectedIndex((prev) =>
         (prev - 1 + filteredActions.length) % Math.max(1, filteredActions.length)
       );
@@ -137,12 +151,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   };
 
   useEffect(() => {
+    if (!isKeyboardNav.current) return;
     const list = listRef.current;
     if (!list) return;
     const selectedEl = list.children[selectedIndex] as HTMLElement | undefined;
     if (selectedEl) {
       selectedEl.scrollIntoView({ block: 'nearest' });
     }
+    isKeyboardNav.current = false;
   }, [selectedIndex]);
 
   return (
@@ -163,22 +179,21 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           />
 
           <motion.div
+            ref={modalRef}
+            tabIndex={-1}
             initial={{ opacity: 0, scale: 0.95, y: -16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -16 }}
             transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-            className="relative w-full max-w-xl rounded-2xl bg-[#0c0e16] border border-zinc-700/80 shadow-2xl shadow-black/90 overflow-hidden z-10"
+            className="relative w-full max-w-xl rounded-2xl bg-[#0c0e16] border border-zinc-700/80 shadow-2xl shadow-black/90 overflow-hidden z-10 focus:outline-hidden"
           >
             <div className="flex items-center px-4 py-3.5 border-b border-zinc-800 gap-3">
-              <Search className="w-5 h-5 text-zinc-300 shrink-0" />
+              <Search className="w-5 h-5 text-sky-400 shrink-0" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setSelectedIndex(0);
-                }}
+                onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search modules, plants, evidence, or commands... (e.g. Graph, Neem, Video)"
                 className="w-full bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-hidden"
@@ -207,10 +222,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       key={action.id}
                       type="button"
                       onClick={action.onSelect}
-                      onMouseEnter={() => setSelectedIndex(idx)}
+                      onMouseEnter={() => {
+                        isKeyboardNav.current = false;
+                        setSelectedIndex(idx);
+                      }}
                       className={`w-full text-left flex items-center justify-between p-2.5 rounded-xl border text-xs transition-all duration-150 cursor-pointer ${
                         isSelected
-                          ? 'bg-zinc-800/90 border-zinc-500/70 text-white shadow-sm'
+                          ? 'bg-zinc-800/90 border-sky-500/50 text-white shadow-sm'
                           : 'bg-transparent border-transparent text-zinc-300 hover:bg-zinc-800/40'
                       }`}
                     >
@@ -218,7 +236,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                         <div
                           className={`p-2 rounded-lg border shrink-0 ${
                             isSelected
-                              ? 'bg-zinc-700/80 text-white border-zinc-600'
+                              ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
                               : 'bg-zinc-800/60 text-zinc-400 border-zinc-700/40'
                           }`}
                         >
@@ -227,7 +245,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="font-semibold truncate">{action.title}</span>
-                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60 shrink-0">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60 shrink-0">
                               {action.category}
                             </span>
                           </div>
@@ -242,7 +260,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                           </span>
                         )}
                         {isSelected && (
-                          <CornerDownLeft className="w-3.5 h-3.5 text-zinc-300" />
+                          <CornerDownLeft className="w-3.5 h-3.5 text-sky-400" />
                         )}
                       </div>
                     </button>
@@ -262,9 +280,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   Select
                 </span>
               </div>
-              <span className="text-zinc-400 flex items-center gap-1 font-mono text-[10px]">
+              <span className="text-sky-400/80 flex items-center gap-1 font-mono text-[10px]">
                 EthnoKG Command Core
-                <ArrowRight className="w-3 h-3 text-zinc-400" />
+                <ArrowRight className="w-3 h-3" />
               </span>
             </div>
           </motion.div>

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Sparkles, Layers, ArrowRight } from 'lucide-react';
-import { NAV_CATEGORIES, NAV_ITEMS } from './navConfig';
+import { NAV_CATEGORIES, NAV_ITEMS, getNavItemBadge } from './navConfig';
 import type { NavCategoryId, NavItemConfig } from './navConfig';
 
 interface NavMegaMenuProps {
@@ -17,21 +17,29 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
 
   const activeItem = NAV_ITEMS.find((item) => item.id === activeTab) || NAV_ITEMS[0];
   const activeCategory = NAV_CATEGORIES[activeItem.category];
   const ActiveIcon = activeItem.icon;
 
+  const closeMenu = (restoreFocus = true) => {
+    setIsOpen(false);
+    if (restoreFocus) {
+      setTimeout(() => triggerRef.current?.focus(), 10);
+    }
+  };
+
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
+        closeMenu(false);
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setIsOpen(false);
+        closeMenu(true);
       }
     };
 
@@ -48,7 +56,7 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
 
   const handleSelect = (itemId: string) => {
     setActiveTab(itemId);
-    setIsOpen(false);
+    closeMenu(true);
   };
 
   const categories: NavCategoryId[] = ['intelligence', 'evidence', 'governance'];
@@ -56,18 +64,19 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
   return (
     <div ref={containerRef} className="relative">
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-haspopup="true"
         aria-expanded={isOpen}
-        className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border text-xs transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 ${
+        className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border text-xs transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 ${
           isOpen
-            ? 'bg-zinc-800/95 border-zinc-500/80 shadow-lg shadow-black/60 text-white'
+            ? 'bg-zinc-800/95 border-sky-500/60 shadow-lg shadow-sky-950/40 text-white'
             : 'bg-zinc-900/90 border-zinc-700/80 hover:border-zinc-500/70 text-zinc-300 hover:text-white'
         }`}
       >
         <div className="flex items-center gap-1.5">
-          <ActiveIcon className="w-3.5 h-3.5 text-zinc-200" />
+          <ActiveIcon className="w-3.5 h-3.5 text-sky-400" />
           <span className="font-semibold">{activeItem.label}</span>
         </div>
 
@@ -76,14 +85,14 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
         </span>
 
         {activeItem.id === 'verification' && pendingCount > 0 && (
-          <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-zinc-800 text-zinc-200 border border-zinc-700">
+          <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-amber-500/30 text-amber-300 border border-amber-500/40">
             {pendingCount}
           </span>
         )}
 
         <ChevronDown
           className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
-            isOpen ? 'rotate-180 text-zinc-200' : ''
+            isOpen ? 'rotate-180 text-sky-400' : ''
           }`}
         />
       </button>
@@ -99,7 +108,7 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
           >
             <div className="flex items-center justify-between pb-3 mb-4 border-b border-zinc-800/80 text-xs text-zinc-400">
               <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-zinc-300" />
+                <Layers className="w-4 h-4 text-sky-400" />
                 <span className="font-semibold text-zinc-200">Platform Modules & Tools</span>
                 <span className="text-[11px] text-zinc-500 hidden sm:inline">
                   (11 Specialized Discovery Components)
@@ -109,11 +118,11 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
                 <span className="hidden sm:inline">
                   Use hotkeys{' '}
                   <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 font-mono text-[10px]">
-                    1-9
+                    1-9, 0, E
                   </kbd>
                 </span>
-                <span className="inline-flex items-center gap-1 text-zinc-300">
-                  <Sparkles className="w-3 h-3 text-zinc-300" />
+                <span className="inline-flex items-center gap-1 text-sky-400/90">
+                  <Sparkles className="w-3 h-3" />
                   Live Sync
                 </span>
               </div>
@@ -131,7 +140,7 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
                         {category.label}
                       </span>
                       <span
-                        className={`text-[9px] font-mono px-1.5 py-0.2 rounded-full border bg-gradient-to-r ${category.badgeColor}`}
+                        className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full border bg-gradient-to-r ${category.badgeColor}`}
                       >
                         {items.length}
                       </span>
@@ -141,26 +150,23 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
                       {items.map((item: NavItemConfig) => {
                         const Icon = item.icon;
                         const isSelected = activeTab === item.id;
-                        const badgeVal =
-                          item.id === 'verification' && pendingCount > 0
-                            ? pendingCount
-                            : undefined;
+                        const badgeVal = getNavItemBadge(item.id, pendingCount);
 
                         return (
                           <button
                             key={item.id}
                             type="button"
                             onClick={() => handleSelect(item.id)}
-                            className={`group relative text-left p-2.5 rounded-xl border transition-all duration-150 cursor-pointer flex items-start gap-3 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 ${
+                            className={`group relative text-left p-2.5 rounded-xl border transition-all duration-150 cursor-pointer flex items-start gap-3 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 ${
                               isSelected
-                                ? 'bg-zinc-800/90 border-zinc-500/70 shadow-md shadow-black/40'
+                                ? 'bg-zinc-800/90 border-sky-500/50 shadow-md shadow-sky-950/20'
                                 : 'bg-zinc-900/40 hover:bg-zinc-800/60 border-zinc-800/60 hover:border-zinc-700/80'
                             }`}
                           >
                             <div
                               className={`p-2 rounded-lg border shrink-0 transition-transform group-hover:scale-105 ${
                                 isSelected
-                                  ? 'bg-zinc-700/80 text-white border-zinc-600'
+                                  ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
                                   : 'bg-zinc-800/70 text-zinc-400 group-hover:text-zinc-200 border-zinc-700/50'
                               }`}
                             >
@@ -180,11 +186,11 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
                                 </span>
                                 <div className="flex items-center gap-1.5 shrink-0">
                                   {badgeVal !== undefined && (
-                                    <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">
+                                    <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-amber-500/30 text-amber-300 border border-amber-500/40">
                                       {badgeVal}
                                     </span>
                                   )}
-                                  <kbd className="hidden sm:inline-block text-[9px] font-mono px-1 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+                                  <kbd className="hidden sm:inline-block text-[9px] font-mono px-1 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
                                     {item.hotkey}
                                   </kbd>
                                 </div>
@@ -204,12 +210,12 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
 
             <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-400">
               <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 animate-pulse"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
                 <span>Select any module to navigate directly</span>
               </span>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={() => closeMenu(true)}
                 className="text-zinc-400 hover:text-zinc-200 text-[11px] flex items-center gap-1 cursor-pointer"
               >
                 <span>Close menu</span>

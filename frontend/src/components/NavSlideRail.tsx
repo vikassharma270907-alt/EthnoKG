@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { NAV_ITEMS } from './navConfig';
+import { NAV_ITEMS, getNavItemBadge } from './navConfig';
 import type { NavItemConfig } from './navConfig';
 
 interface NavSlideRailProps {
@@ -67,14 +67,28 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    let targetIndex = -1;
     if (e.key === 'ArrowRight') {
       e.preventDefault();
-      const nextIndex = (index + 1) % NAV_ITEMS.length;
-      setActiveTab(NAV_ITEMS[nextIndex].id);
+      targetIndex = (index + 1) % NAV_ITEMS.length;
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      const prevIndex = (index - 1 + NAV_ITEMS.length) % NAV_ITEMS.length;
-      setActiveTab(NAV_ITEMS[prevIndex].id);
+      targetIndex = (index - 1 + NAV_ITEMS.length) % NAV_ITEMS.length;
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      targetIndex = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      targetIndex = NAV_ITEMS.length - 1;
+    }
+
+    if (targetIndex !== -1) {
+      const targetItem = NAV_ITEMS[targetIndex];
+      setActiveTab(targetItem.id);
+      const targetBtn = scrollContainerRef.current?.querySelector<HTMLButtonElement>(
+        `#nav-tab-${targetItem.id}`
+      );
+      targetBtn?.focus();
     }
   };
 
@@ -97,7 +111,7 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
               type="button"
               onClick={() => handleScrollStep('left')}
               aria-label="Scroll tabs left"
-              className="p-1.5 rounded-lg bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 shadow-lg shadow-black/80 backdrop-blur-md transition-all cursor-pointer hover:scale-105 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400"
+              className="p-1.5 rounded-lg bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 shadow-lg shadow-black/80 backdrop-blur-md transition-all cursor-pointer hover:scale-105 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
@@ -121,8 +135,7 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
         {NAV_ITEMS.map((item: NavItemConfig, index: number) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
-          const badgeValue =
-            item.id === 'verification' && pendingCount > 0 ? pendingCount : undefined;
+          const badgeValue = getNavItemBadge(item.id, pendingCount);
 
           return (
             <button
@@ -131,11 +144,10 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
               role="tab"
               id={`nav-tab-${item.id}`}
               aria-selected={isActive}
-              aria-controls={`nav-panel-${item.id}`}
               tabIndex={isActive ? 0 : -1}
               onClick={() => setActiveTab(item.id)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className={`relative group shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 ${
+              className={`relative group shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 ${
                 isActive
                   ? 'text-white font-semibold'
                   : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/40'
@@ -150,19 +162,19 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
               )}
 
               {isActive && (
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-gradient-to-r from-white via-zinc-200 to-zinc-400 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.7)]" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-gradient-to-r from-sky-400 to-teal-400 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
               )}
 
               <Icon
                 className={`w-3.5 h-3.5 relative z-10 transition-transform duration-200 group-hover:scale-110 ${
-                  isActive ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-200'
+                  isActive ? 'text-sky-400' : 'text-zinc-400 group-hover:text-zinc-200'
                 }`}
               />
 
               <span className="relative z-10 whitespace-nowrap">{item.label}</span>
 
               {badgeValue !== undefined && (
-                <span className="relative z-10 ml-0.5 px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-zinc-800 text-zinc-200 border border-zinc-700 animate-pulse">
+                <span className="relative z-10 ml-0.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
                   {badgeValue}
                 </span>
               )}
@@ -194,7 +206,7 @@ export const NavSlideRail: React.FC<NavSlideRailProps> = ({
               type="button"
               onClick={() => handleScrollStep('right')}
               aria-label="Scroll tabs right"
-              className="p-1.5 rounded-lg bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 shadow-lg shadow-black/80 backdrop-blur-md transition-all cursor-pointer hover:scale-105 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400"
+              className="p-1.5 rounded-lg bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 shadow-lg shadow-black/80 backdrop-blur-md transition-all cursor-pointer hover:scale-105 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>

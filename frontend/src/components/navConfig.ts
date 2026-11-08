@@ -159,3 +159,13 @@ export const NAV_ITEMS: readonly NavItemConfig[] = [
     description: 'Bioethical framework, Indigenous knowledge sovereignty, and open data'
   }
 ] as const;
+
+/**
+ * Returns dynamic badge count for navigation items
+ */
+export function getNavItemBadge(itemId: string, pendingCount: number = 0): number | undefined {
+  if (itemId === 'verification' && pendingCount > 0) {
+    return pendingCount;
+  }
+  return undefined;
+}

@@ -24,8 +24,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [navMode, setNavMode] = useState<NavMode>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('ethnokg_nav_mode');
-      if (saved === 'slide' || saved === 'list') return saved;
+      try {
+        const saved = localStorage.getItem('ethnokg_nav_mode');
+        if (saved === 'slide' || saved === 'list') return saved;
+      } catch {
+        // Ignore storage exceptions (e.g. private browsing)
+      }
     }
     return 'slide';
   });
@@ -36,7 +40,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleModeChange = (newMode: NavMode) => {
     setNavMode(newMode);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('ethnokg_nav_mode', newMode);
+      try {
+        localStorage.setItem('ethnokg_nav_mode', newMode);
+      } catch {
+        // Ignore storage exceptions
+      }
     }
   };
 
@@ -49,12 +57,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           target.tagName === 'TEXTAREA' ||
           target.isContentEditable);
 
+      // Cmd+K or Ctrl+K triggers command palette
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setIsSearchOpen((prev) => !prev);
         return;
       }
 
+      // Guard against modifier keys so we never hijack browser/OS shortcuts (e.g. Ctrl+1..9, Ctrl+E)
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (isInput) return;
 
       const key = e.key.toUpperCase();
@@ -74,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         role="banner"
         className="sticky top-0 z-40 bg-[#0a0c12]/92 backdrop-blur-2xl border-b border-zinc-800/80 shadow-2xl shadow-black/80 transition-all select-none"
       >
-        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-zinc-500/35 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-500/35 to-transparent pointer-events-none" />
 
         <div className="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-3 lg:gap-5">
@@ -84,23 +95,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('landing')}
-                className="flex items-center gap-3 cursor-pointer group select-none text-left bg-transparent border-0 p-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 rounded-xl"
+                className="flex items-center gap-3 cursor-pointer group select-none text-left bg-transparent border-0 p-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 rounded-xl"
                 aria-label="Navigate to EthnoKG home overview"
               >
                 <div className="relative">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-zinc-800 via-zinc-700 to-zinc-500 border border-zinc-600/50 flex items-center justify-center shadow-lg shadow-black/50 group-hover:scale-105 group-hover:border-zinc-400/70 transition-all duration-300">
-                    <Network className="w-5 h-5 text-zinc-100 stroke-[2.2] group-hover:text-white transition-colors" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-zinc-800 via-zinc-700 to-zinc-500 border border-zinc-600/50 flex items-center justify-center shadow-lg shadow-black/50 group-hover:scale-105 group-hover:border-sky-400/70 transition-all duration-300">
+                    <Network className="w-5 h-5 text-zinc-100 stroke-[2.2] group-hover:text-sky-300 transition-colors" />
                   </div>
                   <span className="absolute -bottom-1 -right-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-zinc-300"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
                   </span>
                 </div>
 
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xl font-bold tracking-tight text-white font-mono">
-                      Ethno<span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400">KG</span>
+                      Ethno<span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-sky-300 to-teal-300">KG</span>
                     </span>
                     <span className="text-[10px] font-semibold uppercase tracking-wider bg-zinc-800/90 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full shadow-inner font-mono">
                       EthnoHack '26

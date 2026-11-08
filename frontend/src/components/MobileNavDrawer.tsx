@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Network, FileVideo, Cpu, Search, Sparkles } from 'lucide-react';
-import { NAV_CATEGORIES, NAV_ITEMS } from './navConfig';
+import { NAV_CATEGORIES, NAV_ITEMS, getNavItemBadge } from './navConfig';
 import type { NavCategoryId, NavItemConfig } from './navConfig';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 
@@ -26,7 +26,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
 }) => {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  useFocusTrap({
+  const drawerRef = useFocusTrap<HTMLDivElement>({
     isOpen,
     onClose,
     initialFocusRef: closeButtonRef
@@ -57,23 +57,25 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
           />
 
           <motion.div
+            ref={drawerRef}
+            tabIndex={-1}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-            className="relative w-full max-w-sm h-full bg-[#0a0c12] border-l border-zinc-800/80 shadow-2xl flex flex-col z-10 overflow-hidden"
+            className="relative w-full max-w-sm h-full bg-[#0a0c12] border-l border-zinc-800/80 shadow-2xl flex flex-col z-10 overflow-hidden focus:outline-hidden"
           >
             <div className="flex items-center justify-between p-4 border-b border-zinc-800">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center">
-                  <Network className="w-4 h-4 text-zinc-200" />
+                  <Network className="w-4 h-4 text-sky-400" />
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="font-bold text-white font-mono text-sm">
-                      Ethno<span className="text-zinc-300">KG</span>
+                      Ethno<span className="text-sky-400">KG</span>
                     </span>
-                    <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300 border border-zinc-700 font-mono">
+                    <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700 font-mono">
                       '26
                     </span>
                   </div>
@@ -86,7 +88,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                 type="button"
                 onClick={onClose}
                 aria-label="Close navigation menu"
-                className="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400"
+                className="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -102,7 +104,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                 className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs cursor-pointer"
               >
                 <div className="flex items-center gap-2">
-                  <Search className="w-3.5 h-3.5 text-zinc-300" />
+                  <Search className="w-3.5 h-3.5 text-sky-400" />
                   <span>Search modules & plants...</span>
                 </div>
                 <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
@@ -127,10 +129,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                       {items.map((item: NavItemConfig) => {
                         const Icon = item.icon;
                         const isSelected = activeTab === item.id;
-                        const badgeVal =
-                          item.id === 'verification' && pendingCount > 0
-                            ? pendingCount
-                            : undefined;
+                        const badgeVal = getNavItemBadge(item.id, pendingCount);
 
                         return (
                           <button
@@ -139,7 +138,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                             onClick={() => handleSelect(item.id)}
                             className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-xs text-left transition-all cursor-pointer ${
                               isSelected
-                                ? 'bg-zinc-800/90 border-zinc-600 text-white font-medium shadow-sm'
+                                ? 'bg-zinc-800/90 border-sky-500/50 text-white font-medium shadow-sm'
                                 : 'bg-zinc-900/30 border-transparent text-zinc-300 hover:bg-zinc-800/50 hover:text-white'
                             }`}
                           >
@@ -147,7 +146,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                               <div
                                 className={`p-1.5 rounded-lg border ${
                                   isSelected
-                                    ? 'bg-zinc-700 text-white border-zinc-600'
+                                    ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
                                     : 'bg-zinc-800/60 text-zinc-400 border-zinc-700/50'
                                 }`}
                               >
@@ -160,7 +159,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                             </div>
 
                             {badgeVal !== undefined && (
-                              <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-zinc-800 text-zinc-200 border border-zinc-700">
+                              <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-amber-500/30 text-amber-300 border border-amber-500/40">
                                 {badgeVal}
                               </span>
                             )}
@@ -181,9 +180,9 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                     onClose();
                     onOpenVideoWalkthrough();
                   }}
-                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-200 border border-zinc-700 hover:border-zinc-500 cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-sky-300 border border-sky-500/40 cursor-pointer"
                 >
-                  <FileVideo className="w-3.5 h-3.5 text-zinc-300" />
+                  <FileVideo className="w-3.5 h-3.5 text-sky-400" />
                   <span>Watch 10-Minute Video Demo</span>
                 </button>
               )}
@@ -198,7 +197,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
               </button>
 
               <div className="pt-2 flex items-center justify-center gap-1.5 text-[10px] text-zinc-400">
-                <Sparkles className="w-3 h-3 text-zinc-300" />
+                <Sparkles className="w-3 h-3 text-emerald-400" />
                 <span>100% Traceable Traditional Knowledge Discovery</span>
               </div>
             </div>
