@@ -60,14 +60,14 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
         onClick={() => setIsOpen((prev) => !prev)}
         aria-haspopup="true"
         aria-expanded={isOpen}
-        className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border text-xs transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 ${
+        className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border text-xs transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 ${
           isOpen
-            ? 'bg-zinc-800/95 border-sky-500/60 shadow-lg shadow-sky-950/40 text-white'
+            ? 'bg-zinc-800/95 border-zinc-500/80 shadow-lg shadow-black/60 text-white'
             : 'bg-zinc-900/90 border-zinc-700/80 hover:border-zinc-500/70 text-zinc-300 hover:text-white'
         }`}
       >
         <div className="flex items-center gap-1.5">
-          <ActiveIcon className="w-3.5 h-3.5 text-sky-400" />
+          <ActiveIcon className="w-3.5 h-3.5 text-zinc-200" />
           <span className="font-semibold">{activeItem.label}</span>
         </div>
 
@@ -76,14 +76,14 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
         </span>
 
         {activeItem.id === 'verification' && pendingCount > 0 && (
-          <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-amber-500/30 text-amber-300 border border-amber-500/40">
+          <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-zinc-800 text-zinc-200 border border-zinc-700">
             {pendingCount}
           </span>
         )}
 
         <ChevronDown
           className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
-            isOpen ? 'rotate-180 text-sky-400' : ''
+            isOpen ? 'rotate-180 text-zinc-200' : ''
           }`}
         />
       </button>
@@ -99,7 +99,7 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
           >
             <div className="flex items-center justify-between pb-3 mb-4 border-b border-zinc-800/80 text-xs text-zinc-400">
               <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-sky-400" />
+                <Layers className="w-4 h-4 text-zinc-300" />
                 <span className="font-semibold text-zinc-200">Platform Modules & Tools</span>
                 <span className="text-[11px] text-zinc-500 hidden sm:inline">
                   (11 Specialized Discovery Components)
@@ -112,8 +112,8 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
                     1-9
                   </kbd>
                 </span>
-                <span className="inline-flex items-center gap-1 text-sky-400/90">
-                  <Sparkles className="w-3 h-3" />
+                <span className="inline-flex items-center gap-1 text-zinc-300">
+                  <Sparkles className="w-3 h-3 text-zinc-300" />
                   Live Sync
                 </span>
               </div>
@@ -151,16 +151,16 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
                             key={item.id}
                             type="button"
                             onClick={() => handleSelect(item.id)}
-                            className={`group relative text-left p-2.5 rounded-xl border transition-all duration-150 cursor-pointer flex items-start gap-3 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                            className={`group relative text-left p-2.5 rounded-xl border transition-all duration-150 cursor-pointer flex items-start gap-3 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 ${
                               isSelected
-                                ? 'bg-zinc-800/90 border-sky-500/50 shadow-md shadow-sky-950/20'
+                                ? 'bg-zinc-800/90 border-zinc-500/70 shadow-md shadow-black/40'
                                 : 'bg-zinc-900/40 hover:bg-zinc-800/60 border-zinc-800/60 hover:border-zinc-700/80'
                             }`}
                           >
                             <div
                               className={`p-2 rounded-lg border shrink-0 transition-transform group-hover:scale-105 ${
                                 isSelected
-                                  ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+                                  ? 'bg-zinc-700/80 text-white border-zinc-600'
                                   : 'bg-zinc-800/70 text-zinc-400 group-hover:text-zinc-200 border-zinc-700/50'
                               }`}
                             >
@@ -180,7 +180,7 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
                                 </span>
                                 <div className="flex items-center gap-1.5 shrink-0">
                                   {badgeVal !== undefined && (
-                                    <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-amber-500/30 text-amber-300 border border-amber-500/40">
+                                    <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">
                                       {badgeVal}
                                     </span>
                                   )}
@@ -204,7 +204,7 @@ export const NavMegaMenu: React.FC<NavMegaMenuProps> = ({
 
             <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-400">
               <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 animate-pulse"></span>
                 <span>Select any module to navigate directly</span>
               </span>
               <button
