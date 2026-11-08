@@ -1,0 +1,56 @@
+[
+  {
+    "id": "ch01_intro",
+    "title": "Introduction & Scientific Mission",
+    "duration": 94.344,
+    "file": "video_production\\audio\\ch01_intro.mp3"
+  },
+  {
+    "id": "ch02_architecture",
+    "title": "Full-Stack Architecture & Engineering",
+    "duration": 83.88,
+    "file": "video_production\\audio\\ch02_architecture.mp3"
+  },
+  {
+    "id": "ch03_pipeline",
+    "title": "The 12-Stage Literature Mining Pipeline",
+    "duration": 124.488,
+    "file": "video_production\\audio\\ch03_pipeline.mp3"
+  },
+  {
+    "id": "ch04_dashboard",
+    "title": "Live Demonstration: Landing & Discovery Dashboard",
+    "duration": 84.36,
+    "file": "video_production\\audio\\ch04_dashboard.mp3"
+  },
+  {
+    "id": "ch05_mining_demo",
+    "title": "Live Demonstration: 12-Stage Literature Mining Engine",
+    "duration": 80.808,
+    "file": "video_production\\audio\\ch05_mining_demo.mp3"
+  },
+  {
+    "id": "ch06_graph_plants",
+    "title": "Live Demonstration: Interactive Knowledge Graph & Plant Dossier",
+    "duration": 88.8,
+    "file": "video_production\\audio\\ch06_graph_plants.mp3"
+  },
+  {
+    "id": "ch07_assistant_curator",
+    "title": "Live Demonstration: Evidence Explorer, AI Assistant & Curator Queue",
+    "duration": 78.432,
+    "file": "video_production\\audio\\ch07_assistant_curator.mp3"
+  },
+  {
+    "id": "ch08_evaluation",
+    "title": "Quantitative Evaluation Benchmarks & Scientific Rigor",
+    "duration": 79.752,
+    "file": "video_production\\audio\\ch08_evaluation.mp3"
+  },
+  {
+    "id": "ch09_ethics_conclusion",
+    "title": "Ethics, Nagoya Protocol & Conclusion",
+    "duration": 61.032,
+    "file": "video_production\\audio\\ch09_ethics_conclusion.mp3"
+  }
+]
