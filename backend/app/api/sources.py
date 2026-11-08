@@ -79,3 +79,4 @@ SOURCE_REGISTRY: List[Dict[str, Any]] = [
 @router.get("", response_model=List[Dict[str, Any]])
 def list_sources():
     return SOURCE_REGISTRY
+

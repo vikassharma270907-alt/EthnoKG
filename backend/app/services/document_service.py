@@ -56,3 +56,4 @@ class DocumentService:
         total = q.count()
         docs = q.order_by(Document.id.desc()).offset(skip).limit(limit).all()
         return docs, total
+

@@ -33,3 +33,4 @@ def test_extract_ashwagandha():
     assert "Withania somnifera" in rec.scientific_name
     assert "Root" in rec.plant_part
     assert rec.knowledge_tradition == "Ayurveda"
+

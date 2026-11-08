@@ -53,3 +53,4 @@ EthnoKG's architectural, taxonomic, and ontological designs are directly informe
 | **PubMed Central (PMC)** | US National Library of Medicine | Open Access subset for literature mining and source extraction | Open Access Subset |
 | **Biodiversity Heritage Library** | Smithsonian / Consortium | Historical botanical surveys and archival ethnobotanical texts | Public Domain / CC-BY |
 | **GBIF** | Global Biodiversity Information Facility | Geographic occurrences and species distribution context | CC0 / CC-BY 4.0 |
+

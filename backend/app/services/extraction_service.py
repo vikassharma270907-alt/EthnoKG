@@ -546,3 +546,4 @@ class ExtractionEngine:
 
         db.commit()
         return persisted_count
+

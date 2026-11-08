@@ -33,3 +33,4 @@ class ExtractionRunResponse(BaseModel):
     document_id: Optional[int] = None
     document_title: Optional[str] = None
     results: List[ExtractionRecord]
+

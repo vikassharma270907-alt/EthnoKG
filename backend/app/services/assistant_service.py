@@ -162,3 +162,4 @@ class AssistantService:
             confidence=0.92,
             medical_disclaimer=DISCLAIMER_TEXT
         )
+

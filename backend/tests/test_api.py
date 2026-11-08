@@ -76,12 +76,17 @@ def test_verification_api(client):
     res = client.get("/api/extraction/results?status=pending")
     assert res.status_code == 200
     pending_list = res.json()
-    if pending_list:
-        rel_id = pending_list[0]["id"]
-        # Approve
-        app_res = client.post(f"/api/verification/{rel_id}/approve", json={"reviewer_name": "Test Curator", "notes": "Approved in unit test"})
-        assert app_res.status_code == 200
-        assert app_res.json()["verification_status"] == "approved"
+    if not pending_list:
+        adhoc = client.post("/api/extraction/run", json={"text_override": "Artemisia annua treats fever in TCM."})
+        assert adhoc.status_code == 200
+        res = client.get("/api/extraction/results?status=pending")
+        pending_list = res.json()
+    assert len(pending_list) > 0, "Expected at least one pending relationship in database"
+    rel_id = pending_list[0]["id"]
+    # Approve
+    app_res = client.post(f"/api/verification/{rel_id}/approve", json={"reviewer_name": "Test Curator", "notes": "Approved in unit test"})
+    assert app_res.status_code == 200
+    assert app_res.json()["verification_status"] == "approved"
 
 def test_analytics_discovery_index(client):
     res = client.get("/api/analytics/discovery-index")
@@ -203,22 +208,37 @@ def test_extraction_run_custom_text(client):
     assert data["extracted_count"] > 0
     assert len(data["results"]) > 0
 
+def test_plants_filter_by_tradition(client):
+    res = client.get("/api/plants?tradition=Ayurveda")
+    assert res.status_code == 200
+    data = res.json()
+    assert len(data) > 0
+    plant_names = [p["scientific_name"] for p in data]
+    # Verify deduplication - no duplicate plants
+    assert len(plant_names) == len(set(plant_names))
+    for plant in data:
+        assert plant["relationships_count"] > 0
+
 def test_verification_reject_and_patch(client):
-    # Create or fetch a pending relation
     res = client.get("/api/extraction/results?status=pending")
     assert res.status_code == 200
     items = res.json()
-    if items:
-        rel_id = items[0]["id"]
-        # Reject
-        rej_res = client.post(f"/api/verification/{rel_id}/reject", json={"reviewer_name": "Auditor", "reason": "Test rejection"})
-        assert rej_res.status_code == 200
-        assert rej_res.json()["verification_status"] == "rejected"
+    if not items:
+        adhoc = client.post("/api/extraction/run", json={"text_override": "Withania somnifera relieves stress in Ayurveda."})
+        assert adhoc.status_code == 200
+        res = client.get("/api/extraction/results?status=pending")
+        items = res.json()
+    assert len(items) > 0, "Expected at least one relationship to reject and patch"
+    rel_id = items[0]["id"]
+    # Reject
+    rej_res = client.post(f"/api/verification/{rel_id}/reject", json={"reviewer_name": "Auditor", "reason": "Test rejection"})
+    assert rej_res.status_code == 200
+    assert rej_res.json()["verification_status"] == "rejected"
 
-        # Patch / update
-        patch_res = client.patch(f"/api/verification/{rel_id}", json={"evidence_tier": "Clinical Human Trial", "notes": "Upgraded tier"})
-        assert patch_res.status_code == 200
-        assert patch_res.json()["evidence_tier"] == "Clinical Human Trial"
+    # Patch / update
+    patch_res = client.patch(f"/api/verification/{rel_id}", json={"evidence_tier": "Clinical Human Trial", "notes": "Upgraded tier"})
+    assert patch_res.status_code == 200
+    assert patch_res.json()["evidence_tier"] == "Clinical Human Trial"
 
 def test_verification_audit_history(client):
     res = client.get("/api/verification/history")
@@ -244,5 +264,12 @@ def test_404_handlers(client):
     # Non-existent relationship
     rel_res = client.get("/api/extraction/999999")
     assert rel_res.status_code == 404
+
+def test_spa_path_traversal_protection(client):
+    res = client.get("/../../.env")
+    assert res.status_code in [403, 404]
+
+    res2 = client.get("/..%2F..%2Fbackend%2Fcore%2Fconfig.py")
+    assert res2.status_code in [403, 404]
 
 

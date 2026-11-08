@@ -26,3 +26,4 @@
 - [x] Environment variable configurations (`.env.example`)
 - [x] Production build verification for frontend and backend
 - [x] Comprehensive README with quick-start and demo script
+

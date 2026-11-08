@@ -104,3 +104,4 @@ The literature mining engine follows a 12-stage sequential pipeline:
 | **Backend Framework** | FastAPI (Python 3.14+) | Async I/O, automatic OpenAPI docs, native Pydantic validation, rapid development. |
 | **Database & Graph** | SQLite + SQLAlchemy 2.0 + NetworkX | Zero-configuration local database that runs reliably on any machine without requiring external daemon setup; NetworkX provides graph algorithms and subgraph extraction. |
 | **Document Processing** | PyPDF + Custom Regex Segmenter | Robust offline document parsing without external API dependencies. |
+

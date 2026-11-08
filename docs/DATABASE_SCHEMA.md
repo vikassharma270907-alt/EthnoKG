@@ -198,3 +198,4 @@ Immutable audit log tracking all curator actions.
 - `curator_notes` (TEXT)
 - `corrections_json` (TEXT / JSON, Nullable)
 - `created_at` (DATETIME)
+

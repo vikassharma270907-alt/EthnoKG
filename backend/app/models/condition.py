@@ -13,3 +13,4 @@ class Condition(Base):
     description = Column(Text, nullable=True)
 
     relationships = relationship("Relationship", back_populates="condition")
+

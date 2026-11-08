@@ -51,3 +51,4 @@ The evaluation suite can be run at any time via:
 python scripts/run_evaluation.py
 ```
 This script computes exact micro- and macro-averaged Precision, Recall, and F1 metrics against `data/evaluation/gold_standard.json` and outputs a machine-readable JSON report at `data/evaluation/evaluation_report.json`.
+

@@ -96,3 +96,4 @@ Researchers in natural products, pharmacology, and global health face fundamenta
 1. **Nagoya Protocol & Traditional Knowledge Sovereignty:** All records maintain explicit attribution of the originating culture/tradition and primary scientific literature.
 2. **Biodiversity Protection:** Endangered species are flagged; exact micro-coordinates are not published to prevent illegal wild-harvesting.
 3. **Medical Disclaimer:** Unambiguous warnings across all interfaces declaring that historical traditional uses do not constitute validated medical advice.
+

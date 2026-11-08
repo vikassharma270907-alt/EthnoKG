@@ -14,3 +14,4 @@ class Compound(Base):
     biological_class = Column(String(100), default="Phytochemical")
 
     relationships = relationship("Relationship", back_populates="compound")
+

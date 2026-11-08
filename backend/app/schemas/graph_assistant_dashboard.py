@@ -69,3 +69,4 @@ class DashboardStatsResponse(BaseModel):
     confidence_distribution: Dict[str, int]
     traditions_distribution: Dict[str, int]
     recent_documents: List[Dict[str, Any]]
+

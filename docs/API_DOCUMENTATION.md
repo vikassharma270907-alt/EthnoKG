@@ -252,3 +252,4 @@ Conversational RAG agent that retrieves actual indexed evidence and formats a ci
 
 ### `GET /api/sources`
 Lists all underlying research corpora, licenses, DOIs, and taxonomic authorities (Kew MPNS, WFO, PubChem, ChEMBL, GBIF, BHL).
+

@@ -79,3 +79,4 @@ The EthnoKG conversational agent is strictly conditioned to prevent generative h
 - If information on a plant or condition does not exist within the indexed repository, it responds:
   *"No verified records for this query are currently indexed in the EthnoKG literature base. EthnoKG does not generate speculative medical assertions."*
 - Every response automatically embeds a scientific disclaimer clarifying that traditional uses are empirical cultural records rather than prescriptive medical advice.
+

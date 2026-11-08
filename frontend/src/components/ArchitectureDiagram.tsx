@@ -87,3 +87,4 @@ export const ArchitectureDiagram: React.FC = () => {
     </div>
   );
 };
+

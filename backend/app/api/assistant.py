@@ -12,3 +12,4 @@ def query_research_assistant(
     db: Session = Depends(get_db)
 ):
     return AssistantService.answer_query(db=db, question=req.question)
+

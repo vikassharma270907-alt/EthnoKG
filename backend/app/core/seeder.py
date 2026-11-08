@@ -276,3 +276,4 @@ def seed_database(db: Session):
             db.add(log)
     db.commit()
     print(f"Successfully seeded {len(doc_objs)} documents and {len(relationships)} relationships into EthnoKG!")
+

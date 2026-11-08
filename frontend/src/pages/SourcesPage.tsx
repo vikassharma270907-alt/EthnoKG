@@ -13,7 +13,7 @@ export const SourcesPage: React.FC = () => {
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      
+
       {/* Header */}
       <div className="pb-4 border-b border-slate-800">
         <div className="flex items-center gap-2">
@@ -35,7 +35,7 @@ export const SourcesPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          
+
           <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
             <h4 className="font-semibold text-white">1. Indigenous IP & Sovereignty</h4>
             <p className="text-slate-300 leading-relaxed">
@@ -75,7 +75,7 @@ export const SourcesPage: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {sources.map((src) => (
-              <div 
+              <div
                 key={src.id}
                 className="bg-[#070c19] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-3 flex flex-col justify-between hover:border-slate-700 transition-colors"
               >

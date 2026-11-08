@@ -1,16 +1,16 @@
 import React from 'react';
-import { 
-  Network, 
-  Leaf, 
-  BarChart3, 
-  Search, 
-  Database, 
-  ShieldCheck, 
-  Sparkles, 
-  BookOpen, 
-  FileText, 
+import {
+  Network,
+  Leaf,
+  BarChart3,
+  Search,
+  Database,
+  ShieldCheck,
+  Sparkles,
+  BookOpen,
+  FileText,
   Globe2,
-  Compass 
+  Compass
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -30,11 +30,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, pending
     { id: 'graph', label: 'Knowledge Graph', icon: Network },
     { id: 'evidence', label: 'Evidence Explorer', icon: Database },
     { id: 'assistant', label: 'Research Assistant', icon: Sparkles },
-    { 
-      id: 'verification', 
-      label: 'Verification', 
-      icon: ShieldCheck, 
-      badge: pendingCount > 0 ? pendingCount : undefined 
+    {
+      id: 'verification',
+      label: 'Verification',
+      icon: ShieldCheck,
+      badge: pendingCount > 0 ? pendingCount : undefined
     },
     { id: 'methodology', label: 'Methodology', icon: BookOpen },
     { id: 'sources', label: 'Sources & Ethics', icon: FileText },
@@ -44,9 +44,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, pending
     <header className="sticky top-0 z-50 bg-[#070b19]/90 backdrop-blur-xl border-b border-emerald-500/20 shadow-2xl shadow-emerald-950/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
+
           {/* Logo & Identity */}
-          <div 
+          <div
             onClick={() => setActiveTab('landing')}
             className="flex items-center gap-3 cursor-pointer group"
           >
@@ -81,11 +81,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, pending
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 ${
-                    isActive 
+                  className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 ${isActive
                       ? 'text-emerald-200 font-semibold'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                  }`}
+                    }`}
                 >
                   {isActive && (
                     <motion.div
@@ -134,11 +133,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, pending
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`whitespace-nowrap flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs transition-colors ${
-                isActive 
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold' 
+              className={`whitespace-nowrap flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs transition-colors ${isActive
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <Icon className="w-3 h-3" />
               <span>{item.label}</span>

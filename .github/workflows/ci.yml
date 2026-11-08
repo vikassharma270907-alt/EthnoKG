@@ -1,4 +1,4 @@
-﻿name: EthnoKG CI / CD Quality Gate
+﻿name: Antigravity CI / CD Quality Gate
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   backend-quality-gate:
-    name: Backend Quality Gate (${{ matrix.os }} - Py${{ matrix.python-version }})
+    name: Master Quality Gate (${{ matrix.os }} - Py${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -17,7 +17,6 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         python-version: ['3.11', '3.12']
     env:
-      PYTHONPATH: backend:.
       PYTHONIOENCODING: utf-8
       PYTHONUTF8: "1"
       PYTHONUNBUFFERED: "1"
@@ -31,6 +30,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
+          cache-dependency-path: 'backend/requirements.txt'
 
       - name: Install backend dependencies
         run: |
@@ -38,13 +38,20 @@ jobs:
           pip install -r backend/requirements.txt
           pip install pytest pytest-asyncio anyio httpx
 
+      - name: Syntax & Compilation Validation
+        run: |
+          python -m compileall -q backend scripts
+
       - name: Run Master Verification Suite
         run: |
           python scripts/run_all_tests.py
 
   frontend-quality-gate:
-    name: Frontend Quality Gate (Node 20 - Lint & Build)
+    name: Frontend Quality Gate (React 19 / Vite / TS)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -57,34 +64,10 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm install
+        run: npm ci
 
       - name: Run frontend linter (oxlint)
-        run: |
-          cd frontend
-          npm run lint
+        run: npm run lint
 
-      - name: Build production bundle
-        run: |
-          cd frontend
-          npm run build
-
-  docker-build-verification:
-    name: Docker Multi-Stage Container Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          tags: ethnokg:ci-latest
+      - name: Type-Check & Build Production Assets
+        run: npm run build

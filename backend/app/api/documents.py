@@ -88,3 +88,4 @@ def get_document(
     d_dict = {c.name: getattr(doc, c.name) for c in doc.__table__.columns}
     d_dict["relationships_count"] = db.query(Relationship).filter(Relationship.document_id == doc.id).count()
     return DocumentDetail(**d_dict)
+
