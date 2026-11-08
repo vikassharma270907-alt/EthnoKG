@@ -14,9 +14,11 @@ import { MethodologyPage } from './pages/MethodologyPage';
 import { SourcesPage } from './pages/SourcesPage';
 import { fetchDashboardStats } from './api/client';
 import type { DashboardStatsResponse } from './types';
+import { VideoWalkthroughModal } from './components/VideoWalkthroughModal';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('landing');
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState<boolean>(false);
   const [stats, setStats] = useState<DashboardStatsResponse | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
 
@@ -52,11 +54,12 @@ export function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#070b19] text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
       
-      {/* Navbar with live badge */}
+      {/* Navbar with live badge & video walkthrough trigger */}
       <Navbar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         pendingCount={stats?.pending_verifications || 0} 
+        onOpenVideoWalkthrough={() => setIsVideoModalOpen(true)}
       />
 
       {/* Main Content View */}
@@ -98,6 +101,13 @@ export function App() {
 
       {/* Footer */}
       <Footer setActiveTab={setActiveTab} />
+
+      {/* Interactive 10-Minute Video Walkthrough & Presentation Modal */}
+      <VideoWalkthroughModal 
+        isOpen={isVideoModalOpen} 
+        onClose={() => setIsVideoModalOpen(false)} 
+        setActiveTab={setActiveTab} 
+      />
 
     </div>
   );

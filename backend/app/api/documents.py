@@ -1,5 +1,6 @@
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from ..core.database import get_db
 from ..services.document_service import DocumentService
@@ -71,10 +72,18 @@ def list_documents(
 ):
     docs, _ = DocumentService.list_documents(db, skip=skip, limit=limit, query=query)
     results = []
-    for d in docs:
-        d_dict = {c.name: getattr(d, c.name) for c in d.__table__.columns}
-        d_dict["relationships_count"] = db.query(Relationship).filter(Relationship.document_id == d.id).count()
-        results.append(DocumentBrief(**d_dict))
+    if docs:
+        doc_ids = [d.id for d in docs]
+        counts_map = dict(
+            db.query(Relationship.document_id, func.count(Relationship.id))
+            .filter(Relationship.document_id.in_(doc_ids))
+            .group_by(Relationship.document_id)
+            .all()
+        )
+        for d in docs:
+            d_dict = {c.name: getattr(d, c.name) for c in d.__table__.columns}
+            d_dict["relationships_count"] = counts_map.get(d.id, 0)
+            results.append(DocumentBrief(**d_dict))
     return results
 
 @router.get("/{document_id}", response_model=DocumentDetail)

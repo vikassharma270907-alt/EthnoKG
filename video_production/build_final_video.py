@@ -155,6 +155,10 @@ def render_scenes():
         scene_mp4 = os.path.join(scenes_dir, f"{ch['id']}.mp4")
         scene_files.append(scene_mp4)
         
+        if os.path.exists(scene_mp4) and os.path.getsize(scene_mp4) > 100000:
+            print(f"Skipping {ch['id']} (already rendered: {os.path.getsize(scene_mp4)} bytes)")
+            continue
+
         print(f"\n=======================================================")
         print(f"Rendering [{idx+1}/9]: {ch['title']}")
         print(f"Duration: {ch_dur:.2f}s (Original: {orig_dur:.2f}s at {speed_factor}x)")

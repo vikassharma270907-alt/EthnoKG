@@ -9,14 +9,11 @@ import {
   ExternalLink, 
   Volume2, 
   VolumeX, 
-  Layers, 
   Sparkles, 
-  CheckCircle2, 
-  Maximize2,
   FileVideo
 } from 'lucide-react';
 
-export interface ChapterItem {
+interface ChapterItem {
   id: string;
   title: string;
   subtitle: string;
@@ -27,7 +24,7 @@ export interface ChapterItem {
   featureName?: string;
 }
 
-export const CHAPTERS: ChapterItem[] = [
+const CHAPTERS: ChapterItem[] = [
   {
     id: 'ch01_intro',
     title: '1. Introduction & Scientific Mission',
@@ -141,18 +138,36 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
 
   const currentChapter = CHAPTERS[currentChapterIndex];
 
+  const isPlayingRef = useRef(isPlaying);
+  const playbackSpeedRef = useRef(playbackSpeed);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
+  useEffect(() => {
+    playbackSpeedRef.current = playbackSpeed;
+  }, [playbackSpeed]);
+
   // Load chapter audio when chapter changes
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.src = currentChapter.audioSrc;
-      audioRef.current.playbackRate = playbackSpeed;
-      audioRef.current.currentTime = 0;
+    const audio = audioRef.current;
+    if (audio) {
+      audio.src = currentChapter.audioSrc;
+      audio.playbackRate = playbackSpeedRef.current;
+      audio.currentTime = 0;
       setCurrentTime(0);
-      if (isPlaying) {
-        audioRef.current.play().catch(() => setIsPlaying(false));
+      if (isPlayingRef.current) {
+        audio.play().catch(() => setIsPlaying(false));
       }
     }
-  }, [currentChapterIndex]);
+  }, [currentChapterIndex, currentChapter.audioSrc]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackSpeed;
+    }
+  }, [playbackSpeed]);
 
   // Handle Play / Pause toggle
   const togglePlay = () => {

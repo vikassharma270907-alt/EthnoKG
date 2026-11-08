@@ -1,5 +1,6 @@
 from typing import Optional, List
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from ..core.database import get_db
 from ..models.compound import Compound
@@ -25,17 +26,24 @@ def list_compounds(
     comps = q.order_by(Compound.name.asc()).offset(skip).limit(limit).all()
 
     output = []
-    for c in comps:
-        rel_count = db.query(Relationship).filter(Relationship.compound_id == c.id).count()
-        output.append(CompoundBrief(
-            id=c.id,
-            name=c.name,
-            pubchem_cid=c.pubchem_cid,
-            chembl_id=c.chembl_id,
-            molecular_formula=c.molecular_formula,
-            smiles=c.smiles,
-            biological_class=c.biological_class,
-            relationships_count=rel_count
-        ))
+    if comps:
+        comp_ids = [c.id for c in comps]
+        counts_map = dict(
+            db.query(Relationship.compound_id, func.count(Relationship.id))
+            .filter(Relationship.compound_id.in_(comp_ids))
+            .group_by(Relationship.compound_id)
+            .all()
+        )
+        for c in comps:
+            output.append(CompoundBrief(
+                id=c.id,
+                name=c.name,
+                pubchem_cid=c.pubchem_cid,
+                chembl_id=c.chembl_id,
+                molecular_formula=c.molecular_formula,
+                smiles=c.smiles,
+                biological_class=c.biological_class,
+                relationships_count=counts_map.get(c.id, 0)
+            ))
     return output
 
