@@ -29,7 +29,9 @@ def run_extraction(
         doc_title = doc.title
         doc_url = doc.source_url or (f"https://doi.org/{doc.doi}" if doc.doi else "")
         doc_year = doc.publication_year or 2024
-    elif req.text_override:
+    elif req.text_override is not None:
+        if not req.text_override.strip():
+            raise HTTPException(status_code=400, detail="Cannot run extraction on empty document or text.")
         text_to_process = req.text_override
         # Create an ad-hoc document record
         doc = Document(
