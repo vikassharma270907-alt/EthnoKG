@@ -10,17 +10,27 @@ export const GraphPage: React.FC = () => {
   const [selectedEvidenceTier, setSelectedEvidenceTier] = useState<string | undefined>(undefined);
   const [selectedTradition, setSelectedTradition] = useState<string | undefined>(undefined);
 
-  const loadGraph = (tier?: string, trad?: string) => {
-    setIsLoading(true);
-    fetchGraph({
-      evidence_tier: tier,
-      tradition: trad,
-      max_edges: 200
-    }).then(setGraphData).finally(() => setIsLoading(false));
-  };
-
   useEffect(() => {
-    loadGraph(selectedEvidenceTier, selectedTradition);
+    let isSubscribed = true;
+    fetchGraph({
+      evidence_tier: selectedEvidenceTier,
+      tradition: selectedTradition,
+      max_edges: 200
+    }).then(data => {
+      if (isSubscribed) {
+        setGraphData(data);
+        setIsLoading(false);
+      }
+    }).catch(err => {
+      if (isSubscribed) {
+        console.error(err);
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      isSubscribed = false;
+    };
   }, [selectedEvidenceTier, selectedTradition]);
 
   const handleFilterChange = (filters: { evidence_tier?: string; tradition?: string }) => {
