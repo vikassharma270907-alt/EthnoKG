@@ -14,7 +14,10 @@ import type {
   DiscoveryIndexItem,
   ConvergenceItem,
   EvaluationBenchmarkResponse,
-  SovereigntyCertificate
+  SovereigntyCertificate,
+  BotanicalTaxonResolution,
+  CompoundDetail,
+  GraphCacheStats
 } from '../types';
 
 const rawBase = (import.meta as any).env?.VITE_API_URL as string | undefined;
@@ -254,6 +257,32 @@ export async function fetchEvaluationBenchmark(): Promise<EvaluationBenchmarkRes
 export async function fetchSovereigntyCertificate(plantId: number): Promise<SovereigntyCertificate> {
   const res = await fetch(`${API_BASE}/analytics/sovereignty-certificate/${plantId}`);
   if (!res.ok) throw new Error(`Failed to fetch sovereignty certificate: ${res.statusText}`);
+  return res.json();
+}
+
+export async function resolveBotanicalTaxon(name: string, tradition?: string): Promise<BotanicalTaxonResolution> {
+  const params = new URLSearchParams({ name });
+  if (tradition) params.append('tradition', tradition);
+  const res = await fetch(`${API_BASE}/plants/resolve-taxon?${params.toString()}`);
+  if (!res.ok) throw new Error(await parseError(res, 'Failed to resolve taxon'));
+  return res.json();
+}
+
+export async function fetchCompoundDetail(id: number): Promise<CompoundDetail> {
+  const res = await fetch(`${API_BASE}/compounds/${id}`);
+  if (!res.ok) throw new Error(await parseError(res, `Failed to fetch compound ${id}`));
+  return res.json();
+}
+
+export async function fetchGraphCacheStats(): Promise<GraphCacheStats> {
+  const res = await fetch(`${API_BASE}/graph/cache/stats`);
+  if (!res.ok) throw new Error(`Failed to fetch graph cache stats: ${res.statusText}`);
+  return res.json();
+}
+
+export async function clearGraphCache(): Promise<{ cleared_entries: number; status: string }> {
+  const res = await fetch(`${API_BASE}/graph/cache/clear`, { method: 'POST' });
+  if (!res.ok) throw new Error('Failed to flush graph cache');
   return res.json();
 }
 
