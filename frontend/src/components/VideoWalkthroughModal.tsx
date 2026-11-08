@@ -312,7 +312,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h2 id="walkthrough-modal-title" className="text-lg font-bold tracking-tight text-white font-mono">
-                  Ethno<span className="text-sky-400">KG</span> Video Walkthrough & Presentation
+                  Ethno<span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400">KG</span> Video Walkthrough & Presentation
                 </h2>
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
                   10-Min Deep Dive
@@ -332,11 +332,11 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
             <a
               href="/walkthrough/EthnoKG_Complete_Project_Walkthrough.mp4"
               download="EthnoKG_Complete_Project_Walkthrough.mp4"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 min-h-[36px] rounded-lg text-xs font-semibold bg-[#161822] hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white transition-all shadow-xs focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 min-h-[36px] rounded-lg text-xs font-semibold bg-[#161822] hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white transition-all shadow-xs focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
               title="Download standalone 1080p MP4 file"
               aria-label="Download full 1080p MP4 walkthrough video file"
             >
-              <Download className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
+              <Download className="w-3.5 h-3.5 text-zinc-300" aria-hidden="true" />
               <span>Download MP4</span>
             </a>
 
@@ -344,7 +344,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
             <button
               ref={closeButtonRef}
               onClick={handleModalClose}
-              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
               title="Close Walkthrough"
               aria-label="Close walkthrough presentation"
             >
@@ -375,7 +375,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   className="absolute top-4 left-4 flex items-center gap-2 bg-black/85 backdrop-blur-md border border-zinc-800 px-3 py-1.5 rounded-xl shadow-lg"
                   aria-hidden="true"
                 >
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="w-2 h-2 rounded-full bg-zinc-200 animate-pulse"></span>
                   <span className="text-xs font-semibold text-zinc-200 font-mono">
                     {currentChapter.id.toUpperCase()} • CHAPTER {currentChapterIndex + 1}/{CHAPTERS.length}
                   </span>
@@ -385,11 +385,11 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                 {currentChapter.targetTab && (
                   <button
                     onClick={() => handleJumpToFeature(currentChapter.targetTab)}
-                    className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-2 min-h-[36px] rounded-xl text-xs font-semibold bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 border border-zinc-600 backdrop-blur-md shadow-lg transition-all hover:scale-105 cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                    className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-2 min-h-[36px] rounded-xl text-xs font-semibold bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 border border-zinc-600 backdrop-blur-md shadow-lg transition-all hover:scale-105 cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                     aria-label={`Explore live feature: ${currentChapter.featureName || 'Explore Live'} (closes modal and navigates to ${currentChapter.targetTab} view)`}
                   >
                     <span>{currentChapter.featureName || 'Explore Live'}</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
+                    <ExternalLink className="w-3.5 h-3.5 text-zinc-300" aria-hidden="true" />
                   </button>
                 )}
 
@@ -399,19 +399,19 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                     className="absolute bottom-4 right-4 flex items-end gap-1 bg-black/80 backdrop-blur-md px-3 py-2 rounded-xl border border-zinc-800"
                     aria-hidden="true"
                   >
-                    <span className="text-[10px] font-mono text-sky-400 mr-1.5 font-bold">Wispr Audio</span>
-                    <span className="w-1 bg-emerald-400 rounded-full animate-bounce h-3"></span>
-                    <span className="w-1 bg-sky-400 rounded-full animate-bounce h-5 [animation-delay:0.1s]"></span>
-                    <span className="w-1 bg-zinc-300 rounded-full animate-bounce h-4 [animation-delay:0.2s]"></span>
-                    <span className="w-1 bg-emerald-300 rounded-full animate-bounce h-6 [animation-delay:0.15s]"></span>
-                    <span className="w-1 bg-teal-300 rounded-full animate-bounce h-2 [animation-delay:0.25s]"></span>
+                    <span className="text-[10px] font-mono text-zinc-300 mr-1.5 font-bold">Wispr Audio</span>
+                    <span className="w-1 bg-zinc-100 rounded-full animate-bounce h-3"></span>
+                    <span className="w-1 bg-zinc-300 rounded-full animate-bounce h-5 [animation-delay:0.1s]"></span>
+                    <span className="w-1 bg-zinc-400 rounded-full animate-bounce h-4 [animation-delay:0.2s]"></span>
+                    <span className="w-1 bg-zinc-200 rounded-full animate-bounce h-6 [animation-delay:0.15s]"></span>
+                    <span className="w-1 bg-zinc-500 rounded-full animate-bounce h-2 [animation-delay:0.25s]"></span>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Bottom Audio Player Bar */}
-            <div className="px-6 py-4 bg-[#111319] border-t border-zinc-800 flex flex-col gap-3">
+            <div className="px-6 py-4 bg-[#101218] border-t border-zinc-800 flex flex-col gap-3">
               
               {/* Scrubbing Bar */}
               <div className="flex items-center gap-3">
@@ -430,7 +430,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   aria-valuemax={Math.round(duration || currentChapter.duration)}
                   aria-valuenow={Math.round(currentTime)}
                   aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration || currentChapter.duration)}`}
-                  className="flex-1 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none transition-all"
+                  className="flex-1 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-zinc-200 focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none transition-all"
                 />
                 <span className="text-xs font-mono text-zinc-300 w-12" aria-hidden="true">
                   {formatTime(duration || currentChapter.duration)}
@@ -445,7 +445,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   <button 
                     onClick={toggleMute}
                     aria-label={isMuted ? "Unmute narration" : "Mute narration"}
-                    className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                    className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                   >
                     {isMuted ? (
                       <VolumeX className="w-4 h-4 text-rose-400" aria-hidden="true" />
