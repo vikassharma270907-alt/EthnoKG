@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Play, 
   Pause, 
@@ -149,16 +149,28 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
     playbackSpeedRef.current = playbackSpeed;
   }, [playbackSpeed]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-      setIsPlaying(false);
-      setCurrentTime(0);
-      return;
+  const handleModalClose = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
+    setIsPlaying(false);
+    setCurrentTime(0);
+    onClose();
+  }, [onClose]);
+
+  useEffect(() => {
+    const audioEl = audioRef.current;
+    return () => {
+      if (audioEl) {
+        audioEl.pause();
+        audioEl.currentTime = 0;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
 
     if (audioRef.current) {
       audioRef.current.src = currentChapter.audioSrc;
@@ -174,12 +186,12 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        handleModalClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, handleModalClose]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -244,7 +256,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
   const handleJumpToFeature = (tab?: string) => {
     if (tab) {
       setActiveTab(tab);
-      onClose();
+      handleModalClose();
     }
   };
 
@@ -308,7 +320,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
 
             {/* Close Button */}
             <button
-              onClick={onClose}
+              onClick={handleModalClose}
               className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
               title="Close Walkthrough"
             >
