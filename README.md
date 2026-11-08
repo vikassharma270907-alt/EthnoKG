@@ -203,12 +203,15 @@ EthnoKG includes a native Render Blueprint (`render.yaml`), multi-stage `Dockerf
 
 To verify the live application during presentation or judging:
 
-1. **Dashboard Overview:** Open `http://localhost:5173/` and navigate to **Dashboard**. Review real-time quantitative metrics (Plants, Relationships, Compounds, Publications, Evidence Distribution) computed live from SQLite.
-2. **Mine Literature:** Navigate to **Literature Mining**. Select a paper from the indexed collection (e.g., *Discovery of artemisinin by Tu Youyou, 2011*) or paste raw text. Click **Start Literature Mining Pipeline**. Watch the 12-stage pipeline extract structured entities with verbatim supporting excerpts.
-3. **Explore Knowledge Graph:** Navigate to **Knowledge Graph**. Pan, zoom, and click on nodes (*Artemisia annua L.*, *Malaria*, *Withania somnifera*). Click on edges to inspect the scientific provenance drawer with verbatim text passages, confidence scores, and DOIs.
-4. **Plant Intelligence Dossier:** Open **Plant Intelligence**. Search for *"Ashwagandha"* or *"Neem"*. Click **Open Dossier** to view taxonomic authority status, parts used, preparations, and primary literature citations.
-5. **Grounded AI Assistant:** Navigate to **Research Assistant**. Ask: *"What plants have documented traditional uses associated with fever?"* Observe the assistant citing exact historical passages and DOIs while appending the non-diagnostic research disclaimer.
-6. **Human Verification Workspace:** Navigate to **Verification**. View extractions in the curator queue. Inspect the verbatim source excerpt side-by-side with the extracted entities, edit attributes if needed, and click **Approve** or **Reject** to update the certified knowledge base.
+1. **Dashboard Overview:** Open `http://localhost:5173/` (or [live production](https://ethnokg-platform.onrender.com)) and review real-time quantitative metrics (Plants, Relationships, Compounds, Publications, Evidence Distribution) computed live from SQLite.
+2. **Mine Literature:** Navigate to **Literature Mining**. Select a paper from the pre-loaded presets (e.g., *Artemisia annua Malaria RCT*) or paste raw text. Click **Start Literature Mining Pipeline**. Watch the 12-stage pipeline extract structured entities with verbatim supporting excerpts.
+3. **Explore Knowledge Graph:** Navigate to **Knowledge Graph**. Pan, zoom, and click on nodes (*Artemisia annua L.*, *Malaria*, *Withania somnifera*). Switch between *CoSE*, *Concentric*, *Circle*, and *Breadthfirst* physics layouts, or export a 2x high-res PNG.
+4. **Plant Intelligence Dossier & Voice Synthesis:** Open **Plant Intelligence**. Switch between **Grid**, **Slide Carousel**, and **Research Table** views. Click **Open Dossier** to view NCBI PubChem 2D chemical structure previews, Kew POWO botanical authority status, and click **Listen** to trigger real-time Speech Synthesis voice narration with animated audio equalizer bouncing bars.
+5. **Grounded AI Assistant:** Navigate to **Research Assistant**. Ask: *"What plants have documented traditional uses associated with fever?"* Observe the assistant citing exact historical passages and DOIs while appending the non-diagnostic research disclaimer. Click **Listen** to hear audio playback of the response.
+6. **Reverse Pharmacology & On-Chain Sovereignty:** Navigate to **Discovery Radar**. Explore the Reverse Pharmacology Translational Gap Index and Cross-Cultural Convergence Matrix. Click **Nagoya Certificate** on any species to generate an immutable SHA-256 certificate and inspect the simulated **Arbitrum Layer-2 EAS Verifiable Attestation**.
+7. **Human Verification Workspace:** Navigate to **Verification**. Adjudicate extracted claims using the swipe deck mode with keyboard shortcuts (`A` Approve, `R` Reject, `E` Edit).
+8. **Rapid Keyboard Navigation & Video Presentation:** Press `?` anywhere to launch the interactive Command Palette, press `V` to open the full 10-minute HD video walkthrough, and use `1-9`, `0`, `E` for instant tab switching.
+9. **Interactive API Portal:** Visit `/docs` to explore the custom dark-mode Swagger UI with live latency ping probes.
 
 ---
 
