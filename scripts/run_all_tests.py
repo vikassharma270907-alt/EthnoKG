@@ -27,9 +27,12 @@ def main():
     print("ETHNOKG PLATFORM - MASTER QUALITY GATE VERIFICATION SUITE")
     print("=" * 72)
 
-    # Step 1: Pytest Suite
-    print("\n[GATE 1/3] Executing Unit & Integration Tests via Pytest...")
-    pytest_cmd = [sys.executable, "-m", "pytest", "backend/tests", "-v"]
+    # Step 1: Pytest Suite with Coverage
+    print("\n[GATE 1/3] Executing Unit & Integration Tests via Pytest (with coverage)...")
+    pytest_cmd = [
+        sys.executable, "-m", "pytest", "backend/tests", 
+        "-v", "--cov=backend/app", "--cov-report=term-missing", "--cov-fail-under=80"
+    ]
     pytest_res = subprocess.run(pytest_cmd, env=env)
     if pytest_res.returncode != 0:
         print("\n❌ GATE 1 FAILED: Pytest test suite encountered failures.")
