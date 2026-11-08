@@ -48,6 +48,9 @@ def run_extraction(
     else:
         raise HTTPException(status_code=400, detail="Must provide either document_id or text_override.")
 
+    if not text_to_process or not text_to_process.strip():
+        raise HTTPException(status_code=400, detail="Cannot run extraction on empty document or text.")
+
     records = ExtractionEngine.extract_from_text(
         text=text_to_process,
         document_title=doc_title,
