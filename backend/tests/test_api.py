@@ -307,5 +307,38 @@ def test_verification_error_cases(client):
     res_patch = client.patch("/api/verification/999999", json={"notes": "Update"})
     assert res_patch.status_code == 404
 
+def test_extraction_empty_text_returns_400(client):
+    # Empty string text_override
+    res_empty = client.post("/api/extraction/run", json={"text_override": ""})
+    assert res_empty.status_code == 400
+    assert "empty document or text" in res_empty.json()["detail"].lower()
+
+    # Whitespace-only text_override
+    res_ws = client.post("/api/extraction/run", json={"text_override": "   \n\t  "})
+    assert res_ws.status_code == 400
+    assert "empty document or text" in res_ws.json()["detail"].lower()
+
+    # Neither document_id nor text_override
+    res_none = client.post("/api/extraction/run", json={})
+    assert res_none.status_code == 400
+
+def test_upload_unsupported_extension_returns_400(client):
+    import io
+    bad_file = {"file": ("malicious.exe", io.BytesIO(b"MZ..."), "application/octet-stream")}
+    data = {"title": "Executable File"}
+    res = client.post("/api/documents/upload", files=bad_file, data=data)
+    assert res.status_code == 400
+    assert "unsupported file format" in res.json()["detail"].lower()
+
+def test_verification_history_pagination_guard(client):
+    # Invalid limit (less than 1)
+    res_low = client.get("/api/verification/history?limit=0")
+    assert res_low.status_code == 422  # FastAPI validation error
+
+    # Invalid limit (exceeds max 200)
+    res_high = client.get("/api/verification/history?limit=250")
+    assert res_high.status_code == 422
+
+
 
 
