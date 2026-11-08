@@ -95,6 +95,11 @@ if os.path.exists(frontend_dist):
         if full_path.startswith("api/") or full_path in ["docs", "openapi.json", "healthz", "redoc", "api"]:
             raise HTTPException(status_code=404, detail="API route not found")
         
+        # Disallow hidden dotfiles and traversal probing
+        path_parts = Path(full_path).parts
+        if any(part.startswith(".") for part in path_parts):
+            raise HTTPException(status_code=404, detail="Resource not found")
+
         # Guard against path traversal attacks (CWE-22)
         try:
             target_path = (frontend_dist_path / full_path).resolve()
