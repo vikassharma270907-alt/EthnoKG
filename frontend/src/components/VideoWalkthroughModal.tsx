@@ -271,7 +271,12 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
   const totalPresentationSeconds = CHAPTERS.reduce((acc, c) => acc + c.duration, 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-2xl animate-fade-in">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-2xl animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="walkthrough-modal-title"
+    >
       
       {/* Hidden Audio Element */}
       <audio 
@@ -290,7 +295,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold tracking-tight text-white font-mono">
+                <h2 id="walkthrough-modal-title" className="text-lg font-bold tracking-tight text-white font-mono">
                   Ethno<span className="text-sky-400">KG</span> Video Walkthrough & Presentation
                 </h2>
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
@@ -313,6 +318,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
               download="EthnoKG_Complete_Project_Walkthrough.mp4"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#161822] hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white transition-all shadow-xs"
               title="Download standalone 1080p MP4 file"
+              aria-label="Download full 1080p MP4 walkthrough video file"
             >
               <Download className="w-3.5 h-3.5 text-sky-400" />
               <span>Download MP4</span>
@@ -323,6 +329,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
               onClick={handleModalClose}
               className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
               title="Close Walkthrough"
+              aria-label="Close walkthrough presentation"
             >
               <X className="w-5 h-5" />
             </button>
@@ -392,6 +399,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   step="0.1"
                   value={currentTime}
                   onChange={handleSeek}
+                  aria-label="Walkthrough audio timeline scrubber"
                   className="flex-1 h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-zinc-200 hover:h-2 transition-all"
                 />
                 <span className="text-xs font-mono text-zinc-400 w-10">
@@ -406,6 +414,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={toggleMute}
+                    aria-label={isMuted ? "Unmute narration" : "Mute narration"}
                     className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
                   >
                     {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4" />}
@@ -416,6 +425,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                       <button
                         key={spd}
                         onClick={() => changeSpeed(spd)}
+                        aria-label={`Set playback speed to ${spd}x`}
                         className={`px-2 py-0.5 rounded-md text-[11px] font-mono transition-colors cursor-pointer ${
                           playbackSpeed === spd 
                             ? 'bg-zinc-800 text-white font-bold border border-zinc-600' 
@@ -433,6 +443,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   <button 
                     onClick={prevChapter}
                     disabled={currentChapterIndex === 0}
+                    aria-label="Previous chapter"
                     className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
                   >
                     <SkipBack className="w-5 h-5" />
@@ -440,6 +451,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
 
                   <button 
                     onClick={togglePlay}
+                    aria-label={isPlaying ? "Pause walkthrough narration" : "Play walkthrough narration"}
                     className="w-12 h-12 rounded-2xl bg-zinc-200 hover:bg-white text-zinc-950 flex items-center justify-center shadow-lg shadow-black/50 hover:scale-105 transition-all cursor-pointer"
                   >
                     {isPlaying ? (
@@ -452,6 +464,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   <button 
                     onClick={nextChapter}
                     disabled={currentChapterIndex === CHAPTERS.length - 1}
+                    aria-label="Next chapter"
                     className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
                   >
                     <SkipForward className="w-5 h-5" />

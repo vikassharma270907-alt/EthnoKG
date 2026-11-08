@@ -381,15 +381,18 @@ export const VerificationPage: React.FC = () => {
         </div>
       )}
 
-      {/* Edit / Curation Modal */}
-      <VerificationModal
-        rel={activeRel}
-        relationship={activeRel}
-        onClose={() => setActiveRel(null)}
-        onApprove={handleModalApprove}
-        onReject={handleModalReject}
-        onUpdate={handleModalUpdate}
-      />
+      {/* Edit / Curation Modal with fresh instance per queue item */}
+      {activeRel && (
+        <VerificationModal
+          key={activeRel.id}
+          rel={activeRel}
+          relationship={activeRel}
+          onClose={() => setActiveRel(null)}
+          onApprove={handleModalApprove}
+          onReject={handleModalReject}
+          onUpdate={handleModalUpdate}
+        />
+      )}
 
     </div>
   );

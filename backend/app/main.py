@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -34,11 +34,11 @@ app = FastAPI(
 )
 
 # Robust CORS Configuration for Render Deployments
-# Matches explicit origins, localhost dev servers, and all *.onrender.com subdomains
+# Matches explicit origins, localhost dev servers, and ethnokg*.onrender.com subdomains
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_origin_regex=r"^https://.*\.onrender\.com$",
+    allow_origin_regex=r"^https://ethnokg.*\.onrender\.com$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,7 +49,7 @@ app.include_router(api_router, prefix="/api")
 
 @app.api_route("/api/health", methods=["GET", "HEAD"])
 @app.api_route("/healthz", methods=["GET", "HEAD"])
-def healthcheck(db: Session = Depends(get_db)):
+def healthcheck(response: Response, db: Session = Depends(get_db)):
     db_status = "connected"
     try:
         db.execute(text("SELECT 1"))
@@ -57,6 +57,9 @@ def healthcheck(db: Session = Depends(get_db)):
         db_status = f"error: {str(e)}"
 
     is_healthy = db_status == "connected"
+    if not is_healthy:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+
     return {
         "status": "healthy" if is_healthy else "degraded",
         "database": db_status,

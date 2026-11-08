@@ -116,9 +116,16 @@ class VerificationService:
 
             if update_data.plant_name and (not rel.plant or update_data.plant_name != rel.plant.scientific_name):
                 plant = db.query(Plant).filter(Plant.scientific_name == update_data.plant_name).first()
-                if plant:
-                    changes["plant_id"] = {"old": rel.plant_id, "new": plant.id}
-                    rel.plant_id = plant.id
+                if not plant:
+                    plant = Plant(
+                        scientific_name=update_data.plant_name,
+                        family="Unknown",
+                        taxonomic_status="Accepted"
+                    )
+                    db.add(plant)
+                    db.flush()
+                changes["plant_id"] = {"old": rel.plant_id, "new": plant.id}
+                rel.plant_id = plant.id
 
             if update_data.condition_name and (not rel.condition or update_data.condition_name != rel.condition.name):
                 cond = db.query(Condition).filter(Condition.name == update_data.condition_name).first()

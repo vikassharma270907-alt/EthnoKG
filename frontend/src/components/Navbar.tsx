@@ -54,9 +54,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between h-16">
 
           {/* Logo & Identity */}
-          <div
+          <button
             onClick={() => setActiveTab('landing')}
-            className="flex items-center gap-3 cursor-pointer group select-none"
+            className="flex items-center gap-3 cursor-pointer group select-none text-left bg-transparent border-0 p-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 rounded-xl"
+            aria-label="Navigate to EthnoKG home overview"
           >
             <div className="relative">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-zinc-800 via-zinc-700 to-zinc-500 border border-zinc-600/50 flex items-center justify-center shadow-lg shadow-black/50 group-hover:scale-105 group-hover:border-zinc-400/70 transition-all duration-300">
@@ -78,7 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
               <p className="text-[11px] text-zinc-400 hidden sm:block">Traceable Traditional Knowledge Discovery</p>
             </div>
-          </div>
+          </button>
 
           {/* Navigation Links with animated indicator */}
           <nav className="hidden lg:flex items-center space-x-1">
