@@ -49,6 +49,44 @@ EthnoKG is built as an end-to-end, multi-tier full-stack application:
 
 ---
 
+## 📸 Visual Showcase & Platform Tour
+
+<div align="center">
+
+### 1. Interactive Research Portal & Botanical Constellation
+![EthnoKG Landing Hero](docs/screenshots/01_landing_hero.png)
+*Interactive canvas-powered neural botanical constellation with live network telemetry and quick stats.*
+
+### 2. Quantitative Evidence Dashboard
+![Research Dashboard](docs/screenshots/02_dashboard_overview.png)
+*Real-time distribution across 6 evidence tiers, confidence levels, and active ethnomedicinal traditions.*
+
+### 3. 12-Stage Literature Mining Engine
+![Literature Mining](docs/screenshots/03_mining_results.png)
+*Live document extraction stepper with verbatim text highlight, calibrated confidence estimation, and MeSH mapping.*
+
+### 4. Interactive Cytoscape.js Knowledge Graph
+![Interactive Graph](docs/screenshots/04_graph_network.png)
+*Force-directed graph network with degree-based node sizing, 4 layout algorithms, 2x PNG export, and side drawers.*
+
+### 5. Botanical Intelligence & Taxonomy Dossier
+![Plant Intelligence Dossier](docs/screenshots/04_plant_dossier.png)
+*Kew MPNS & World Flora Online resolution, botanical synonyms, bioactive compounds, and DOI references.*
+
+### 6. Reverse Pharmacology Discovery Radar
+![Discovery Radar](docs/screenshots/05_discovery_radar.png)
+*Automated cross-tradition convergence scoring, reverse pharmacology discovery index, and SHA-256 sovereignty certificates.*
+
+### 7. Zero-Hallucination Grounded AI Assistant & Curator Verification
+| Grounded RAG Research Assistant | Expert Curator Verification Queue |
+| :---: | :---: |
+| ![Assistant](docs/screenshots/05_grounded_assistant.png) | ![Verification](docs/screenshots/05_verification_queue.png) |
+| *Verbatim bibliographic citations & strict research disclaimers.* | *Side-by-side excerpt inspection, approval audit trail & patch controls.* |
+
+</div>
+
+---
+
 ## 🔬 3. 12-Stage Literature Mining Pipeline
 
 ```
@@ -100,8 +138,8 @@ python scripts/run_evaluation.py
 
 ### Step 1: Clone Repository
 ```bash
-git clone https://github.com/your-org/ethno-kg.git
-cd ethno-kg
+git clone https://github.com/vikassharma270907-alt/EthnoKG.git
+cd EthnoKG
 ```
 
 ### Step 2: Setup Backend

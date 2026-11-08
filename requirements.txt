@@ -1,0 +1,2 @@
+# EthnoKG Root Requirements (mirrors backend/requirements.txt for CI & deployment tooling)
+-r backend/requirements.txt

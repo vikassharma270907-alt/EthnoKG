@@ -25,5 +25,8 @@ Thumbs.db
 .mcp.json
 scripts/antigravity-sync.*
 scripts/ralph/
+# Media & Video Temp Outputs
+video_production/recordings/
+*.webm
 *.mp3
 

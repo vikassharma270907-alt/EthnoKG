@@ -1,6 +1,7 @@
 from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
+from sqlalchemy import func
+from sqlalchemy.orm import Session, joinedload
 from ..core.database import get_db
 from ..models.plant import Plant
 from ..models.relationship import Relationship
@@ -27,30 +28,38 @@ def list_plants(
         )
     if family:
         q = q.filter(Plant.family.ilike(f"%{family}%"))
+    if tradition:
+        q = q.join(Relationship, Relationship.plant_id == Plant.id).filter(
+            Relationship.knowledge_tradition.ilike(f"%{tradition}%")
+        ).distinct()
 
     plants = q.order_by(Plant.scientific_name.asc()).offset(skip).limit(limit).all()
 
     output = []
-    for p in plants:
-        rel_q = db.query(Relationship).filter(Relationship.plant_id == p.id)
+    if plants:
+        plant_ids = [p.id for p in plants]
+        count_q = db.query(
+            Relationship.plant_id,
+            func.count(Relationship.id)
+        ).filter(Relationship.plant_id.in_(plant_ids))
+
         if tradition:
-            rel_q = rel_q.filter(Relationship.knowledge_tradition == tradition)
-        rel_count = rel_q.count()
+            count_q = count_q.filter(Relationship.knowledge_tradition.ilike(f"%{tradition}%"))
 
-        if tradition and rel_count == 0:
-            continue
+        counts_map = dict(count_q.group_by(Relationship.plant_id).all())
 
-        output.append(PlantBrief(
-            id=p.id,
-            scientific_name=p.scientific_name,
-            family=p.family,
-            genus=p.genus,
-            species=p.species,
-            authority=p.authority,
-            common_names=p.common_names,
-            taxonomic_status=p.taxonomic_status or "Accepted",
-            relationships_count=rel_count
-        ))
+        for p in plants:
+            output.append(PlantBrief(
+                id=p.id,
+                scientific_name=p.scientific_name,
+                family=p.family,
+                genus=p.genus,
+                species=p.species,
+                authority=p.authority,
+                common_names=p.common_names,
+                taxonomic_status=p.taxonomic_status or "Accepted",
+                relationships_count=counts_map.get(p.id, 0)
+            ))
     return output
 
 @router.get("/{plant_id}", response_model=Dict[str, Any])
@@ -62,7 +71,16 @@ def get_plant_detail(
     if not plant:
         raise HTTPException(status_code=404, detail=f"Plant {plant_id} not found.")
 
-    relationships = db.query(Relationship).filter(Relationship.plant_id == plant.id).all()
+    relationships = (
+        db.query(Relationship)
+        .options(
+            joinedload(Relationship.condition),
+            joinedload(Relationship.compound),
+            joinedload(Relationship.document)
+        )
+        .filter(Relationship.plant_id == plant.id)
+        .all()
+    )
 
     # Collect unique conditions, compounds, traditions, parts, preparations
     conditions_set = set()

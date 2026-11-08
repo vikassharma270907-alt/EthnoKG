@@ -1,6 +1,7 @@
 import os
+from pathlib import Path
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -87,13 +88,22 @@ if os.path.exists(frontend_dist):
             return FileResponse(index_file)
         return api_info()
 
+    frontend_dist_path = Path(frontend_dist).resolve()
+
     @app.get("/{full_path:path}")
     def serve_spa(full_path: str):
         if full_path.startswith("api/") or full_path in ["docs", "openapi.json", "healthz", "redoc", "api"]:
-            return {"error": "API route not found"}
-        target_file = os.path.join(frontend_dist, full_path)
-        if full_path and os.path.isfile(target_file):
-            return FileResponse(target_file)
+            raise HTTPException(status_code=404, detail="API route not found")
+        
+        # Guard against path traversal attacks (CWE-22)
+        try:
+            target_path = (frontend_dist_path / full_path).resolve()
+            target_path.relative_to(frontend_dist_path)
+        except (ValueError, RuntimeError):
+            raise HTTPException(status_code=403, detail="Access denied")
+
+        if full_path and target_path.is_file():
+            return FileResponse(str(target_path))
         index_file = os.path.join(frontend_dist, "index.html")
         if os.path.exists(index_file):
             return FileResponse(index_file)

@@ -1,16 +1,33 @@
+# ========================================================
+# EthnoKG: Render Production Blueprint (render.yaml)
+# Unified High-Performance Full-Stack Platform
+# ========================================================
+
 services:
   - type: web
     name: ethnokg-platform
     env: python
     region: oregon
     plan: free
-    buildCommand: "./build.sh"
+    buildCommand: "bash ./build.sh"
     startCommand: "uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port $PORT"
     healthCheckPath: "/healthz"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.12.0
+        value: 3.11.10
       - key: ENVIRONMENT
         value: production
+      - key: APP_NAME
+        value: EthnoKG
       - key: SECRET_KEY
         generateValue: true
+      - key: DEFAULT_CONFIDENCE_THRESHOLD
+        value: "0.75"
+      - key: DATABASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: USE_LLM_EXTRACTION
+        value: "false"

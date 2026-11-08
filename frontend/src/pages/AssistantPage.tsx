@@ -18,6 +18,7 @@ export const AssistantPage: React.FC = () => {
   const [isQuerying, setIsQuerying] = useState(false);
   const [response, setResponse] = useState<AssistantQueryResponse | null>(null);
   const [history, setHistory] = useState<Array<{ q: string; a: AssistantQueryResponse }>>([]);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const sampleQuestions = [
     "What plants have documented traditional uses associated with fever and malaria?",
@@ -28,17 +29,20 @@ export const AssistantPage: React.FC = () => {
   ];
 
   const handleAsk = async (qText?: string) => {
+    if (isQuerying) return;
     const q = (qText || question).trim();
     if (!q) return;
 
     setIsQuerying(true);
+    setErrorMsg(null);
     try {
       const res = await queryAssistant(q);
       setResponse(res);
       setHistory((prev) => [{ q, a: res }, ...prev.slice(0, 5)]);
       if (!qText) setQuestion('');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setErrorMsg(err.message || 'Failed to query assistant. Please check backend connection.');
     } finally {
       setIsQuerying(false);
     }
@@ -97,6 +101,13 @@ export const AssistantPage: React.FC = () => {
             {isQuerying ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 stroke-[2.5]" />}
           </button>
         </div>
+
+        {errorMsg && (
+          <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4 shrink-0 text-rose-400" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
 
         {/* Sample Prompts */}
         <div className="space-y-1.5 pt-1">
@@ -229,14 +240,15 @@ export const AssistantPage: React.FC = () => {
           </div>
           <div className="space-y-2">
             {history.slice(1).map((h, idx) => (
-              <div 
-                key={idx}
+              <button 
+                key={`${h.q}-${idx}`}
+                type="button"
                 onClick={() => setResponse(h.a)}
-                className="bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 p-3 rounded-xl cursor-pointer text-xs text-slate-300 flex items-center justify-between transition-colors"
+                className="w-full bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 p-3 rounded-xl cursor-pointer text-xs text-slate-300 flex items-center justify-between transition-colors text-left focus:outline-none focus:border-emerald-500"
               >
                 <span className="truncate max-w-lg font-medium">{h.q}</span>
                 <span className="text-[10px] text-emerald-400 font-mono">Confidence: {Math.round(h.a.confidence * 100)}%</span>
-              </div>
+              </button>
             ))}
           </div>
         </div>

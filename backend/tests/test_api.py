@@ -122,3 +122,127 @@ def test_analytics_evaluation_benchmark(client):
     assert "summary_table" in bench
     assert len(bench["summary_table"]) > 0
 
+def test_api_info(client):
+    res = client.get("/api/info")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["project"] == "EthnoKG"
+    assert data["api_status"] == "operational"
+
+def test_compounds_api(client):
+    res = client.get("/api/compounds")
+    assert res.status_code == 200
+    data = res.json()
+    assert isinstance(data, list)
+    assert len(data) > 0
+    assert "name" in data[0]
+
+    # Search with query filter
+    res_search = client.get("/api/compounds?query=Artemisinin")
+    assert res_search.status_code == 200
+    assert len(res_search.json()) > 0
+
+def test_conditions_api(client):
+    res = client.get("/api/conditions")
+    assert res.status_code == 200
+    data = res.json()
+    assert isinstance(data, list)
+    assert len(data) > 0
+    assert "name" in data[0]
+
+    # Search by query
+    res_search = client.get("/api/conditions?query=Malaria")
+    assert res_search.status_code == 200
+    assert len(res_search.json()) > 0
+
+def test_sources_registry_api(client):
+    res = client.get("/api/sources")
+    assert res.status_code == 200
+    sources = res.json()
+    assert isinstance(sources, list)
+    assert len(sources) >= 5
+    source_ids = [s["id"] for s in sources]
+    assert "kew_mpns" in source_ids
+    assert "wfo" in source_ids
+
+def test_documents_lifecycle(client):
+    # Ingest document
+    payload = {
+        "title": "Comprehensive Ethnobotanical Field Survey",
+        "authors": "Dr. Ethnobotanist et al.",
+        "publication_year": 2025,
+        "journal": "Journal of Ethnopharmacology",
+        "doi": "10.1016/j.jep.2025.118999",
+        "raw_text": "Leaves of Artemisia annua L. are traditionally brewed as a tea for malaria and fever in East Africa."
+    }
+    create_res = client.post("/api/documents/ingest", json=payload)
+    assert create_res.status_code == 200
+    created = create_res.json()
+    assert created["id"] > 0
+    doc_id = created["id"]
+
+    # Fetch document by id
+    get_res = client.get(f"/api/documents/{doc_id}")
+    assert get_res.status_code == 200
+    assert get_res.json()["title"] == payload["title"]
+
+    # List documents
+    list_res = client.get("/api/documents?limit=10")
+    assert list_res.status_code == 200
+    assert len(list_res.json()) > 0
+
+def test_extraction_run_custom_text(client):
+    text = (
+        "In Traditional Chinese Medicine, cold aqueous extracts of Artemisia annua L. "
+        "have been utilized to alleviate intermittent fevers. In-vitro assays indicate artemisinin "
+        "exhibits potent antimalarial action."
+    )
+    res = client.post("/api/extraction/run", json={"text_override": text})
+    assert res.status_code == 200
+    data = res.json()
+    assert data["extracted_count"] > 0
+    assert len(data["results"]) > 0
+
+def test_verification_reject_and_patch(client):
+    # Create or fetch a pending relation
+    res = client.get("/api/extraction/results?status=pending")
+    assert res.status_code == 200
+    items = res.json()
+    if items:
+        rel_id = items[0]["id"]
+        # Reject
+        rej_res = client.post(f"/api/verification/{rel_id}/reject", json={"reviewer_name": "Auditor", "reason": "Test rejection"})
+        assert rej_res.status_code == 200
+        assert rej_res.json()["verification_status"] == "rejected"
+
+        # Patch / update
+        patch_res = client.patch(f"/api/verification/{rel_id}", json={"evidence_tier": "Clinical Human Trial", "notes": "Upgraded tier"})
+        assert patch_res.status_code == 200
+        assert patch_res.json()["evidence_tier"] == "Clinical Human Trial"
+
+def test_verification_audit_history(client):
+    res = client.get("/api/verification/history")
+    assert res.status_code == 200
+    assert isinstance(res.json(), list)
+
+def test_graph_entity_subgraph(client):
+    res = client.get("/api/graph/entity/plant_1")
+    assert res.status_code == 200
+    data = res.json()
+    assert "nodes" in data
+    assert "edges" in data
+
+def test_404_handlers(client):
+    # Non-existent plant
+    plant_res = client.get("/api/plants/999999")
+    assert plant_res.status_code == 404
+
+    # Non-existent document
+    doc_res = client.get("/api/documents/999999")
+    assert doc_res.status_code == 404
+
+    # Non-existent relationship
+    rel_res = client.get("/api/extraction/999999")
+    assert rel_res.status_code == 404
+
+
