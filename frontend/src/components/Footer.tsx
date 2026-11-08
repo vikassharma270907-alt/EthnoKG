@@ -96,7 +96,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                   rel="noreferrer"
                   className="inline-flex items-center gap-1 hover:text-white transition-colors"
                 >
-                  <Terminal className="w-3 h-3 text-sky-400" />
+                  <Terminal className="w-3 h-3 text-zinc-300" />
                   <span>FastAPI Swagger Docs</span>
                   <ExternalLink className="w-3 h-3 text-zinc-500" />
                 </a>
