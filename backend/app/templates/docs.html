@@ -417,6 +417,229 @@
       color: var(--text-faint);
     }
 
+    /* Interactive Presets Row */
+    .preset-launchers-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .preset-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-right: 4px;
+    }
+
+    .preset-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preset-pill:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+    }
+
+    @keyframes presetPulse {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 14px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+
+    .preset-highlight {
+      animation: presetPulse 1.6s ease-out 2 !important;
+      border-color: #38bdf8 !important;
+    }
+
+    /* Modal Overlay & Snippet Dialog */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .snippet-modal-card {
+      background: #11151f;
+      border: 1px solid var(--border-hover);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 820px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.15);
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.open .snippet-modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .modal-header h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color 0.2s;
+    }
+    .modal-close-btn:hover { color: #ffffff; }
+
+    .modal-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .snippet-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .endpoint-select {
+      background: #161b27;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: #ffffff;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .lang-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #0d1017;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .lang-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-tab:hover { color: #ffffff; }
+    .lang-tab.active {
+      background: rgba(56, 189, 248, 0.18);
+      color: #38bdf8;
+    }
+
+    .code-preview-container {
+      position: relative;
+      background: #07090d;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .code-preview-pre {
+      padding: 16px 20px;
+      margin: 0;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      max-height: 380px;
+    }
+
+    .code-copy-floating-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .code-copy-floating-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
+    }
+
+    /* Focus Mode */
+    body.focus-mode .top-navbar { display: none; }
+    body.focus-mode .hero-banner { display: none; }
+    body.focus-mode .docs-container { max-width: 100%; padding: 20px 32px; }
+
     /* Interactive Search & Filter Command Bar */
     .command-filter-bar {
       position: sticky;
@@ -1211,6 +1434,26 @@
         <div class="accent-dot titanium" onclick="setThemeAccent('titanium')" title="Titanium Slate"></div>
       </div>
 
+      <button class="nav-btn" onclick="openSnippetModal()" title="Open Interactive Code Snippet & cURL Generator">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="16 18 22 12 16 6"/>
+          <polyline points="8 6 2 12 8 18"/>
+        </svg>
+        <span>&lt;/&gt; Snippets</span>
+      </button>
+
+      <button class="nav-btn" id="sfx-toggle-btn" onclick="toggleAudio()" title="Toggle Sci-Fi Audio Feedback">
+        <span id="sfx-icon">🔊</span>
+        <span id="sfx-text">Audio</span>
+      </button>
+
+      <button class="nav-btn" onclick="toggleFocusMode()" title="Toggle Fullscreen Focus Mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>
+        <span id="focus-btn-text">Focus</span>
+      </button>
+
       <button class="nav-btn" onclick="copyBaseUrl()" title="Copy API Base URL">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
@@ -1279,6 +1522,17 @@
             <span class="metric-sub">High-concurrency async SQLite/Postgres</span>
           </div>
         </div>
+
+        <!-- Interactive Live Presets Row -->
+        <div class="preset-launchers-row">
+          <span class="preset-title">⚡ Live Interactive Presets:</span>
+          <button class="preset-pill" onclick="launchPreset('/api/dashboard/stats', 'GET')">📊 Dashboard Stats</button>
+          <button class="preset-pill" onclick="launchPreset('/api/plants', 'GET')">🌿 Botanical Explorer</button>
+          <button class="preset-pill" onclick="launchPreset('/api/plants/resolve-taxon', 'GET')">🔬 Kew Taxon Resolver</button>
+          <button class="preset-pill" onclick="launchPreset('/api/assistant/query', 'POST')">🤖 Grounded RAG Assistant</button>
+          <button class="preset-pill" onclick="launchPreset('/api/graph/summary', 'GET')">🕸️ Knowledge Graph Topology</button>
+          <button class="preset-pill" onclick="launchPreset('/api/analytics/discovery-radar', 'GET')">📡 Discovery Radar</button>
+        </div>
       </div>
     </section>
 
@@ -1338,6 +1592,54 @@
       </svg>
     </button>
   </aside>
+
+  <!-- Interactive Multi-Language Code Snippet Generator Modal -->
+  <div class="modal-overlay" id="snippet-modal" onclick="if(event.target===this) closeSnippetModal()">
+    <div class="snippet-modal-card">
+      <div class="modal-header">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+          Interactive Code Snippet Generator
+        </h3>
+        <button class="modal-close-btn" onclick="closeSnippetModal()" title="Close (Esc)">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="snippet-controls-row">
+          <select id="snippet-endpoint-select" class="endpoint-select" onchange="updateSnippetPreview()">
+            <option value="dashboard_stats">GET /api/dashboard/stats — Dashboard Metrics</option>
+            <option value="plants_list">GET /api/plants?limit=10 — Botanical Taxa</option>
+            <option value="plants_resolve">GET /api/plants/resolve-taxon?query=Curcuma+longa — Kew Taxon Resolver</option>
+            <option value="assistant_query">POST /api/assistant/query — Grounded RAG Assistant</option>
+            <option value="extraction_run">POST /api/extraction/run — 12-Stage Literature Mining</option>
+            <option value="graph_summary">GET /api/graph/summary — Knowledge Graph Topology</option>
+            <option value="discovery_radar">GET /api/analytics/discovery-radar — Discovery Radar</option>
+          </select>
+
+          <div class="lang-tabs">
+            <button class="lang-tab active" onclick="switchSnippetLang('curl', this)">cURL</button>
+            <button class="lang-tab" onclick="switchSnippetLang('python', this)">Python</button>
+            <button class="lang-tab" onclick="switchSnippetLang('javascript', this)">JavaScript</button>
+            <button class="lang-tab" onclick="switchSnippetLang('typescript', this)">TypeScript</button>
+            <button class="lang-tab" onclick="switchSnippetLang('go', this)">Go</button>
+          </div>
+        </div>
+
+        <div class="code-preview-container">
+          <button class="code-copy-floating-btn" onclick="copySnippetCode()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+            </svg>
+            <span id="copy-btn-text">Copy Code</span>
+          </button>
+          <pre class="code-preview-pre"><code id="snippet-code-box">Loading snippet...</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification Pill -->
   <div class="toast-pill" id="toast-pill">
@@ -1644,6 +1946,226 @@
       const saved = localStorage.getItem('ethnokg_docs_accent');
       if (saved) {
         document.body.setAttribute('data-theme-accent', saved);
+      }
+    })();
+
+    // =========================================================================
+    // 7. Interactive Code Snippet Generator
+    // =========================================================================
+    let currentSnippetLang = 'curl';
+
+    const SNIPPET_TEMPLATES = {
+      dashboard_stats: {
+        method: 'GET',
+        path: '/api/dashboard/stats',
+        body: null
+      },
+      plants_list: {
+        method: 'GET',
+        path: '/api/plants?limit=10',
+        body: null
+      },
+      plants_resolve: {
+        method: 'GET',
+        path: '/api/plants/resolve-taxon?query=Curcuma+longa',
+        body: null
+      },
+      assistant_query: {
+        method: 'POST',
+        path: '/api/assistant/query',
+        body: { query: 'What compounds in Artemisia annua target malaria?', max_sources: 5 }
+      },
+      extraction_run: {
+        method: 'POST',
+        path: '/api/extraction/run',
+        body: { document_id: 1, confidence_threshold: 0.75 }
+      },
+      graph_summary: {
+        method: 'GET',
+        path: '/api/graph/summary',
+        body: null
+      },
+      discovery_radar: {
+        method: 'GET',
+        path: '/api/analytics/discovery-radar',
+        body: null
+      }
+    };
+
+    function openSnippetModal() {
+      playClickSound(720, 0.05);
+      const modal = document.getElementById('snippet-modal');
+      if (modal) modal.classList.add('open');
+      updateSnippetPreview();
+    }
+
+    function closeSnippetModal() {
+      playClickSound(480, 0.04);
+      const modal = document.getElementById('snippet-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSnippetModal();
+    });
+
+    function switchSnippetLang(lang, btn) {
+      playClickSound(640, 0.03);
+      currentSnippetLang = lang;
+      document.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      updateSnippetPreview();
+    }
+
+    function updateSnippetPreview() {
+      const select = document.getElementById('snippet-endpoint-select');
+      const endpointKey = select ? select.value : 'dashboard_stats';
+      const tpl = SNIPPET_TEMPLATES[endpointKey] || SNIPPET_TEMPLATES.dashboard_stats;
+      const base = window.location.origin;
+      const fullUrl = `${base}${tpl.path}`;
+      const codeBox = document.getElementById('snippet-code-box');
+      if (!codeBox) return;
+
+      let code = '';
+      if (currentSnippetLang === 'curl') {
+        if (tpl.method === 'GET') {
+          code = `curl -X GET "${fullUrl}" \\\n  -H "Accept: application/json"`;
+        } else {
+          code = `curl -X POST "${fullUrl}" \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify(tpl.body, null, 2)}'`;
+        }
+      } else if (currentSnippetLang === 'python') {
+        if (tpl.method === 'GET') {
+          code = `import httpx\n\nresponse = httpx.get("${fullUrl}")\nprint(response.status_code)\nprint(response.json())`;
+        } else {
+          code = `import httpx\n\npayload = ${JSON.stringify(tpl.body, null, 4)}\n\nresponse = httpx.post(\n    "${fullUrl}",\n    json=payload,\n    headers={"Content-Type": "application/json"}\n)\nprint(response.status_code)\nprint(response.json())`;
+        }
+      } else if (currentSnippetLang === 'javascript') {
+        if (tpl.method === 'GET') {
+          code = `const response = await fetch("${fullUrl}", {\n  headers: { "Accept": "application/json" }\n});\nconst data = await response.json();\nconsole.log(data);`;
+        } else {
+          code = `const payload = ${JSON.stringify(tpl.body, null, 2)};\n\nconst response = await fetch("${fullUrl}", {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify(payload)\n});\nconst data = await response.json();\nconsole.log(data);`;
+        }
+      } else if (currentSnippetLang === 'typescript') {
+        if (tpl.method === 'GET') {
+          code = `async function fetchEndpoint(): Promise<any> {\n  const res = await fetch("${fullUrl}");\n  if (!res.ok) throw new Error(\`HTTP \${res.status}\`);\n  return (await res.json());\n}\n\nconst result = await fetchEndpoint();`;
+        } else {
+          code = `async function postEndpoint(payload: Record<string, any>): Promise<any> {\n  const res = await fetch("${fullUrl}", {\n    method: "POST",\n    headers: { "Content-Type": "application/json" },\n    body: JSON.stringify(payload)\n  });\n  return (await res.json());\n}\n\nconst payload = ${JSON.stringify(tpl.body, null, 2)};\nconst result = await postEndpoint(payload);`;
+        }
+      } else if (currentSnippetLang === 'go') {
+        if (tpl.method === 'GET') {
+          code = `package main\n\nimport (\n\t"fmt"\n\t"io"\n\t"net/http"\n)\n\nfunc main() {\n\tresp, err := http.Get("${fullUrl}")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\tdefer resp.Body.Close()\n\tbody, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(body))\n}`;
+        } else {
+          code = `package main\n\nimport (\n\t"bytes"\n\t"fmt"\n\t"io"\n\t"net/http"\n)\n\nfunc main() {\n\tjsonStr := []byte(\`${JSON.stringify(tpl.body)}\`)\n\tresp, err := http.Post("${fullUrl}", "application/json", bytes.NewBuffer(jsonStr))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\tdefer resp.Body.Close()\n\tbody, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(body))\n}`;
+        }
+      }
+      codeBox.innerText = code;
+    }
+
+    function copySnippetCode() {
+      const codeBox = document.getElementById('snippet-code-box');
+      if (!codeBox) return;
+      playClickSound(880, 0.08);
+      navigator.clipboard.writeText(codeBox.innerText).then(() => {
+        showToast("Code snippet copied to clipboard!");
+        const btnText = document.getElementById('copy-btn-text');
+        if (btnText) {
+          btnText.innerText = "Copied!";
+          setTimeout(() => { btnText.innerText = "Copy Code"; }, 2000);
+        }
+      });
+    }
+
+    // =========================================================================
+    // 8. Interactive Live Presets & Fullscreen Focus Mode
+    // =========================================================================
+    function launchPreset(path, method) {
+      playClickSound(750, 0.06);
+      document.getElementById('endpoint-search').value = '';
+      currentMethodFilter = 'ALL';
+      document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.chip-btn').classList.add('active');
+      filterEndpoints();
+
+      const opblocks = document.querySelectorAll('.swagger-ui .opblock');
+      let targetBlock = null;
+      for (const block of opblocks) {
+        const p = block.querySelector('.opblock-summary-path');
+        const m = block.querySelector('.opblock-summary-method');
+        if (p && p.innerText.trim() === path) {
+          if (!method || (m && m.innerText.toUpperCase().trim() === method)) {
+            targetBlock = block;
+            break;
+          }
+        }
+      }
+
+      if (targetBlock) {
+        targetBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!targetBlock.classList.contains('is-open')) {
+          const sum = targetBlock.querySelector('.opblock-summary');
+          if (sum) sum.click();
+        }
+        targetBlock.classList.remove('preset-highlight');
+        void targetBlock.offsetWidth;
+        targetBlock.classList.add('preset-highlight');
+        showToast(`Focused: ${path}`);
+      } else {
+        showToast(`Preset: ${path}`);
+      }
+    }
+
+    function toggleFocusMode() {
+      playClickSound(520, 0.05);
+      document.body.classList.toggle('focus-mode');
+      const isFocus = document.body.classList.contains('focus-mode');
+      const txt = document.getElementById('focus-btn-text');
+      if (txt) txt.innerText = isFocus ? "Exit Focus" : "Focus";
+      showToast(isFocus ? "Focus Mode: Active" : "Focus Mode: Inactive");
+    }
+
+    // =========================================================================
+    // 9. Synthesized Sci-Fi Web Audio Feedback
+    // =========================================================================
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function playClickSound(freq = 600, duration = 0.035) {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (err) {}
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      const icon = document.getElementById('sfx-icon');
+      const text = document.getElementById('sfx-text');
+      if (icon) icon.innerText = audioEnabled ? "🔊" : "🔇";
+      if (text) text.innerText = audioEnabled ? "Audio" : "Muted";
+      localStorage.setItem('ethnokg_docs_audio', audioEnabled ? '1' : '0');
+      if (audioEnabled) playClickSound(880, 0.06);
+      showToast(audioEnabled ? "Audio FX Enabled" : "Audio FX Muted");
+    }
+
+    (function initAudioPreference() {
+      const saved = localStorage.getItem('ethnokg_docs_audio');
+      if (saved === '0') {
+        audioEnabled = false;
+        const icon = document.getElementById('sfx-icon');
+        const text = document.getElementById('sfx-text');
+        if (icon) icon.innerText = "🔇";
+        if (text) text.innerText = "Muted";
       }
     })();
   </script>

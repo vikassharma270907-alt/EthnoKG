@@ -4,7 +4,11 @@ Provides verified PubChem CIDs, ChEMBL IDs, molecular formulas, canonical SMILES
 and biological classes for phytochemical metabolites extracted from traditional medicine.
 """
 
+import logging
 from typing import Dict, Any, Optional
+import httpx
+
+logger = logging.getLogger(__name__)
 
 KNOWN_PHYTOCHEMICALS: Dict[str, Dict[str, str]] = {
     "artemisinin": {
@@ -216,12 +220,66 @@ KNOWN_PHYTOCHEMICALS: Dict[str, Dict[str, str]] = {
     }
 }
 
-def lookup_cheminformatics(compound_name: str) -> Optional[Dict[str, str]]:
+def fetch_pubchem_live(compound_name: str, timeout_seconds: float = 2.0) -> Optional[Dict[str, str]]:
+    """
+    Dynamically queries NCBI PubChem PUG-REST API for compound properties
+    (CID, Canonical SMILES, Molecular Formula, Molecular Weight, IUPAC Name).
+    Safely falls back and times out without raising exceptions.
+    Caches verified results in KNOWN_PHYTOCHEMICALS for instantaneous future retrieval.
+    """
+    if not compound_name or len(compound_name.strip()) < 3:
+        return None
+
+    clean_name = compound_name.strip()
+    key = clean_name.lower()
+
+    if key in KNOWN_PHYTOCHEMICALS:
+        return KNOWN_PHYTOCHEMICALS[key]
+
+    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{clean_name}/property/CanonicalSMILES,MolecularFormula,MolecularWeight,IUPACName/JSON"
+    try:
+        with httpx.Client(timeout=timeout_seconds, headers={"User-Agent": "EthnoKG-Cheminformatics/1.0"}) as client:
+            resp = client.get(url)
+            if resp.status_code == 200:
+                data = resp.json()
+                props = data.get("PropertyTable", {}).get("Properties", [])
+                if props:
+                    p = props[0]
+                    cid = str(p.get("CID", ""))
+                    smiles = p.get("CanonicalSMILES") or p.get("ConnectivitySMILES", "")
+                    formula = p.get("MolecularFormula", "")
+                    mw = f"{p.get('MolecularWeight', '')} g/mol" if p.get("MolecularWeight") else ""
+                    iupac = p.get("IUPACName", "")
+
+                    record = {
+                        "canonical_name": clean_name.title(),
+                        "pubchem_cid": cid,
+                        "chembl_id": "",
+                        "molecular_formula": formula,
+                        "smiles": smiles,
+                        "biological_class": f"Bioactive Phytochemical ({iupac[:35]}...)" if iupac else "Phytochemical Metabolite",
+                        "molecular_weight": mw,
+                    }
+                    KNOWN_PHYTOCHEMICALS[key] = record
+                    logger.info("Dynamically enriched compound '%s' via PubChem PUG-REST (CID: %s)", clean_name, cid)
+                    return record
+    except Exception as e:
+        logger.debug("PubChem live lookup skipped for '%s': %s", clean_name, e)
+
+    return None
+
+def lookup_cheminformatics(compound_name: str, enable_live_fallback: bool = True) -> Optional[Dict[str, str]]:
     """Lookup verified cheminformatics properties by compound name."""
     if not compound_name:
         return None
     key = compound_name.strip().lower()
-    return KNOWN_PHYTOCHEMICALS.get(key)
+    if key in KNOWN_PHYTOCHEMICALS:
+        return KNOWN_PHYTOCHEMICALS[key]
+
+    if enable_live_fallback:
+        return fetch_pubchem_live(compound_name)
+
+    return None
 
 def enrich_compound_record(compound_obj: Any) -> bool:
     """

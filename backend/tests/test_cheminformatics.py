@@ -1,5 +1,10 @@
 import pytest
-from app.core.cheminformatics import lookup_cheminformatics, enrich_compound_record, KNOWN_PHYTOCHEMICALS
+from app.core.cheminformatics import (
+    lookup_cheminformatics,
+    enrich_compound_record,
+    fetch_pubchem_live,
+    KNOWN_PHYTOCHEMICALS,
+)
 from app.models.compound import Compound
 from app.core.seeder import enrich_compounds_cheminformatics
 
@@ -47,3 +52,14 @@ def test_enrich_compounds_cheminformatics_db(db_session):
     reloaded = db_session.query(Compound).filter(Compound.name.ilike("reserpine%")).first()
     assert reloaded is not None
     assert reloaded.pubchem_cid is not None
+
+def test_fetch_pubchem_live_and_caching():
+    # Empty or too short names return None immediately
+    assert fetch_pubchem_live("") is None
+    assert fetch_pubchem_live("ab") is None
+
+    # Cached compound returns without external network call
+    cached_info = fetch_pubchem_live("curcumin")
+    assert cached_info is not None
+    assert cached_info["pubchem_cid"] == "969516"
+
