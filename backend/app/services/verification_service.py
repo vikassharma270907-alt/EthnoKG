@@ -44,7 +44,7 @@ class VerificationService:
             )
             db.add(log)
             db.commit()
-            db.refresh(rel)
+            db.refresh(rel, ["plant", "condition", "compound", "document"])
             return rel
         except Exception:
             db.rollback()
@@ -85,7 +85,7 @@ class VerificationService:
             )
             db.add(log)
             db.commit()
-            db.refresh(rel)
+            db.refresh(rel, ["plant", "condition", "compound", "document"])
             return rel
         except Exception:
             db.rollback()
@@ -136,6 +136,15 @@ class VerificationService:
                 changes["condition_id"] = {"old": rel.condition_id, "new": cond.id}
                 rel.condition_id = cond.id
 
+            if update_data.compound_name and (not rel.compound or update_data.compound_name != rel.compound.name):
+                comp = db.query(Compound).filter(Compound.name == update_data.compound_name).first()
+                if not comp:
+                    comp = Compound(name=update_data.compound_name, biological_class="Phytochemical")
+                    db.add(comp)
+                    db.flush()
+                changes["compound_id"] = {"old": rel.compound_id, "new": comp.id}
+                rel.compound_id = comp.id
+
             if update_data.plant_part and update_data.plant_part != rel.plant_part:
                 changes["plant_part"] = {"old": rel.plant_part, "new": update_data.plant_part}
                 rel.plant_part = update_data.plant_part
@@ -143,6 +152,12 @@ class VerificationService:
             if update_data.preparation_method and update_data.preparation_method != rel.preparation_method:
                 changes["preparation_method"] = {"old": rel.preparation_method, "new": update_data.preparation_method}
                 rel.preparation_method = update_data.preparation_method
+
+            for field in ["reported_use", "pharmacological_activity", "geographic_context", "knowledge_tradition"]:
+                val = getattr(update_data, field, None)
+                if val is not None and val != getattr(rel, field, None):
+                    changes[field] = {"old": getattr(rel, field, None), "new": val}
+                    setattr(rel, field, val)
 
             if update_data.evidence_tier and update_data.evidence_tier != rel.evidence_tier:
                 changes["evidence_tier"] = {"old": rel.evidence_tier, "new": update_data.evidence_tier}
@@ -165,7 +180,7 @@ class VerificationService:
             )
             db.add(log)
             db.commit()
-            db.refresh(rel)
+            db.refresh(rel, ["plant", "condition", "compound", "document"])
             return rel
         except Exception:
             db.rollback()

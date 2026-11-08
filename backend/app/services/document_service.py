@@ -7,11 +7,13 @@ from ..schemas.document import DocumentCreate
 
 class DocumentService:
     @staticmethod
-    def extract_text_from_pdf_bytes(file_bytes: bytes) -> str:
+    def extract_text_from_pdf_bytes(file_bytes: bytes, max_pages: int = 150) -> str:
         try:
             reader = PdfReader(io.BytesIO(file_bytes))
             text_parts = []
             for i, page in enumerate(reader.pages):
+                if i >= max_pages:
+                    break
                 page_text = page.extract_text()
                 if page_text:
                     text_parts.append(page_text.strip())
