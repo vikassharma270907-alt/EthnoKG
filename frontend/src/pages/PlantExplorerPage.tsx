@@ -5,6 +5,7 @@ import { fetchPlants, fetchPlantDetail } from '../api/client';
 import type { PlantBrief, PlantDetail } from '../types';
 import { PlantModal } from '../components/PlantModal';
 import { GlowCard } from '../components/GlowCard';
+import { BotanicalTaxonResolver } from '../components/BotanicalTaxonResolver';
 
 export const PlantExplorerPage: React.FC = () => {
   const [plants, setPlants] = useState<PlantBrief[]>([]);
@@ -76,6 +77,9 @@ export const PlantExplorerPage: React.FC = () => {
           </span>
         </div>
       </div>
+
+      {/* Kew MPNS Botanical Taxon Resolver */}
+      <BotanicalTaxonResolver onSelectPlant={handleOpenDetail} />
 
       {/* Filter and Search Bar */}
       <div className="bg-[#101218]/90 border border-zinc-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xl backdrop-blur-xl">
