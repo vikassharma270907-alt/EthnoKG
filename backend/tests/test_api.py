@@ -176,6 +176,22 @@ def test_compounds_api(client):
     assert artemisinin["molecular_formula"] == "C15H22O5"
     assert artemisinin["smiles"] == "CC1CCC2C(C(=O)OC3C2(C1)OOC3(C)C)C"
 
+    # Test detailed compound endpoint
+    cid = artemisinin["id"]
+    res_detail = client.get(f"/api/compounds/{cid}")
+    assert res_detail.status_code == 200
+    detail = res_detail.json()
+    assert detail["id"] == cid
+    assert detail["pubchem_cid"] == "68827"
+    assert "https://pubchem.ncbi.nlm.nih.gov" in detail["pubchem_url"]
+    assert "associated_plants" in detail
+    assert "evidence_records" in detail
+    assert "relationships_count" in detail
+
+    # Test 404 for non-existent compound
+    res_404 = client.get("/api/compounds/999999")
+    assert res_404.status_code == 404
+
 def test_conditions_api(client):
     res = client.get("/api/conditions")
     assert res.status_code == 200
@@ -393,21 +409,59 @@ def test_resolve_botanical_taxon(client):
     assert res_unknown.json()["matched"] is False
 
 def test_graph_cache_endpoints(client):
+    # Clear cache first
+    res_clear = client.post("/api/graph/cache/clear")
+    assert res_clear.status_code == 200
+
     # Test get cache stats
     res_stats = client.get("/api/graph/cache/stats")
     assert res_stats.status_code == 200
     stats = res_stats.json()
     assert "cached_queries" in stats
     assert "ttl_seconds" in stats
+    assert stats["cached_queries"] == 0
 
-    # Query graph to populate cache
-    res_graph = client.get("/api/graph")
-    assert res_graph.status_code == 200
+    # Query graph to populate cache (miss)
+    res_graph1 = client.get("/api/graph")
+    assert res_graph1.status_code == 200
+
+    # Query graph again (hit)
+    res_graph2 = client.get("/api/graph")
+    assert res_graph2.status_code == 200
+    assert len(res_graph2.json()["nodes"]) == len(res_graph1.json()["nodes"])
+
+    # Verify cache has 1 cached query and 1 hit
+    res_stats2 = client.get("/api/graph/cache/stats")
+    stats2 = res_stats2.json()
+    assert stats2["cached_queries"] >= 1
+    assert stats2["cache_hits"] >= 1
 
     # Test clear cache
-    res_clear = client.post("/api/graph/cache/clear")
-    assert res_clear.status_code == 200
-    assert res_clear.json()["status"] == "cache_flushed"
+    res_clear2 = client.post("/api/graph/cache/clear")
+    assert res_clear2.status_code == 200
+    assert res_clear2.json()["status"] == "cache_flushed"
+
+def test_compound_detail_endpoint(client):
+    # List compounds to get an ID
+    res_list = client.get("/api/compounds")
+    assert res_list.status_code == 200
+    compounds = res_list.json()
+    assert len(compounds) > 0
+    cid = compounds[0]["id"]
+
+    res_detail = client.get(f"/api/compounds/{cid}")
+    assert res_detail.status_code == 200
+    detail = res_detail.json()
+    assert detail["id"] == cid
+    assert "name" in detail
+    assert "pubchem_cid" in detail
+    assert "molecular_formula" in detail
+    assert "associated_plants" in detail
+    assert "evidence_records" in detail
+
+def test_compound_detail_not_found(client):
+    res = client.get("/api/compounds/999999")
+    assert res.status_code == 404
 
 
 
