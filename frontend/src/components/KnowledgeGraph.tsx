@@ -8,8 +8,7 @@ import {
   Filter, 
   X,
   Search,
-  Download,
-  Sparkles
+  Download
 } from 'lucide-react';
 import type { GraphResponse } from '../types';
 

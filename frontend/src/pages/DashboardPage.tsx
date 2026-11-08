@@ -19,7 +19,6 @@ import {
   ShieldCheck, 
   Clock, 
   FileText, 
-  CheckCircle2, 
   ExternalLink,
   Globe2
 } from 'lucide-react';

@@ -10,8 +10,6 @@ import {
   Search, 
   FileCheck2, 
   AlertTriangle,
-  Beaker,
-  CheckCircle2,
   Copy,
   Download
 } from 'lucide-react';
@@ -21,7 +19,7 @@ import {
   fetchEvaluationBenchmark, 
   fetchSovereigntyCertificate 
 } from '../api/client';
-import { 
+import type { 
   DiscoveryIndexItem, 
   ConvergenceItem, 
   EvaluationBenchmarkResponse, 
@@ -43,31 +41,34 @@ export const DiscoveryRadarPage: React.FC = () => {
 
   // Certificate Modal
   const [activeCert, setActiveCert] = useState<SovereigntyCertificate | null>(null);
-  const [isCertLoading, setIsCertLoading] = useState(false);
   const [copiedHash, setCopiedHash] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
+    let isMounted = true;
     Promise.all([
       fetchDiscoveryIndex().catch(() => []),
       fetchConvergence().catch(() => []),
       fetchEvaluationBenchmark().catch(() => null)
     ]).then(([disc, conv, bench]) => {
-      setDiscoveryItems(disc);
-      setConvergenceItems(conv);
-      setBenchmarkData(bench);
-    }).finally(() => setIsLoading(false));
+      if (isMounted) {
+        setDiscoveryItems(disc);
+        setConvergenceItems(conv);
+        setBenchmarkData(bench);
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleOpenCertificate = async (plantId: number) => {
-    setIsCertLoading(true);
     try {
       const cert = await fetchSovereigntyCertificate(plantId);
       setActiveCert(cert);
     } catch (err) {
       console.error(err);
-    } finally {
-      setIsCertLoading(false);
     }
   };
 

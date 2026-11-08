@@ -20,21 +20,22 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
   onUpdate
 }) => {
   const activeItem = relationship || rel;
-  if (!activeItem) return null;
 
   const [isEditing, setIsEditing] = useState(false);
   const [curatorNotes, setCuratorNotes] = useState('');
   const [reviewerName, setReviewerName] = useState('Dr. Vance');
 
   // Editable fields
-  const [plantName, setPlantName] = useState(activeItem.plant_scientific_name);
-  const [conditionName, setConditionName] = useState(activeItem.condition_name || '');
-  const [plantPart, setPlantPart] = useState(activeItem.plant_part || '');
-  const [prepMethod, setPrepMethod] = useState(activeItem.preparation_method || '');
-  const [evidenceTier, setEvidenceTier] = useState(activeItem.evidence_tier);
-  const [evidenceStatement] = useState(activeItem.evidence_statement || '');
+  const [plantName, setPlantName] = useState(activeItem?.plant_scientific_name || '');
+  const [conditionName, setConditionName] = useState(activeItem?.condition_name || '');
+  const [plantPart, setPlantPart] = useState(activeItem?.plant_part || '');
+  const [prepMethod, setPrepMethod] = useState(activeItem?.preparation_method || '');
+  const [evidenceTier, setEvidenceTier] = useState(activeItem?.evidence_tier || 'Traditional Use Report');
+  const [evidenceStatement] = useState(activeItem?.evidence_statement || '');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (!activeItem) return null;
 
   const handleApprove = async () => {
     setIsSubmitting(true);

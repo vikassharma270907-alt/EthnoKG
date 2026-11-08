@@ -8,7 +8,6 @@ import {
   BookOpen, 
   ShieldCheck,
   RefreshCw,
-  CheckCircle,
   Cpu,
   Layers,
   Check

@@ -7,7 +7,6 @@ import {
   CheckCircle2, 
   Activity,
   Leaf,
-  Database,
   ArrowRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
