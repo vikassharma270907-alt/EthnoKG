@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { LandingPage } from './pages/LandingPage';
@@ -12,127 +12,92 @@ import { AssistantPage } from './pages/AssistantPage';
 import { VerificationPage } from './pages/VerificationPage';
 import { MethodologyPage } from './pages/MethodologyPage';
 import { SourcesPage } from './pages/SourcesPage';
-import { fetchDashboardStats, fetchExtractionResults } from './api/client';
-import { DashboardStatsResponse } from './types';
+import { fetchDashboardStats } from './api/client';
+import type { DashboardStatsResponse } from './types';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('landing');
   const [stats, setStats] = useState<DashboardStatsResponse | null>(null);
-  const [pendingCount, setPendingCount] = useState<number>(0);
-  const [isLoadingStats, setIsLoadingStats] = useState<boolean>(true);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
 
-  // Sync hash with active tab for clean URL sharing
+  const refreshStats = useCallback(() => {
+    setIsLoadingStats(true);
+    fetchDashboardStats()
+      .then((data) => setStats(data))
+      .catch((err) => console.error('Failed to load stats:', err))
+      .finally(() => setIsLoadingStats(false));
+  }, []);
+
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '').trim();
-      if (hash && [
-        'landing', 'dashboard', 'discovery', 'extraction', 'plants', 
-        'graph', 'evidence', 'assistant', 'verification', 'methodology', 'sources'
-      ].includes(hash)) {
-        setActiveTab(hash);
-      }
+    let isSubscribed = true;
+    fetchDashboardStats()
+      .then((data) => {
+        if (isSubscribed) {
+          setStats(data);
+          setIsLoadingStats(false);
+        }
+      })
+      .catch((err) => {
+        if (isSubscribed) {
+          console.error('Failed to load stats:', err);
+          setIsLoadingStats(false);
+        }
+      });
+
+    return () => {
+      isSubscribed = false;
     };
-
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    window.location.hash = tab;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const refreshData = async () => {
-    try {
-      const [newStats, pendingRes] = await Promise.all([
-        fetchDashboardStats().catch(() => null),
-        fetchExtractionResults({ status: 'pending', limit: 1 }).catch(() => [])
-      ]);
-      if (newStats) setStats(newStats);
-      if (newStats) {
-        setPendingCount(newStats.pending_verifications);
-      } else if (pendingRes) {
-        setPendingCount(pendingRes.length);
-      }
-    } catch (err) {
-      console.error('Failed to refresh data:', err);
-    } finally {
-      setIsLoadingStats(false);
-    }
-  };
-
-  useEffect(() => {
-    refreshData();
-  }, []);
+  }, [activeTab]);
 
   return (
-    <div className="min-h-screen bg-[#070c19] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen flex flex-col bg-[#070b19] text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
       
-      {/* Top Navigation */}
+      {/* Navbar with live badge */}
       <Navbar 
         activeTab={activeTab} 
-        setActiveTab={handleTabChange} 
-        pendingCount={pendingCount} 
+        setActiveTab={setActiveTab} 
+        pendingCount={stats?.pending_verifications || 0} 
       />
 
-      {/* Main Content Area */}
+      {/* Main Content View */}
       <main className="flex-1 py-8">
         {activeTab === 'landing' && (
-          <LandingPage setActiveTab={handleTabChange} stats={stats} />
+          <LandingPage setActiveTab={setActiveTab} stats={stats} />
         )}
-        
         {activeTab === 'dashboard' && (
-          <DashboardPage 
-            stats={stats} 
-            isLoading={isLoadingStats} 
-            setActiveTab={handleTabChange} 
-          />
+          <DashboardPage stats={stats} isLoading={isLoadingStats} setActiveTab={setActiveTab} />
         )}
-
         {activeTab === 'discovery' && (
           <DiscoveryRadarPage />
         )}
-
         {activeTab === 'extraction' && (
-          <ExtractionPage 
-            setActiveTab={handleTabChange} 
-            onExtractionComplete={refreshData} 
-          />
+          <ExtractionPage setActiveTab={setActiveTab} onExtractionComplete={refreshStats} />
         )}
-
         {activeTab === 'plants' && (
           <PlantExplorerPage />
         )}
-
         {activeTab === 'graph' && (
           <GraphPage />
         )}
-
         {activeTab === 'evidence' && (
           <EvidencePage />
         )}
-
         {activeTab === 'assistant' && (
           <AssistantPage />
         )}
-
         {activeTab === 'verification' && (
           <VerificationPage />
         )}
-
         {activeTab === 'methodology' && (
           <MethodologyPage />
         )}
-
         {activeTab === 'sources' && (
           <SourcesPage />
         )}
       </main>
 
-      {/* Global Footer */}
-      <Footer setActiveTab={handleTabChange} />
+      {/* Footer */}
+      <Footer setActiveTab={setActiveTab} />
 
     </div>
   );
