@@ -1,5 +1,7 @@
+import time
+import threading
 import networkx as nx
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 from sqlalchemy.orm import Session, joinedload
 from ..models.plant import Plant
 from ..models.condition import Condition
@@ -8,6 +10,40 @@ from ..models.relationship import Relationship
 from ..schemas.graph_assistant_dashboard import GraphResponse, CytoscapeElement
 
 class GraphService:
+    CACHE_TTL_SECONDS: float = 60.0
+    _GRAPH_CACHE: Dict[str, Tuple[float, GraphResponse]] = {}
+    _CACHE_LOCK = threading.Lock()
+    _CACHE_HITS: int = 0
+    _CACHE_MISSES: int = 0
+
+    @classmethod
+    def _make_cache_key(
+        cls,
+        plant_id: Optional[int],
+        condition_id: Optional[int],
+        evidence_tier: Optional[str],
+        tradition: Optional[str],
+        status_filter: Optional[str],
+        max_edges: int
+    ) -> str:
+        return f"p:{plant_id}|c:{condition_id}|e:{evidence_tier}|t:{tradition}|s:{status_filter}|m:{max_edges}"
+
+    @classmethod
+    def clear_cache(cls) -> int:
+        with cls._CACHE_LOCK:
+            count = len(cls._GRAPH_CACHE)
+            cls._GRAPH_CACHE.clear()
+            return count
+
+    @classmethod
+    def get_cache_stats(cls) -> Dict[str, Any]:
+        with cls._CACHE_LOCK:
+            return {
+                "cached_queries": len(cls._GRAPH_CACHE),
+                "cache_hits": cls._CACHE_HITS,
+                "cache_misses": cls._CACHE_MISSES,
+                "ttl_seconds": cls.CACHE_TTL_SECONDS
+            }
     @staticmethod
     def build_networkx_graph(
         db: Session,
@@ -141,6 +177,24 @@ class GraphService:
         status_filter: Optional[str] = None,
         max_edges: int = 150
     ) -> GraphResponse:
+        cache_key = cls._make_cache_key(
+            plant_id=plant_id,
+            condition_id=condition_id,
+            evidence_tier=evidence_tier,
+            tradition=tradition,
+            status_filter=status_filter,
+            max_edges=max_edges
+        )
+        now = time.time()
+        with cls._CACHE_LOCK:
+            if cache_key in cls._GRAPH_CACHE:
+                cached_time, cached_res = cls._GRAPH_CACHE[cache_key]
+                if now - cached_time < cls.CACHE_TTL_SECONDS:
+                    cls._CACHE_HITS += 1
+                    return cached_res
+
+        cls._CACHE_MISSES += 1
+
         G = cls.build_networkx_graph(
             db=db,
             plant_id=plant_id,
@@ -171,5 +225,10 @@ class GraphService:
             "filter_tradition": tradition
         }
 
-        return GraphResponse(nodes=nodes_list, edges=edges_list, meta=meta)
+        response = GraphResponse(nodes=nodes_list, edges=edges_list, meta=meta)
+
+        with cls._CACHE_LOCK:
+            cls._GRAPH_CACHE[cache_key] = (now, response)
+
+        return response
 

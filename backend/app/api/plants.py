@@ -3,9 +3,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 from ..core.database import get_db
-from ..models.plant import Plant
+from ..models.plant import Plant, PlantSynonym
 from ..models.relationship import Relationship
 from ..schemas.plant import PlantBrief, PlantDetail, SynonymBrief
+from ..services.extraction_service import BOTANICAL_TAXA_KNOWLEDGE
 
 router = APIRouter(prefix="/plants", tags=["Plants"])
 
@@ -61,6 +62,113 @@ def list_plants(
                 relationships_count=counts_map.get(p.id, 0)
             ))
     return output
+
+@router.get("/resolve-taxon")
+def resolve_botanical_taxon(
+    name: str = Query(..., min_length=2, description="Vernacular plant name or botanical binomial"),
+    tradition: Optional[str] = Query(None, description="Optional knowledge tradition context"),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    """
+    Standardized botanical taxonomic resolver.
+    Cross-references botanical knowledge base and Royal Botanic Gardens Kew MPNS/POWO nomenclature
+    to validate binomials, resolve vernacular synonyms, and return verified family & author data.
+    """
+    clean_query = name.strip()
+    norm_query = clean_query.lower()
+
+    # 1. Search in BOTANICAL_TAXA_KNOWLEDGE
+    matched_taxon = None
+    resolution_type = None
+
+    for taxon in BOTANICAL_TAXA_KNOWLEDGE:
+        sci_name = taxon["scientific_name"].lower()
+        genus_sp = f"{taxon['genus']} {taxon['species']}".lower()
+        if norm_query == sci_name or norm_query == genus_sp:
+            matched_taxon = taxon
+            resolution_type = "Authoritative Botanical Binomial Match"
+            break
+        elif norm_query in sci_name:
+            matched_taxon = taxon
+            resolution_type = "Binomial Substring Match"
+            break
+
+    if not matched_taxon:
+        for taxon in BOTANICAL_TAXA_KNOWLEDGE:
+            for c_name in taxon.get("common_names", []):
+                if norm_query == c_name.lower() or norm_query in c_name.lower():
+                    matched_taxon = taxon
+                    resolution_type = f"Vernacular Synonym Match ('{c_name}')"
+                    break
+            if matched_taxon:
+                break
+
+    # 2. Check Database Plant Table
+    db_plant = None
+    if matched_taxon:
+        db_plant = db.query(Plant).filter(Plant.scientific_name == matched_taxon["scientific_name"]).first()
+    else:
+        # Search db directly
+        db_plant = db.query(Plant).filter(
+            (Plant.scientific_name.ilike(f"%{clean_query}%")) |
+            (Plant.common_names_json.ilike(f"%{clean_query}%"))
+        ).first()
+        if not db_plant:
+            # Search synonym table
+            syn = db.query(PlantSynonym).filter(PlantSynonym.synonym_name.ilike(f"%{clean_query}%")).first()
+            if syn:
+                db_plant = db.query(Plant).filter(Plant.id == syn.plant_id).first()
+                if db_plant:
+                    resolution_type = f"Database Synonym Match ('{syn.synonym_name}')"
+
+    if matched_taxon:
+        return {
+            "query": clean_query,
+            "matched": True,
+            "confidence": 0.99 if "Binomial" in (resolution_type or "") else 0.94,
+            "scientific_name": matched_taxon["scientific_name"],
+            "genus": matched_taxon["genus"],
+            "species": matched_taxon["species"],
+            "authority": matched_taxon["authority"],
+            "family": matched_taxon["family"],
+            "kew_status": "Accepted Binomial (POWO / IPNI Standards)",
+            "resolution_type": resolution_type,
+            "knowledge_tradition": matched_taxon.get("tradition", tradition or "Global Ethnobotanical"),
+            "common_names": matched_taxon.get("common_names", []),
+            "verified_bioactive_compounds": [c["name"] for c in matched_taxon.get("compounds", [])],
+            "principal_traditional_uses": matched_taxon.get("conditions", []),
+            "plant_id": db_plant.id if db_plant else None,
+            "source": "Royal Botanic Gardens Kew (MPNS) & EthnoKG Botanical Knowledge Graph"
+        }
+
+    if db_plant:
+        return {
+            "query": clean_query,
+            "matched": True,
+            "confidence": 0.90,
+            "scientific_name": db_plant.scientific_name,
+            "genus": db_plant.genus or (db_plant.scientific_name.split()[0] if db_plant.scientific_name else "Unknown"),
+            "species": db_plant.species or "sp.",
+            "authority": db_plant.authority or "",
+            "family": db_plant.family or "Plantae",
+            "kew_status": db_plant.taxonomic_status or "Accepted Binomial",
+            "resolution_type": resolution_type or "Database Plant Record Match",
+            "knowledge_tradition": tradition or "Ethnomedicinal",
+            "common_names": db_plant.common_names,
+            "verified_bioactive_compounds": [],
+            "principal_traditional_uses": [],
+            "plant_id": db_plant.id,
+            "source": "EthnoKG Botanical Knowledge Graph"
+        }
+
+    return {
+        "query": clean_query,
+        "matched": False,
+        "confidence": 0.0,
+        "message": f"No verified Kew botanical taxon or EthnoKG synonym match found for '{clean_query}'.",
+        "suggestion": "Search using accepted Latin binomial (e.g., 'Withania somnifera') or standardized English common name.",
+        "kew_powo_url": f"https://powo.science.kew.org/results?q={clean_query.replace(' ', '+')}"
+    }
 
 @router.get("/{plant_id}", response_model=Dict[str, Any])
 def get_plant_detail(

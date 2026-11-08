@@ -163,3 +163,20 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+/* Print Optimization for Nagoya Sovereignty Certificates & Reports */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+  }
+  header, nav, .no-print, button:not(.allow-print) {
+    display: none !important;
+  }
+  .printable-card {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: none !important;
+  }
+}

@@ -44,6 +44,11 @@ class VerificationService:
             )
             db.add(log)
             db.commit()
+            try:
+                from .graph_service import GraphService
+                GraphService.clear_cache()
+            except Exception:
+                pass
             db.refresh(rel, ["plant", "condition", "compound", "document"])
             return rel
         except Exception:
@@ -85,6 +90,11 @@ class VerificationService:
             )
             db.add(log)
             db.commit()
+            try:
+                from .graph_service import GraphService
+                GraphService.clear_cache()
+            except Exception:
+                pass
             db.refresh(rel, ["plant", "condition", "compound", "document"])
             return rel
         except Exception:
@@ -180,6 +190,11 @@ class VerificationService:
             )
             db.add(log)
             db.commit()
+            try:
+                from .graph_service import GraphService
+                GraphService.clear_cache()
+            except Exception:
+                pass
             db.refresh(rel, ["plant", "condition", "compound", "document"])
             return rel
         except Exception:

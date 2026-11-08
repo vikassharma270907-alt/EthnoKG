@@ -8,6 +8,7 @@ from ..models.compound import Compound
 from ..models.document import Document
 from ..models.relationship import Relationship
 from ..schemas.extraction import ExtractionRecord
+from ..core.cheminformatics import enrich_compound_record
 
 # Authoritative botanical & pharmacological knowledge dictionary
 BOTANICAL_TAXA_KNOWLEDGE = [
@@ -511,6 +512,8 @@ class ExtractionEngine:
                         )
                         db.add(compound)
                         db.flush()
+                    enrich_compound_record(compound)
+                    db.flush()
 
                 # 4. Check if relationship already exists
                 existing_rel = db.query(Relationship).filter(
@@ -544,6 +547,11 @@ class ExtractionEngine:
                     persisted_count += 1
 
             db.commit()
+            try:
+                from .graph_service import GraphService
+                GraphService.clear_cache()
+            except Exception:
+                pass
             return persisted_count
         except Exception:
             db.rollback()

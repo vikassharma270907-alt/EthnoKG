@@ -165,10 +165,16 @@ def test_compounds_api(client):
     assert len(data) > 0
     assert "name" in data[0]
 
-    # Search with query filter
+    # Search with query filter and verify cheminformatics enrichment
     res_search = client.get("/api/compounds?query=Artemisinin")
     assert res_search.status_code == 200
-    assert len(res_search.json()) > 0
+    artemisinin_list = res_search.json()
+    assert len(artemisinin_list) > 0
+    artemisinin = artemisinin_list[0]
+    assert artemisinin["name"] == "Artemisinin"
+    assert artemisinin["pubchem_cid"] == "68827"
+    assert artemisinin["molecular_formula"] == "C15H22O5"
+    assert artemisinin["smiles"] == "CC1CCC2C(C(=O)OC3C2(C1)OOC3(C)C)C"
 
 def test_conditions_api(client):
     res = client.get("/api/conditions")
@@ -363,6 +369,45 @@ def test_verification_history_pagination_guard(client):
     # Invalid limit (exceeds max 200)
     res_high = client.get("/api/verification/history?limit=250")
     assert res_high.status_code == 422
+
+def test_resolve_botanical_taxon(client):
+    # Test valid scientific binomial
+    res = client.get("/api/plants/resolve-taxon?name=Artemisia annua")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["matched"] is True
+    assert "Artemisia annua" in data["scientific_name"]
+    assert data["genus"] == "Artemisia"
+    assert data["family"] == "Asteraceae"
+    assert "POWO" in data["kew_status"]
+
+    # Test vernacular synonym
+    res_common = client.get("/api/plants/resolve-taxon?name=sweet wormwood")
+    assert res_common.status_code == 200
+    assert res_common.json()["matched"] is True
+    assert "Artemisia annua" in res_common.json()["scientific_name"]
+
+    # Test unmatched query
+    res_unknown = client.get("/api/plants/resolve-taxon?name=Fictionalis Plantus")
+    assert res_unknown.status_code == 200
+    assert res_unknown.json()["matched"] is False
+
+def test_graph_cache_endpoints(client):
+    # Test get cache stats
+    res_stats = client.get("/api/graph/cache/stats")
+    assert res_stats.status_code == 200
+    stats = res_stats.json()
+    assert "cached_queries" in stats
+    assert "ttl_seconds" in stats
+
+    # Query graph to populate cache
+    res_graph = client.get("/api/graph")
+    assert res_graph.status_code == 200
+
+    # Test clear cache
+    res_clear = client.post("/api/graph/cache/clear")
+    assert res_clear.status_code == 200
+    assert res_clear.json()["status"] == "cache_flushed"
 
 
 

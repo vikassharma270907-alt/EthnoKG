@@ -17,3 +17,11 @@ def setup_test_db():
 def client():
     with TestClient(app) as c:
         yield c
+
+@pytest.fixture
+def db_session():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

@@ -5,6 +5,7 @@ from ..models.compound import Compound
 from ..models.document import Document
 from ..models.relationship import Relationship
 from ..models.verification import VerificationLog
+from .cheminformatics import enrich_compound_record
 
 SEED_DOCUMENTS = [
     {
@@ -221,9 +222,21 @@ SEED_DOCUMENTS = [
     }
 ]
 
+def enrich_compounds_cheminformatics(db: Session) -> int:
+    """Idempotently enrich all Compound records with verified cheminformatics properties."""
+    compounds = db.query(Compound).all()
+    updated_count = 0
+    for c in compounds:
+        if enrich_compound_record(c):
+            updated_count += 1
+    if updated_count > 0:
+        db.commit()
+    return updated_count
+
 def seed_database(db: Session):
-    # Check if plants table has records
+    # If database is already seeded, run cheminformatics enrichment on existing compounds and return
     if db.query(Plant).count() > 0:
+        enrich_compounds_cheminformatics(db)
         return
 
     print("Seeding EthnoKG database with verified ethnopharmacological corpus...")
@@ -275,5 +288,6 @@ def seed_database(db: Session):
             )
             db.add(log)
     db.commit()
+    enrich_compounds_cheminformatics(db)
     print(f"Successfully seeded {len(doc_objs)} documents and {len(relationships)} relationships into EthnoKG!")
 

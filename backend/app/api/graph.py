@@ -27,6 +27,17 @@ def get_graph(
         max_edges=max_edges
     )
 
+@router.get("/cache/stats")
+def get_graph_cache_stats():
+    """Returns real-time graph memory cache hit/miss statistics and active cache count."""
+    return GraphService.get_cache_stats()
+
+@router.post("/cache/clear")
+def clear_graph_cache():
+    """Manually flushes the in-memory graph cache."""
+    cleared = GraphService.clear_cache()
+    return {"cleared_entries": cleared, "status": "cache_flushed"}
+
 @router.get("/entity/{entity_id}", response_model=GraphResponse)
 def get_entity_subgraph(
     entity_id: str,

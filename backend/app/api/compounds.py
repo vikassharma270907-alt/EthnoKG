@@ -1,7 +1,7 @@
-from typing import Optional, List
-from fastapi import APIRouter, Depends, Query
+from typing import Optional, List, Dict, Any
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from ..core.database import get_db
 from ..models.compound import Compound
 from ..models.relationship import Relationship
@@ -46,4 +46,73 @@ def list_compounds(
                 relationships_count=counts_map.get(c.id, 0)
             ))
     return output
+
+@router.get("/{compound_id}", response_model=Dict[str, Any])
+def get_compound_detail(
+    compound_id: int,
+    db: Session = Depends(get_db)
+):
+    comp = db.query(Compound).filter(Compound.id == compound_id).first()
+    if not comp:
+        raise HTTPException(status_code=404, detail=f"Compound ID {compound_id} not found.")
+
+    relationships = (
+        db.query(Relationship)
+        .options(
+            joinedload(Relationship.plant),
+            joinedload(Relationship.condition),
+            joinedload(Relationship.document)
+        )
+        .filter(Relationship.compound_id == comp.id)
+        .all()
+    )
+
+    plants_map = {}
+    conditions_map = {}
+    evidence_list = []
+
+    for r in relationships:
+        if r.plant:
+            plants_map[r.plant.id] = {
+                "id": r.plant.id,
+                "scientific_name": r.plant.scientific_name,
+                "common_names": r.plant.common_names
+            }
+        if r.condition:
+            conditions_map[r.condition.id] = {
+                "id": r.condition.id,
+                "name": r.condition.name,
+                "category": r.condition.category
+            }
+        evidence_list.append({
+            "relationship_id": r.id,
+            "plant_name": r.plant.scientific_name if r.plant else "Unknown",
+            "condition_name": r.condition.name if r.condition else "Unknown",
+            "evidence_tier": r.evidence_tier,
+            "evidence_statement": r.evidence_statement,
+            "tradition": r.knowledge_tradition,
+            "confidence": r.extraction_confidence,
+            "verification_status": r.verification_status,
+            "document_title": r.document.title if r.document else None,
+            "doi": r.document.doi if r.document else None
+        })
+
+    pubchem_url = f"https://pubchem.ncbi.nlm.nih.gov/compound/{comp.pubchem_cid}" if comp.pubchem_cid else None
+    chembl_url = f"https://www.ebi.ac.uk/chembl/compound_report_card/{comp.chembl_id}/" if comp.chembl_id else None
+
+    return {
+        "id": comp.id,
+        "name": comp.name,
+        "pubchem_cid": comp.pubchem_cid,
+        "chembl_id": comp.chembl_id,
+        "molecular_formula": comp.molecular_formula,
+        "smiles": comp.smiles,
+        "biological_class": comp.biological_class,
+        "pubchem_url": pubchem_url,
+        "chembl_url": chembl_url,
+        "relationships_count": len(relationships),
+        "associated_plants": list(plants_map.values()),
+        "associated_conditions": list(conditions_map.values()),
+        "evidence_records": evidence_list
+    }
 
