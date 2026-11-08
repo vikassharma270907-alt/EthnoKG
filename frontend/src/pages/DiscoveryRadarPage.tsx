@@ -119,6 +119,51 @@ export const DiscoveryRadarPage: React.FC = () => {
     return matchesSearch && matchesStage;
   });
 
+  const exportDiscoveryCSV = () => {
+    if (!discoveryItems.length) return;
+    const headers = ['Plant Name', 'Condition', 'Bioactive Compound', 'Tradition', 'Discovery Score', 'Readiness Stage', 'Confidence'];
+    const rows = filteredDiscovery.map(item => [
+      `"${item.plant_name}"`,
+      `"${item.condition_name}"`,
+      `"${item.compound_name || 'N/A'}"`,
+      `"${item.tradition}"`,
+      item.discovery_score,
+      `"${item.stage_badge}"`,
+      item.average_confidence
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `EthnoKG_Reverse_Pharmacology_Index_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportConvergenceCSV = () => {
+    if (!convergenceItems.length) return;
+    const headers = ['Condition', 'Traditions Count', 'Originating Traditions', 'Convergent Plants Count', 'Convergent Species', 'Convergence Score', 'Consensus Level', 'Literature Records'];
+    const rows = convergenceItems.map(item => [
+      `"${item.condition}"`,
+      item.traditions_count,
+      `"${(item.traditions || []).join('; ')}"`,
+      item.plants_count,
+      `"${(item.convergent_plants || []).join('; ')}"`,
+      item.convergence_score,
+      `"${item.convergence_level}"`,
+      item.total_literature_records
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `EthnoKG_Cross_Tradition_Convergence_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
@@ -227,26 +272,38 @@ export const DiscoveryRadarPage: React.FC = () => {
               />
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto scrollbar-none">
-              <span className="text-xs text-zinc-400 shrink-0 font-mono">Filter:</span>
-              {[
-                { id: 'ALL', label: 'All Candidates' },
-                { id: 'PRECLINICAL', label: 'Preclinical Leads' },
-                { id: 'BOTANICAL', label: 'Traditional Signals' },
-                { id: 'CLINICAL', label: 'Clinically Validated' }
-              ].map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setStageFilter(s.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                    stageFilter === s.id
-                      ? 'bg-zinc-800 text-white border border-zinc-600 font-semibold'
-                      : 'bg-[#161822] text-zinc-400 border border-zinc-800 hover:text-white'
-                  }`}
-                >
-                  {s.label}
-                </button>
-              ))}
+            <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto overflow-x-auto scrollbar-none">
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs text-zinc-400 shrink-0 font-mono">Filter:</span>
+                {[
+                  { id: 'ALL', label: 'All Candidates' },
+                  { id: 'PRECLINICAL', label: 'Preclinical Leads' },
+                  { id: 'BOTANICAL', label: 'Traditional Signals' },
+                  { id: 'CLINICAL', label: 'Clinically Validated' }
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setStageFilter(s.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                      stageFilter === s.id
+                        ? 'bg-zinc-800 text-white border border-zinc-600 font-semibold'
+                        : 'bg-[#161822] text-zinc-400 border border-zinc-800 hover:text-white'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={exportDiscoveryCSV}
+                className="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-[#161822] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700/80 flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                title="Download filtered Discovery Index as CSV"
+              >
+                <Download className="w-3.5 h-3.5 text-zinc-400" />
+                <span className="hidden md:inline">Export CSV</span>
+              </button>
             </div>
           </div>
 
@@ -373,16 +430,27 @@ export const DiscoveryRadarPage: React.FC = () => {
       {/* SUB-TAB 2: CROSS-CULTURAL CONVERGENCE RADAR */}
       {activeSubTab === 'convergence' && (
         <div className="space-y-6">
-          <div className="bg-[#111319]/90 border border-zinc-800 p-5 rounded-xl space-y-2">
-            <h2 className="text-lg font-bold text-white font-mono flex items-center gap-2">
-              <Globe2 className="w-5 h-5 text-zinc-300" />
-              Independent Cross-Cultural Convergence Signal
-            </h2>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              When distinct indigenous traditions across different continents (e.g. Ayurveda in India, TCM in China, Amazonian folk medicine) 
-              independently arrived at the exact same botanical species or plant family for identical therapeutic symptoms, 
-              statistical random chance is ruled out. This cross-cultural convergence is modern pharmacology's highest-probability target filter.
-            </p>
+          <div className="bg-[#111319]/90 border border-zinc-800 p-5 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-2 max-w-2xl">
+              <h2 className="text-lg font-bold text-white font-mono flex items-center gap-2">
+                <Globe2 className="w-5 h-5 text-zinc-300" />
+                Independent Cross-Cultural Convergence Signal
+              </h2>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                When distinct indigenous traditions across different continents (e.g. Ayurveda in India, TCM in China, Amazonian folk medicine) 
+                independently arrived at the exact same botanical species or plant family for identical therapeutic symptoms, 
+                statistical random chance is ruled out. This cross-cultural convergence is modern pharmacology's highest-probability target filter.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={exportConvergenceCSV}
+              className="px-3.5 py-2 rounded-xl text-xs font-mono font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white border border-zinc-700 flex items-center gap-2 transition-colors cursor-pointer shrink-0 self-start md:self-center"
+              title="Download Convergence Matrix dataset as CSV"
+            >
+              <Download className="w-4 h-4 text-zinc-300" />
+              <span>Export Convergence CSV</span>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
