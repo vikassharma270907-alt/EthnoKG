@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, ExternalLink, Cpu, CheckCircle2, ShieldCheck, Award } from 'lucide-react';
+import { BookOpen, ExternalLink, Award } from 'lucide-react';
 
 export const MethodologyPage: React.FC = () => {
   const references = [
@@ -52,7 +52,7 @@ export const MethodologyPage: React.FC = () => {
       <div className="pb-4 border-b border-slate-800">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white font-mono">Research Methodology & Scientific Literature</h1>
-          <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">
             Peer-Reviewed Grounding
           </span>
         </div>
@@ -68,7 +68,7 @@ export const MethodologyPage: React.FC = () => {
             <Award className="w-5 h-5 text-emerald-400" />
             <h3 className="text-sm font-bold text-white font-mono">Automated Data Science & NLP Evaluation Results</h3>
           </div>
-          <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
             Tested on Gold-Standard Corpus
           </span>
         </div>
