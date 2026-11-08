@@ -22,6 +22,15 @@ const API_BASE = rawBase
   ? (rawBase.endsWith('/api') ? rawBase : `${rawBase.replace(/\/$/, '')}/api`)
   : '/api';
 
+async function parseError(res: Response, fallback: string): Promise<string> {
+  try {
+    const data = await res.json();
+    return data?.detail || res.statusText || fallback;
+  } catch {
+    return res.statusText || fallback;
+  }
+}
+
 export async function fetchDashboardStats(): Promise<DashboardStatsResponse> {
   const res = await fetch(`${API_BASE}/dashboard/stats`);
   if (!res.ok) throw new Error(`Failed to fetch stats: ${res.statusText}`);
@@ -184,7 +193,7 @@ export async function approveVerification(id: number, payload: { reviewer_name: 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`Failed to approve: ${res.statusText}`);
+  if (!res.ok) throw new Error(await parseError(res, 'Failed to approve'));
   return res.json();
 }
 
@@ -194,7 +203,7 @@ export async function rejectVerification(id: number, payload: { reviewer_name: s
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`Failed to reject: ${res.statusText}`);
+  if (!res.ok) throw new Error(await parseError(res, 'Failed to reject'));
   return res.json();
 }
 
@@ -204,7 +213,7 @@ export async function patchVerification(id: number, payload: any): Promise<Relat
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`Failed to update relationship: ${res.statusText}`);
+  if (!res.ok) throw new Error(await parseError(res, 'Failed to update relationship'));
   return res.json();
 }
 
@@ -214,7 +223,7 @@ export async function queryAssistant(question: string): Promise<AssistantQueryRe
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question }),
   });
-  if (!res.ok) throw new Error(`Assistant query failed: ${res.statusText}`);
+  if (!res.ok) throw new Error(await parseError(res, 'Assistant query failed'));
   return res.json();
 }
 

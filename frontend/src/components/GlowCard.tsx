@@ -73,3 +73,4 @@ export const GlowCard: React.FC<GlowCardProps> = ({
     </motion.div>
   );
 };
+

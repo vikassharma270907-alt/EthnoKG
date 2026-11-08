@@ -228,8 +228,18 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
 
           {/* Decision Notes */}
           {!isEditing && (
-            <div>
-              <label className="block text-[10px] text-zinc-400 mb-1.5 font-mono">Curator Verification Notes</label>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] text-zinc-400 font-mono">Curator Name / Reviewer</label>
+                <input
+                  type="text"
+                  value={reviewerName}
+                  onChange={(e) => setReviewerName(e.target.value)}
+                  className="bg-[#161822] border border-zinc-700 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-zinc-500 font-mono"
+                  placeholder="e.g. Dr. Vance"
+                />
+              </div>
+              <label className="block text-[10px] text-zinc-400 font-mono">Curator Verification Notes</label>
               <textarea
                 rows={2}
                 value={curatorNotes}

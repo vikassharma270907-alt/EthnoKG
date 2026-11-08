@@ -76,10 +76,17 @@ export const ExtractionPage: React.FC<ExtractionPageProps> = ({ setActiveTab, on
 
   // Load indexed documents on mount
   useEffect(() => {
+    let isMounted = true;
     fetchDocuments(0, 20).then((docs) => {
-      setIndexedDocs(docs);
-      if (docs.length > 0) setSelectedDocId(docs[0].id);
+      if (isMounted) {
+        setIndexedDocs(docs);
+        if (docs.length > 0) setSelectedDocId(docs[0].id);
+      }
     }).catch(console.error);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Animated pipeline progress simulation when processing

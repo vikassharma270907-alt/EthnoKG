@@ -27,7 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab, 
   setActiveTab, 
   pendingCount = 0,
-  onOpenVideoWalkthrough
+  onOpenVideoWalkthrough 
 }) => {
   const navItems = [
     { id: 'landing', label: 'Overview', icon: Globe2 },
@@ -123,7 +123,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenVideoWalkthrough && (
               <button
                 onClick={onOpenVideoWalkthrough}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900/90 hover:bg-zinc-800 text-sky-300 border border-sky-500/40 hover:border-sky-400/80 transition-all shadow-md shadow-sky-950/40 hover:scale-[1.02] flex items-center gap-1.5 cursor-pointer group"
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900/90 hover:bg-zinc-800 text-sky-300 border border-sky-500/40 hover:border-sky-400 transition-all shadow-md shadow-sky-950/40 hover:scale-[1.02] flex items-center gap-1.5 cursor-pointer group"
                 title="Watch full 10-minute video presentation and demonstration"
               >
                 <FileVideo className="w-3.5 h-3.5 text-sky-400 group-hover:scale-110 transition-transform" />
@@ -133,6 +133,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </button>
             )}
+
+            <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900/90 border border-zinc-700/80 text-[10px] text-zinc-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="font-mono">100% Traceable</span>
+            </div>
 
             <button
               onClick={() => setActiveTab('extraction')}

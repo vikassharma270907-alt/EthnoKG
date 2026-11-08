@@ -24,7 +24,11 @@ interface LandingPageProps {
   onOpenVideoWalkthrough?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ setActiveTab, stats, onOpenVideoWalkthrough }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ 
+  setActiveTab, 
+  stats,
+  onOpenVideoWalkthrough
+}) => {
   return (
     <div className="space-y-24 relative overflow-hidden">
       
@@ -86,6 +90,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ setActiveTab, stats, o
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-wrap items-center justify-center gap-3.5 pt-2"
           >
+            {onOpenVideoWalkthrough && (
+              <button
+                onClick={onOpenVideoWalkthrough}
+                className="px-6 py-3.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-sky-300 font-semibold text-sm border border-sky-500/40 hover:border-sky-400 transition-all backdrop-blur-md hover:scale-105 flex items-center gap-2 cursor-pointer shadow-xl shadow-sky-950/40"
+              >
+                <FileVideo className="w-4 h-4 text-sky-400" />
+                <span>Watch 10-Min Walkthrough</span>
+              </button>
+            )}
+
             <button
               onClick={() => setActiveTab('graph')}
               className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-zinc-200 via-slate-100 to-zinc-300 hover:from-white hover:to-zinc-200 text-zinc-950 font-bold text-sm transition-all shadow-xl shadow-black/80 hover:shadow-[0_0_25px_rgba(255,255,255,0.25)] hover:scale-105 flex items-center gap-2 cursor-pointer"
@@ -110,19 +124,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ setActiveTab, stats, o
               <Compass className="w-4 h-4 text-teal-400" />
               <span>Discovery Radar</span>
             </button>
-
-            {onOpenVideoWalkthrough && (
-              <button
-                onClick={onOpenVideoWalkthrough}
-                className="px-6 py-3.5 rounded-xl bg-cyan-950/70 hover:bg-cyan-900/80 text-cyan-200 border border-cyan-500/50 hover:border-cyan-400 font-semibold text-sm transition-all backdrop-blur-md hover:scale-105 flex items-center gap-2 cursor-pointer shadow-lg shadow-cyan-950/50 group"
-              >
-                <FileVideo className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
-                <span>Presentation Tour</span>
-                <span className="text-[10px] uppercase font-mono bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-500/30">
-                  10m
-                </span>
-              </button>
-            )}
           </motion.div>
 
           {/* Quick Stats Grid with Rolling Counters */}

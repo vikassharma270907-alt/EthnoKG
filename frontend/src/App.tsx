@@ -12,13 +12,13 @@ import { AssistantPage } from './pages/AssistantPage';
 import { VerificationPage } from './pages/VerificationPage';
 import { MethodologyPage } from './pages/MethodologyPage';
 import { SourcesPage } from './pages/SourcesPage';
+import { VideoWalkthroughModal } from './components/VideoWalkthroughModal';
 import { fetchDashboardStats } from './api/client';
 import type { DashboardStatsResponse } from './types';
-import { VideoWalkthroughModal } from './components/VideoWalkthroughModal';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('landing');
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState<boolean>(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [stats, setStats] = useState<DashboardStatsResponse | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
 
@@ -66,7 +66,7 @@ export function App() {
         <Navbar 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
-          pendingCount={stats?.pending_verifications || 0} 
+          pendingCount={stats?.pending_verifications || 0}
           onOpenVideoWalkthrough={() => setIsVideoModalOpen(true)}
         />
       </div>
@@ -117,7 +117,7 @@ export function App() {
         <Footer setActiveTab={setActiveTab} />
       </div>
 
-      {/* Interactive 10-Minute Video Walkthrough Modal */}
+      {/* Interactive 10-Minute Video Walkthrough & Presentation Modal */}
       <VideoWalkthroughModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}

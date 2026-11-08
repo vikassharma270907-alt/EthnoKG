@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Compass, 
   Sparkles, 
@@ -45,6 +45,14 @@ export const DiscoveryRadarPage: React.FC = () => {
   // Certificate Modal
   const [activeCert, setActiveCert] = useState<SovereigntyCertificate | null>(null);
   const [copiedHash, setCopiedHash] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      const timer = copyTimerRef.current;
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -78,7 +86,8 @@ export const DiscoveryRadarPage: React.FC = () => {
   const handleCopyHash = (hash: string) => {
     navigator.clipboard.writeText(hash);
     setCopiedHash(true);
-    setTimeout(() => setCopiedHash(false), 2000);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => setCopiedHash(false), 2000);
   };
 
   const handleDownloadCert = (cert: SovereigntyCertificate) => {

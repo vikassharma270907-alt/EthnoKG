@@ -155,6 +155,17 @@ export const VerificationPage: React.FC = () => {
             <span>{verifiedToast}</span>
           </motion.div>
         )}
+        {errorToast && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-20 right-6 z-50 bg-rose-950/90 text-rose-200 font-bold px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs border border-rose-700 backdrop-blur-md"
+          >
+            <Trash2 className="w-4 h-4 text-rose-400" />
+            <span>{errorToast}</span>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Header */}
@@ -263,7 +274,7 @@ export const VerificationPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           <AnimatePresence>
-            {relationships.map((rel, idx) => (
+            {relationships.map((rel) => (
               <GlowCard 
                 key={rel.id}
                 glowColor="amber"

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Database, ExternalLink, AlertTriangle, BookOpen, Quote } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { fetchExtractionResults } from '../api/client';
 import type { RelationshipDetail } from '../types';
 import { GlowCard } from '../components/GlowCard';
@@ -119,7 +119,7 @@ export const EvidencePage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           <AnimatePresence>
-            {relationships.map((rel, idx) => (
+            {relationships.map((rel) => (
               <GlowCard 
                 key={rel.id}
                 glowColor="silver"

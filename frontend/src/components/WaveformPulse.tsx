@@ -59,3 +59,4 @@ export const WaveformPulse: React.FC<WaveformPulseProps> = ({
     </div>
   );
 };
+
