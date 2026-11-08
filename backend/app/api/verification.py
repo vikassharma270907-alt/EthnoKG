@@ -52,13 +52,13 @@ def get_pending_verifications(
             geographic_context=r.geographic_context,
             knowledge_tradition=r.knowledge_tradition,
             evidence_tier=r.evidence_tier,
-            evidence_category=r.evidence_tier,
-            extraction_confidence=r.extraction_confidence,
+            evidence_statement=r.evidence_statement,
             supporting_excerpt=r.supporting_excerpt,
+            page_or_section=r.page_or_section,
+            extraction_confidence=r.extraction_confidence,
             verification_status=r.verification_status,
-            verification_notes=r.verification_notes,
-            verified_by=r.verified_by,
-            created_at=r.created_at
+            created_at=r.created_at,
+            updated_at=r.updated_at
         )
         for r in records
     ]
