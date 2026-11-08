@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ShieldCheck, 
   Check, 
@@ -28,6 +28,8 @@ export const VerificationPage: React.FC = () => {
   const [relationships, setRelationships] = useState<RelationshipDetail[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [verifiedToast, setVerifiedToast] = useState<string | null>(null);
+  const [errorToast, setErrorToast] = useState<string | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Active modal for editing
   const [activeRel, setActiveRel] = useState<RelationshipDetail | null>(null);
@@ -39,6 +41,12 @@ export const VerificationPage: React.FC = () => {
       limit: 100
     }).then(setRelationships).finally(() => setIsLoading(false));
   };
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -71,10 +79,14 @@ export const VerificationPage: React.FC = () => {
       });
       fireCuratorConfetti();
       setVerifiedToast(`Successfully verified: ${rel.plant_scientific_name} ➔ ${rel.condition_name || rel.compound_name}`);
-      setTimeout(() => setVerifiedToast(null), 4000);
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setVerifiedToast(null), 4000);
       loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setErrorToast(err?.message || 'Failed to approve relationship.');
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setErrorToast(null), 4000);
     }
   };
 
@@ -85,25 +97,46 @@ export const VerificationPage: React.FC = () => {
         reason: 'Extraction inaccurate or not supported by excerpt.'
       });
       loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setErrorToast(err?.message || 'Failed to reject relationship.');
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setErrorToast(null), 4000);
     }
   };
 
   const handleModalApprove = async (id: number, notes: string) => {
-    await approveVerification(id, { reviewer_name: 'Dr. Vance (Expert Curator)', notes });
-    fireCuratorConfetti();
-    loadData();
+    try {
+      await approveVerification(id, { reviewer_name: 'Dr. Vance (Expert Curator)', notes });
+      fireCuratorConfetti();
+      loadData();
+    } catch (err: any) {
+      setErrorToast(err?.message || 'Failed to approve relationship.');
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setErrorToast(null), 4000);
+    }
   };
 
   const handleModalReject = async (id: number, reason: string) => {
-    await rejectVerification(id, { reviewer_name: 'Dr. Vance (Expert Curator)', reason });
-    loadData();
+    try {
+      await rejectVerification(id, { reviewer_name: 'Dr. Vance (Expert Curator)', reason });
+      loadData();
+    } catch (err: any) {
+      setErrorToast(err?.message || 'Failed to reject relationship.');
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setErrorToast(null), 4000);
+    }
   };
 
   const handleModalUpdate = async (id: number, data: any) => {
-    await patchVerification(id, data);
-    loadData();
+    try {
+      await patchVerification(id, data);
+      loadData();
+    } catch (err: any) {
+      setErrorToast(err?.message || 'Failed to update relationship.');
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setErrorToast(null), 4000);
+    }
   };
 
   return (
