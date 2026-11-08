@@ -35,24 +35,24 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="bg-[#111319] border border-zinc-700/80 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-zinc-200">
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+      <div className="bg-[#101218] border border-zinc-700/80 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-zinc-200">
         
         {/* Header */}
-        <div className="sticky top-0 bg-[#111319]/95 backdrop-blur-md px-6 py-4 border-b border-zinc-800 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-[#101218]/95 backdrop-blur-md px-6 py-4 border-b border-zinc-800 flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-emerald-400">
-              <Leaf className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-200">
+              <Leaf className="w-5 h-5 text-zinc-300" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-bold text-white font-mono">{plant.scientific_name}</h3>
-                <span className="text-[10px] font-semibold bg-zinc-800 text-emerald-300 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
+                <span className="text-[10px] font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700 px-2 py-0.5 rounded-full font-mono">
                   {plant.taxonomic_status}
                 </span>
               </div>
               <p className="text-xs text-zinc-400">
-                Family: <span className="text-emerald-300 font-medium">{plant.family || 'Unknown'}</span> | Genus: <span className="text-zinc-300">{plant.genus}</span>
+                Family: <span className="text-zinc-200 font-medium">{plant.family || 'Unknown'}</span> | Genus: <span className="text-zinc-300">{plant.genus}</span>
               </p>
             </div>
           </div>
@@ -72,49 +72,49 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
             <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Vernacular & Historical Synonyms</h4>
             <div className="flex flex-wrap gap-1.5">
               {(plant.common_names || []).map((cn, i) => (
-                <span key={i} className="text-xs bg-[#161822] border border-zinc-750 px-2.5 py-1 rounded-md text-zinc-200">
+                <span key={i} className="text-xs bg-[#151722] border border-zinc-700 px-2.5 py-1 rounded-md text-zinc-200">
                   {cn}
                 </span>
               ))}
               {(plant.synonyms || []).map((s, i) => (
-                <span key={`syn_${i}`} className="text-xs bg-[#161822]/60 border border-zinc-800 px-2.5 py-1 rounded-md text-zinc-400 italic">
+                <span key={`syn_${i}`} className="text-xs bg-[#151722]/60 border border-zinc-800 px-2.5 py-1 rounded-md text-zinc-400 italic">
                   {s.synonym_name} ({s.synonym_type})
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Quick Metrics */}
+          {/* Quick Metrics in Monochromatic Titanium */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-            <div className="bg-[#161822] border border-zinc-800 p-3 rounded-xl">
+            <div className="bg-[#151722] border border-zinc-800 p-3 rounded-xl">
               <span className="text-[10px] uppercase text-zinc-400 font-semibold block font-mono">Relations</span>
-              <span className="text-lg font-bold text-emerald-400 font-mono">{plant.relationships_count ?? 0}</span>
+              <span className="text-lg font-bold text-white font-mono">{plant.relationships_count ?? 0}</span>
             </div>
-            <div className="bg-[#161822] border border-zinc-800 p-3 rounded-xl">
+            <div className="bg-[#151722] border border-zinc-800 p-3 rounded-xl">
               <span className="text-[10px] uppercase text-zinc-400 font-semibold block font-mono">Conditions</span>
-              <span className="text-lg font-bold text-rose-400 font-mono">{(plant.reported_conditions || []).length}</span>
+              <span className="text-lg font-bold text-zinc-200 font-mono">{(plant.reported_conditions || []).length}</span>
             </div>
-            <div className="bg-[#161822] border border-zinc-800 p-3 rounded-xl">
+            <div className="bg-[#151722] border border-zinc-800 p-3 rounded-xl">
               <span className="text-[10px] uppercase text-zinc-400 font-semibold block font-mono">Compounds</span>
-              <span className="text-lg font-bold text-sky-400 font-mono">{(plant.reported_compounds || []).length}</span>
+              <span className="text-lg font-bold text-zinc-300 font-mono">{(plant.reported_compounds || []).length}</span>
             </div>
-            <div className="bg-[#161822] border border-zinc-800 p-3 rounded-xl">
+            <div className="bg-[#151722] border border-zinc-800 p-3 rounded-xl">
               <span className="text-[10px] uppercase text-zinc-400 font-semibold block font-mono">Publications</span>
-              <span className="text-lg font-bold text-purple-400 font-mono">{(plant.supporting_publications || []).length}</span>
+              <span className="text-lg font-bold text-zinc-100 font-mono">{(plant.supporting_publications || []).length}</span>
             </div>
           </div>
 
           {/* Organs & Preparations */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-[#161822] border border-zinc-800 p-4 rounded-xl space-y-2">
-              <div className="flex items-center gap-2 text-xs font-semibold text-zinc-300">
-                <Layers className="w-4 h-4 text-emerald-400" />
+            <div className="bg-[#151722] border border-zinc-800 p-4 rounded-xl space-y-2">
+              <div className="flex items-center gap-2 text-xs font-semibold text-zinc-300 font-mono">
+                <Layers className="w-4 h-4 text-zinc-300" />
                 <span>Plant Parts Documented</span>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {(plant.parts_used || []).length > 0 ? (
                   (plant.parts_used || []).map((part, i) => (
-                    <span key={i} className="text-xs bg-zinc-800 text-emerald-300 border border-zinc-700 px-2 py-0.5 rounded">
+                    <span key={i} className="text-xs bg-zinc-800 text-zinc-200 border border-zinc-700 px-2 py-0.5 rounded">
                       {part}
                     </span>
                   ))
@@ -124,15 +124,15 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
               </div>
             </div>
 
-            <div className="bg-[#161822] border border-zinc-800 p-4 rounded-xl space-y-2">
-              <div className="flex items-center gap-2 text-xs font-semibold text-zinc-300">
-                <Beaker className="w-4 h-4 text-sky-400" />
+            <div className="bg-[#151722] border border-zinc-800 p-4 rounded-xl space-y-2">
+              <div className="flex items-center gap-2 text-xs font-semibold text-zinc-300 font-mono">
+                <Beaker className="w-4 h-4 text-zinc-300" />
                 <span>Preparation Methods</span>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {(plant.preparation_methods || []).length > 0 ? (
                   (plant.preparation_methods || []).map((prep, i) => (
-                    <span key={i} className="text-xs bg-zinc-800 text-sky-300 border border-zinc-700 px-2 py-0.5 rounded">
+                    <span key={i} className="text-xs bg-zinc-800 text-zinc-200 border border-zinc-700 px-2 py-0.5 rounded">
                       {prep}
                     </span>
                   ))
@@ -149,7 +149,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
               <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Reported Health Indications</h4>
               <div className="flex flex-wrap gap-1.5">
                 {(plant.reported_conditions || []).map((cond, i) => (
-                  <span key={i} className="text-xs bg-rose-500/10 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded-md">
+                  <span key={i} className="text-xs bg-zinc-900 text-zinc-200 border border-zinc-700 px-2.5 py-1 rounded-md">
                     {cond}
                   </span>
                 ))}
@@ -160,7 +160,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
               <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Key Bioactive Compounds</h4>
               <div className="flex flex-wrap gap-1.5">
                 {(plant.reported_compounds || []).map((comp, i) => (
-                  <span key={i} className="text-xs bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2.5 py-1 rounded-md font-mono">
+                  <span key={i} className="text-xs bg-zinc-800 text-zinc-200 border border-zinc-700 px-2.5 py-1 rounded-md font-mono">
                     {comp}
                   </span>
                 ))}
@@ -173,7 +173,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
             <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Supporting Scientific Publications</h4>
             <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
               {(plant.supporting_publications || []).map((pub, i) => (
-                <div key={i} className="bg-[#161822] border border-zinc-800 p-3 rounded-lg text-xs space-y-1">
+                <div key={i} className="bg-[#151722] border border-zinc-800 p-3 rounded-lg text-xs space-y-1">
                   <div className="flex items-start justify-between gap-2">
                     <p className="font-semibold text-white">{pub.title}</p>
                     {pub.doi && (
@@ -181,7 +181,7 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
                         href={`https://doi.org/${pub.doi}`} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="text-sky-400 hover:text-sky-300 shrink-0"
+                        className="text-zinc-300 hover:text-white shrink-0 font-mono text-[11px]"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
@@ -198,17 +198,17 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="bg-[#161822] px-6 py-3 border-t border-zinc-800 flex items-center justify-between">
+        <div className="bg-[#151722] px-6 py-3 border-t border-zinc-800 flex items-center justify-between">
           <button
             onClick={handleFetchCert}
             disabled={isLoadingCert}
-            className="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+            className="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 font-mono"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <ShieldCheck className="w-3.5 h-3.5 text-zinc-300" />
             <span>
               {isLoadingCert ? 'Generating...' : downloadSuccess ? 'Certificate Downloaded!' : 'Download Nagoya ABS Certificate'}
             </span>
-            {downloadSuccess && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
+            {downloadSuccess && <CheckCircle2 className="w-3 h-3 text-white" />}
           </button>
 
           <button
