@@ -170,7 +170,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             className="relative w-full max-w-xl rounded-2xl bg-[#0c0e16] border border-zinc-700/80 shadow-2xl shadow-black/90 overflow-hidden z-10"
           >
             <div className="flex items-center px-4 py-3.5 border-b border-zinc-800 gap-3">
-              <Search className="w-5 h-5 text-sky-400 shrink-0" />
+              <Search className="w-5 h-5 text-zinc-300 shrink-0" />
               <input
                 ref={inputRef}
                 type="text"
@@ -210,7 +210,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       onMouseEnter={() => setSelectedIndex(idx)}
                       className={`w-full text-left flex items-center justify-between p-2.5 rounded-xl border text-xs transition-all duration-150 cursor-pointer ${
                         isSelected
-                          ? 'bg-zinc-800/90 border-sky-500/50 text-white shadow-sm'
+                          ? 'bg-zinc-800/90 border-zinc-500/70 text-white shadow-sm'
                           : 'bg-transparent border-transparent text-zinc-300 hover:bg-zinc-800/40'
                       }`}
                     >
@@ -218,7 +218,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                         <div
                           className={`p-2 rounded-lg border shrink-0 ${
                             isSelected
-                              ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+                              ? 'bg-zinc-700/80 text-white border-zinc-600'
                               : 'bg-zinc-800/60 text-zinc-400 border-zinc-700/40'
                           }`}
                         >
@@ -242,7 +242,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                           </span>
                         )}
                         {isSelected && (
-                          <CornerDownLeft className="w-3.5 h-3.5 text-sky-400" />
+                          <CornerDownLeft className="w-3.5 h-3.5 text-zinc-300" />
                         )}
                       </div>
                     </button>
@@ -262,9 +262,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   Select
                 </span>
               </div>
-              <span className="text-sky-400/80 flex items-center gap-1 font-mono text-[10px]">
+              <span className="text-zinc-400 flex items-center gap-1 font-mono text-[10px]">
                 EthnoKG Command Core
-                <ArrowRight className="w-3 h-3" />
+                <ArrowRight className="w-3 h-3 text-zinc-400" />
               </span>
             </div>
           </motion.div>

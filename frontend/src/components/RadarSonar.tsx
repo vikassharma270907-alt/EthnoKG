@@ -60,7 +60,7 @@ export const RadarSonar: React.FC<RadarSonarProps> = ({
               initial={{ scale: 0.8, opacity: 0.4 }}
               animate={{ scale: [0.8, 1.4, 0.8], opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 2.4, repeat: Infinity, delay: tgt.delay }}
-              className="w-2.5 h-2.5 rounded-full bg-sky-400 border border-white shadow-[0_0_8px_#38bdf8]"
+              className="w-2.5 h-2.5 rounded-full bg-white border border-zinc-200 shadow-[0_0_8px_rgba(255,255,255,0.85)]"
             />
             {/* Tooltip on Hover */}
             <div className="absolute left-4 top-1/2 -translate-y-1/2 hidden group-hover:block whitespace-nowrap bg-zinc-950/95 border border-zinc-700 text-[10px] text-zinc-200 font-mono px-2 py-0.5 rounded shadow-xl pointer-events-none z-30">

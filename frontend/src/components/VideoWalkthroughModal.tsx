@@ -515,11 +515,11 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleJumpToFeature(currentChapter.targetTab)}
-                    className="px-3 py-2 min-h-[36px] rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 transition-all flex items-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                    className="px-3 py-2 min-h-[36px] rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 transition-all flex items-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                     aria-label={`Explore live feature: ${currentChapter.featureName || 'Explore Live'}`}
                   >
                     <span>{currentChapter.featureName || 'Explore Live'}</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
+                    <ExternalLink className="w-3.5 h-3.5 text-zinc-300" aria-hidden="true" />
                   </button>
                 </div>
 
@@ -543,7 +543,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                   9 Chapters • ~{Math.round(totalPresentationSeconds / 60)} Minutes Total
                 </p>
               </div>
-              <span className="text-[10px] font-mono text-sky-400 bg-zinc-800 border border-zinc-700 px-2 py-0.5 rounded-md">
+              <span className="text-[10px] font-mono text-zinc-300 bg-zinc-800 border border-zinc-700 px-2 py-0.5 rounded-md">
                 30 FPS • 1080p
               </span>
             </div>
@@ -562,7 +562,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                     role="option"
                     aria-selected={isSelected}
                     onClick={() => setCurrentChapterIndex(idx)}
-                    className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none ${
+                    className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none ${
                       isSelected 
                         ? 'bg-zinc-800 text-white border-zinc-600 shadow-md ring-1 ring-zinc-500' 
                         : 'bg-[#161822] border-zinc-800 hover:bg-zinc-850 hover:border-zinc-700 text-zinc-300'
@@ -571,7 +571,7 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className={`text-[11px] font-mono font-bold ${isSelected ? 'text-sky-400' : 'text-zinc-400'}`}>
+                          <span className={`text-[11px] font-mono font-bold ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
                             {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
                           </span>
                           <h4 className={`text-xs font-semibold ${isSelected ? 'text-white' : 'text-zinc-200'}`}>
@@ -589,8 +589,8 @@ export const VideoWalkthroughModal: React.FC<VideoWalkthroughModalProps> = ({
                         </span>
                         {isSelected && isPlaying && (
                           <span className="flex h-2 w-2 relative" aria-label="Currently playing">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-400"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-zinc-300"></span>
                           </span>
                         )}
                       </div>
