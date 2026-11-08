@@ -88,7 +88,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="curator-modal-title"
@@ -106,11 +106,11 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
 
       <div 
         ref={modalContainerRef}
-        className="bg-[#111319] border border-zinc-700/80 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-zinc-200 focus:outline-none"
+        className="bg-[#101218] border border-zinc-700/80 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-zinc-200 focus:outline-none"
         tabIndex={-1}
       >
         {/* Header */}
-        <header className="sticky top-0 bg-[#111319]/95 backdrop-blur-md px-6 py-4 border-b border-zinc-800 flex items-center justify-between z-10">
+        <header className="sticky top-0 bg-[#101218]/95 backdrop-blur-md px-6 py-4 border-b border-zinc-800 flex items-center justify-between z-10">
           <div className="flex items-center gap-2">
             <h2 id="curator-modal-title" className="text-xs font-semibold uppercase tracking-wider text-zinc-200 bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full font-mono">
               Human Curator Workspace
@@ -123,7 +123,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
             ref={closeButtonRef}
             type="button"
             onClick={onClose} 
-            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
             aria-label="Close verification modal"
           >
             <X className="w-5 h-5" aria-hidden="true" />
@@ -134,28 +134,28 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         <div className="p-6 space-y-5 text-xs">
           
           {/* Source Excerpt Comparison */}
-          <section className="bg-[#161822] border border-zinc-800 p-4 rounded-xl space-y-2" aria-label="Verbatim primary source excerpt">
+          <section className="bg-[#151722] border border-zinc-800 p-4 rounded-xl space-y-2" aria-label="Verbatim primary source excerpt">
             <div className="flex items-center gap-2 text-zinc-300 font-semibold uppercase text-[10px] font-mono">
-              <Quote className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
+              <Quote className="w-3.5 h-3.5 text-zinc-400" aria-hidden="true" />
               <span>Verbatim Primary Source Excerpt</span>
             </div>
-            <blockquote className="text-sm text-zinc-200 italic leading-relaxed bg-black/50 p-3.5 rounded-xl border border-zinc-800">
+            <blockquote className="text-sm text-zinc-200 italic leading-relaxed bg-black/60 p-3.5 rounded-xl border border-zinc-800">
               "{activeItem.supporting_excerpt || 'No raw excerpt recorded.'}"
             </blockquote>
             <div className="flex items-center justify-between text-[11px] text-zinc-400 pt-1 font-mono">
               <span>Source: {activeItem.document_title}</span>
-              <span className="text-sky-400 font-bold">Confidence: {Math.round(activeItem.extraction_confidence * 100)}%</span>
+              <span className="text-white font-bold">Confidence: {Math.round(activeItem.extraction_confidence * 100)}%</span>
             </div>
           </section>
 
           {/* Extracted Fields (View vs Edit) */}
-          <section className="bg-[#161822] border border-zinc-800 p-4 rounded-xl space-y-3" aria-label="Extracted relationship entities">
+          <section className="bg-[#151722] border border-zinc-800 p-4 rounded-xl space-y-3" aria-label="Extracted relationship entities">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-zinc-200 font-mono text-sm">Extracted Scientific Relationship</h3>
               <button
                 type="button"
                 onClick={() => setIsEditing(!isEditing)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 min-h-[32px] text-xs text-sky-400 hover:text-sky-300 rounded-lg hover:bg-zinc-800/60 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 min-h-[32px] text-xs text-zinc-300 hover:text-white rounded-lg hover:bg-zinc-800/60 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none font-mono"
                 aria-expanded={isEditing}
               >
                 <Edit3 className="w-3.5 h-3.5" aria-hidden="true" />
@@ -175,7 +175,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                       type="text"
                       value={plantName}
                       onChange={(e) => setPlantName(e.target.value)}
-                      className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                      className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                       required
                     />
                   </div>
@@ -188,7 +188,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                       type="text"
                       value={conditionName}
                       onChange={(e) => setConditionName(e.target.value)}
-                      className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                      className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                       required
                     />
                   </div>
@@ -204,7 +204,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                       type="text"
                       value={plantPart}
                       onChange={(e) => setPlantPart(e.target.value)}
-                      className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                      className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                     />
                   </div>
                   <div>
@@ -216,7 +216,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                       type="text"
                       value={prepMethod}
                       onChange={(e) => setPrepMethod(e.target.value)}
-                      className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                      className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                     />
                   </div>
                 </div>
@@ -229,7 +229,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                     id="edit-evidence-tier"
                     value={evidenceTier}
                     onChange={(e) => setEvidenceTier(e.target.value)}
-                    className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                    className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none font-mono"
                   >
                     <option value="Traditional Use Report">Traditional Use Report</option>
                     <option value="Ethnobotanical Field Observation">Ethnobotanical Field Observation</option>
@@ -250,14 +250,14 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                     value={curatorNotes}
                     onChange={(e) => setCuratorNotes(e.target.value)}
                     placeholder="Enter reason for adjustments..."
-                    className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                    className="w-full bg-black/60 border border-zinc-700 rounded-lg p-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-2.5 min-h-[44px] bg-zinc-200 hover:bg-white text-zinc-950 font-bold rounded-xl text-xs cursor-pointer shadow-md focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none disabled:opacity-50"
+                  className="w-full py-2.5 min-h-[44px] bg-zinc-200 hover:bg-white text-zinc-950 font-bold rounded-xl text-xs cursor-pointer shadow-md focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none disabled:opacity-50"
                 >
                   {isSubmitting ? 'Saving Corrections...' : 'Save Corrections & Approve'}
                 </button>
@@ -270,7 +270,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                 </div>
                 <div>
                   <span className="text-[11px] text-zinc-400 block font-mono">Condition / Indication</span>
-                  <span className="font-semibold text-rose-400 font-mono text-sm">{activeItem.condition_name || 'General Health'}</span>
+                  <span className="font-semibold text-zinc-200 font-mono text-sm">{activeItem.condition_name || 'General Health'}</span>
                 </div>
                 <div>
                   <span className="text-[11px] text-zinc-400 block font-mono">Organ & Preparation</span>
@@ -278,7 +278,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                 </div>
                 <div>
                   <span className="text-[11px] text-zinc-400 block font-mono">Evidence Category</span>
-                  <span className="text-emerald-400 font-mono font-semibold text-xs">{activeItem.evidence_tier}</span>
+                  <span className="text-zinc-200 font-mono font-semibold text-xs">{activeItem.evidence_tier}</span>
                 </div>
               </div>
             )}
@@ -296,7 +296,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                   type="text"
                   value={reviewerName}
                   onChange={(e) => setReviewerName(e.target.value)}
-                  className="w-full sm:w-64 bg-[#161822] border border-zinc-700 rounded-lg px-3 py-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none font-mono"
+                  className="w-full sm:w-64 bg-[#151722] border border-zinc-700 rounded-lg px-3 py-2 text-xs text-white focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none font-mono"
                   placeholder="e.g. Dr. Vance"
                 />
               </div>
@@ -311,7 +311,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                   value={curatorNotes}
                   onChange={(e) => setCuratorNotes(e.target.value)}
                   placeholder="Add verification notes, botanical synonyms checked, or voucher notes..."
-                  className="w-full bg-[#161822] border border-zinc-700 rounded-xl p-3 text-xs text-white focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                  className="w-full bg-[#151722] border border-zinc-700 rounded-xl p-3 text-xs text-white focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none"
                 />
               </div>
             </div>
@@ -320,9 +320,9 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <footer className="bg-[#161822] px-6 py-4 border-t border-zinc-800 flex items-center justify-between">
+        <footer className="bg-[#151722] px-6 py-4 border-t border-zinc-800 flex items-center justify-between">
           <div className="text-[11px] text-zinc-300 font-mono">
-            <span>Status: <strong className="text-amber-400 uppercase">{activeItem.verification_status}</strong></span>
+            <span>Status: <strong className="text-white uppercase">{activeItem.verification_status}</strong></span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -330,10 +330,10 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
               type="button"
               onClick={handleReject}
               disabled={isSubmitting}
-              className="px-4 py-2 min-h-[40px] bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:outline-none"
+              className="px-4 py-2 min-h-[40px] bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none font-mono"
               aria-label={`Reject scientific claim for ${activeItem.plant_scientific_name}`}
             >
-              <Trash2 className="w-3.5 h-3.5 text-rose-400" aria-hidden="true" />
+              <Trash2 className="w-3.5 h-3.5 text-zinc-400" aria-hidden="true" />
               <span>Reject Claim</span>
             </button>
 
@@ -341,7 +341,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
               type="button"
               onClick={handleApprove}
               disabled={isSubmitting}
-              className="px-4 py-2 min-h-[40px] bg-zinc-200 hover:bg-white text-zinc-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-black/40 cursor-pointer disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+              className="px-4 py-2 min-h-[40px] bg-zinc-200 hover:bg-white text-zinc-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-black/40 cursor-pointer disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:outline-none font-mono"
               aria-label={`Approve and certify scientific claim for ${activeItem.plant_scientific_name}`}
             >
               <Check className="w-3.5 h-3.5 text-zinc-950" aria-hidden="true" />
