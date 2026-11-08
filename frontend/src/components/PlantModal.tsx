@@ -1,6 +1,7 @@
-import React from 'react';
-import { X, Leaf, ExternalLink, Layers, Beaker } from 'lucide-react';
-import type { PlantDetail } from '../types';
+import React, { useState } from 'react';
+import { X, Leaf, ExternalLink, Layers, Beaker, ShieldCheck, Download, CheckCircle2 } from 'lucide-react';
+import type { PlantDetail, SovereigntyCertificate } from '../types';
+import { fetchSovereigntyCertificate } from '../api/client';
 
 interface PlantModalProps {
   plant: PlantDetail | null;
@@ -8,7 +9,32 @@ interface PlantModalProps {
 }
 
 export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
+  const [cert, setCert] = useState<SovereigntyCertificate | null>(null);
+  const [isLoadingCert, setIsLoadingCert] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+
   if (!plant) return null;
+
+  const handleFetchCert = async () => {
+    setIsLoadingCert(true);
+    try {
+      const c = await fetchSovereigntyCertificate(plant.id);
+      setCert(c);
+      const blob = new Blob([JSON.stringify(c, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${c.certificate_id}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 3000);
+    } catch (err) {
+      console.error('Failed to generate certificate:', err);
+    } finally {
+      setIsLoadingCert(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
