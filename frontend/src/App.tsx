@@ -16,7 +16,6 @@ import { VideoWalkthroughModal } from './components/VideoWalkthroughModal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { fetchDashboardStats } from './api/client';
 import type { DashboardStatsResponse } from './types';
-import { NAV_ITEMS } from './components/navConfig';
 
 const VALID_TABS = [
   'landing',
@@ -63,36 +62,6 @@ export function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-
-  // Global Rapid Navigation Hotkeys (1-9, 0, E)
-  useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (
-        target &&
-        (target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.tagName === 'SELECT' ||
-          target.isContentEditable)
-      ) {
-        return;
-      }
-
-      if (e.metaKey || e.ctrlKey || e.altKey) {
-        return;
-      }
-
-      const key = e.key.toUpperCase();
-      const match = NAV_ITEMS.find((item) => item.hotkey.toUpperCase() === key);
-      if (match) {
-        e.preventDefault();
-        setActiveTab(match.id);
-      }
-    };
-
-    window.addEventListener('keydown', handleGlobalKeyDown);
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [setActiveTab]);
 
   const refreshStats = useCallback(() => {
     setIsLoadingStats(true);

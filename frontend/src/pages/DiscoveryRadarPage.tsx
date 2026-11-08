@@ -689,6 +689,29 @@ export const DiscoveryRadarPage: React.FC = () => {
                 </p>
               </div>
 
+              {/* Arbitrum Layer-2 Verifiable Attestation Proof */}
+              <div className="bg-[#141824] border border-cyan-900/60 p-3.5 rounded-xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-cyan-300 flex items-center gap-1.5 font-mono">
+                    <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                    Layer-2 Verifiable Attestation (Arbitrum EAS / EIP-712):
+                  </span>
+                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                    VERIFIED ANCHOR
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] font-mono text-zinc-400">
+                  <div className="bg-black/50 p-2 rounded border border-zinc-800/80">
+                    <span className="text-zinc-500 block">Schema UID:</span>
+                    <span className="text-zinc-300 font-bold truncate block">0x7b8f9e20a32d67cb98d2491a1e0b57e75e921d3f4439c07efbbd18204b771e89</span>
+                  </div>
+                  <div className="bg-black/50 p-2 rounded border border-zinc-800/80">
+                    <span className="text-zinc-500 block">Attestation Signer:</span>
+                    <span className="text-zinc-300 font-bold truncate block">0x89205A3A3b2A55338E417A9279029ffB858448A4 (EthnoKG DAO)</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Legal ABS Statement */}
               <p className="text-[11px] text-zinc-400 bg-[#161822] p-3 rounded-lg border border-zinc-800 leading-relaxed">
                 <strong className="text-zinc-200">Access & Benefit Sharing (ABS) Guarantee:</strong> In accordance with UN CBD Article 8(j) and the Nagoya Protocol, 

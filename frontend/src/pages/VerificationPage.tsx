@@ -295,7 +295,7 @@ export const VerificationPage: React.FC = () => {
     exit: { opacity: 0, transition: { duration: 0.15 } }
   };
 
-  const currentDeckRel = relationships[deckIndex];
+  const currentDeckRel = relationships[safeDeckIndex];
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -532,7 +532,7 @@ export const VerificationPage: React.FC = () => {
                 <div className="flex items-center gap-2 text-xs font-mono">
                   <span className="text-zinc-400">Reviewing Claim:</span>
                   <span className="text-white font-bold bg-[#151722] border border-zinc-700/80 px-2.5 py-0.5 rounded-lg">
-                    {deckIndex + 1} of {relationships.length}
+                    {safeDeckIndex + 1} of {relationships.length}
                   </span>
                   <span className="text-zinc-500 hidden md:inline">
                     (Shortcuts: [A] Approve, [R] Reject, [E] Edit, [← / →] Navigate)
@@ -543,7 +543,7 @@ export const VerificationPage: React.FC = () => {
                 <div className="w-full sm:w-48 h-1.5 bg-zinc-800/80 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300 rounded-full"
-                    style={{ width: `${((deckIndex + 1) / relationships.length) * 100}%` }}
+                    style={{ width: `${((safeDeckIndex + 1) / relationships.length) * 100}%` }}
                   />
                 </div>
 
@@ -552,9 +552,9 @@ export const VerificationPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handlePrevDeck}
-                    disabled={deckIndex === 0}
+                    disabled={safeDeckIndex === 0}
                     className={`flex items-center gap-1 px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer ${
-                      deckIndex === 0
+                      safeDeckIndex === 0
                         ? 'bg-zinc-900 border-zinc-800 text-zinc-600 cursor-not-allowed opacity-50'
                         : 'bg-[#151722] border-zinc-700 text-zinc-200 hover:text-white hover:bg-zinc-800'
                     }`}
@@ -566,9 +566,9 @@ export const VerificationPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleNextDeck}
-                    disabled={deckIndex === relationships.length - 1}
+                    disabled={safeDeckIndex === relationships.length - 1}
                     className={`flex items-center gap-1 px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer ${
-                      deckIndex === relationships.length - 1
+                      safeDeckIndex === relationships.length - 1
                         ? 'bg-zinc-900 border-zinc-800 text-zinc-600 cursor-not-allowed opacity-50'
                         : 'bg-[#151722] border-zinc-700 text-zinc-200 hover:text-white hover:bg-zinc-800'
                     }`}
@@ -743,11 +743,11 @@ export const VerificationPage: React.FC = () => {
                       key={r.id}
                       type="button"
                       onClick={() => {
-                        setDeckDirection(idx > deckIndex ? 1 : -1);
+                        setDeckDirection(idx > safeDeckIndex ? 1 : -1);
                         setDeckIndex(idx);
                       }}
                       className={`shrink-0 px-3 py-1.5 rounded-xl text-xs font-mono transition-all cursor-pointer border ${
-                        idx === deckIndex
+                        idx === safeDeckIndex
                           ? 'bg-emerald-950/80 border-emerald-500 text-white font-bold shadow-[0_0_12px_rgba(16,185,129,0.3)]'
                           : 'bg-[#12141d] border-zinc-800 text-zinc-400 hover:text-zinc-200'
                       }`}

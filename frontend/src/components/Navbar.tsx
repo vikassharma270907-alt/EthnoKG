@@ -68,16 +68,31 @@ export const Navbar: React.FC<NavbarProps> = ({
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (isInput) return;
 
+      // ? or Shift+/ triggers search/command palette
+      if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+        e.preventDefault();
+        setIsSearchOpen(true);
+        return;
+      }
+
+      // V triggers video walkthrough presentation
+      if (e.key.toUpperCase() === 'V' && onOpenVideoWalkthrough) {
+        e.preventDefault();
+        onOpenVideoWalkthrough();
+        return;
+      }
+
       const key = e.key.toUpperCase();
       const matched = NAV_ITEMS.find((item: NavItemConfig) => item.hotkey === key);
       if (matched) {
+        e.preventDefault();
         setActiveTab(matched.id);
       }
     };
 
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [setActiveTab]);
+  }, [setActiveTab, onOpenVideoWalkthrough]);
 
   return (
     <>
