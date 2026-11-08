@@ -273,4 +273,31 @@ def test_spa_path_traversal_protection(client):
     res2 = client.get("/..%2F..%2Fbackend%2Fcore%2Fconfig.py")
     assert res2.status_code in [403, 404]
 
+def test_document_upload_txt(client):
+    import io
+    file_content = b"Leaves of Withania somnifera are used for stress and anxiety in Ayurvedic traditions."
+    files = {"file": ("survey.txt", io.BytesIO(file_content), "text/plain")}
+    data = {
+        "title": "Field Report on Withania",
+        "authors": "Dr. Botanist",
+        "publication_year": 2024,
+        "journal": "Ethnobotany Letters"
+    }
+    res = client.post("/api/documents/upload", files=files, data=data)
+    assert res.status_code == 200
+    doc = res.json()
+    assert doc["title"] == "Field Report on Withania"
+    assert doc["id"] > 0
+
+def test_verification_error_cases(client):
+    res_app = client.post("/api/verification/999999/approve", json={"reviewer_name": "Tester"})
+    assert res_app.status_code == 404
+
+    res_rej = client.post("/api/verification/999999/reject", json={"reviewer_name": "Tester", "reason": "None"})
+    assert res_rej.status_code == 404
+
+    res_patch = client.patch("/api/verification/999999", json={"notes": "Update"})
+    assert res_patch.status_code == 404
+
+
 

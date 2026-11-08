@@ -9,7 +9,7 @@ pip install -r backend/requirements.txt
 # Ensure Node.js and npm are available (handles native Python environments)
 if ! command -v npm &> /dev/null; then
   echo "==> Node.js/npm not detected in native environment. Fetching portable Node.js runtime..."
-  NODE_VER="v20.18.0"
+  NODE_VER="v22.14.0"
   ARCH=$(uname -m)
   case "$ARCH" in
     x86_64) NODE_ARCH="linux-x64" ;;
@@ -25,7 +25,7 @@ fi
 
 echo "==> 2. Installing Frontend Node dependencies & building Vite React app..."
 cd frontend
-npm ci
+npm ci || npm install
 npm run build
 cd ..
 

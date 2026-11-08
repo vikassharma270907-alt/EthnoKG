@@ -1,10 +1,10 @@
 # Multi-stage production build for EthnoKG
 
 # Stage 1: Build React 19 Frontend
-FROM node:20-alpine AS frontend-builder
+FROM node:22-alpine AS frontend-builder
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm ci
 COPY frontend/ ./
 RUN npm run build
 
