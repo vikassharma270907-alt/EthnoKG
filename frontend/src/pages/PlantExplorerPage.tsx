@@ -16,7 +16,8 @@ import {
   X,
   SlidersHorizontal
 } from 'lucide-react';
-import { motion, AnimatePresence, useReducedMotion, type Variants } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { fetchPlants, fetchPlantDetail } from '../api/client';
 import type { PlantBrief, PlantDetail } from '../types';
 import { PlantModal } from '../components/PlantModal';
@@ -70,12 +71,11 @@ export const PlantExplorerPage: React.FC = () => {
 
   // Modal state
   const [activePlantDetail, setActivePlantDetail] = useState<PlantDetail | null>(null);
-  const [_isLoadingModal, setIsLoadingModal] = useState(false);
+  const [loadingPlantId, setLoadingPlantId] = useState<number | null>(null);
 
   // Fetch plants when query/family/tradition changes
   useEffect(() => {
     let isSubscribed = true;
-    setIsLoading(true);
 
     fetchPlants({
       query: searchQuery || undefined,
@@ -171,14 +171,8 @@ export const PlantExplorerPage: React.FC = () => {
     });
   }, [plants, sortBy, sortDirection]);
 
-  // Keep slideIndex safely within bounds when filtered results update
-  useEffect(() => {
-    if (sortedPlants.length === 0) {
-      setSlideIndex(0);
-    } else if (slideIndex >= sortedPlants.length) {
-      setSlideIndex(sortedPlants.length - 1);
-    }
-  }, [sortedPlants.length, slideIndex]);
+  // Derived safe slide index within bounds (avoids cascading render effect)
+  const safeSlideIndex = sortedPlants.length === 0 ? 0 : Math.min(slideIndex, sortedPlants.length - 1);
 
   // Carousel controls
   const handlePrevSlide = useCallback(() => {
@@ -241,14 +235,14 @@ export const PlantExplorerPage: React.FC = () => {
 
   // Open modal detail handler
   const handleOpenDetail = async (id: number) => {
-    setIsLoadingModal(true);
+    setLoadingPlantId(id);
     try {
       const detail = await fetchPlantDetail(id);
       setActivePlantDetail(detail);
     } catch (err) {
       console.error('Failed to load plant detail:', err);
     } finally {
-      setIsLoadingModal(false);
+      setLoadingPlantId(null);
     }
   };
 
@@ -276,7 +270,7 @@ export const PlantExplorerPage: React.FC = () => {
       opacity: 1,
       scale: 1,
       transition: {
-        x: { type: 'spring' as const, stiffness: 350, damping: 32 },
+        x: { type: 'spring', stiffness: 350, damping: 32 },
         opacity: { duration: 0.25 },
         scale: { duration: 0.25 }
       }
@@ -286,7 +280,7 @@ export const PlantExplorerPage: React.FC = () => {
       opacity: 0,
       scale: 0.97,
       transition: {
-        x: { type: 'spring' as const, stiffness: 350, damping: 32 },
+        x: { type: 'spring', stiffness: 350, damping: 32 },
         opacity: { duration: 0.2 }
       }
     })
@@ -298,7 +292,7 @@ export const PlantExplorerPage: React.FC = () => {
     exit: { opacity: 0, transition: { duration: 0.15 } }
   };
 
-  const currentPlant = sortedPlants[slideIndex];
+  const currentPlant = sortedPlants[safeSlideIndex];
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -787,13 +781,18 @@ export const PlantExplorerPage: React.FC = () => {
 
                         <motion.button
                           type="button"
+                          disabled={loadingPlantId === currentPlant.id}
                           onClick={() => handleOpenDetail(currentPlant.id)}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-white font-mono text-xs font-bold shadow-lg shadow-emerald-950/50 cursor-pointer transition-all"
+                          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-white font-mono text-xs font-bold shadow-lg shadow-emerald-950/50 cursor-pointer transition-all disabled:opacity-60"
                         >
                           <BookOpen className="w-4 h-4" aria-hidden="true" />
-                          <span>Explore Full Botanical Dossier</span>
+                          <span>
+                            {loadingPlantId === currentPlant.id
+                              ? 'Loading Dossier...'
+                              : 'Explore Full Botanical Dossier'}
+                          </span>
                           <ChevronRight className="w-4 h-4" aria-hidden="true" />
                         </motion.button>
                       </div>
@@ -1015,14 +1014,15 @@ export const PlantExplorerPage: React.FC = () => {
                         <td className="py-3 px-4 text-right">
                           <button
                             type="button"
+                            disabled={loadingPlantId === plant.id}
                             onClick={(e) => {
                               e.stopPropagation();
                               handleOpenDetail(plant.id);
                             }}
                             aria-label={`Open botanical dossier for ${plant.scientific_name}`}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-emerald-600 text-zinc-200 hover:text-white border border-zinc-700/80 text-[11px] font-mono transition-all cursor-pointer shadow-sm"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-emerald-600 text-zinc-200 hover:text-white border border-zinc-700/80 text-[11px] font-mono transition-all cursor-pointer shadow-sm disabled:opacity-50"
                           >
-                            <span>Dossier</span>
+                            <span>{loadingPlantId === plant.id ? 'Loading...' : 'Dossier'}</span>
                             <ExternalLink className="w-3 h-3" aria-hidden="true" />
                           </button>
                         </td>
