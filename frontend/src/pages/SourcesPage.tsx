@@ -9,7 +9,21 @@ export const SourcesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchSources().then(setSources).finally(() => setIsLoading(false));
+    let isMounted = true;
+    fetchSources()
+      .then((data) => {
+        if (isMounted) setSources(data);
+      })
+      .catch((err) => {
+        console.error('Failed to load sources:', err);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
