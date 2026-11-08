@@ -66,7 +66,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight font-mono leading-[1.12]"
           >
             Turning Traditional Knowledge into{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-sky-300 to-teal-300 drop-shadow-[0_0_35px_rgba(255,255,255,0.2)]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400 drop-shadow-[0_0_35px_rgba(255,255,255,0.3)]">
               Traceable Scientific Evidence
             </span>
           </motion.h1>

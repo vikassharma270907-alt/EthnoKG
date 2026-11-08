@@ -50,7 +50,7 @@ export const WaveformPulse: React.FC<WaveformPulseProps> = ({
             }
             className={`w-1 rounded-full ${
               isStreaming
-                ? 'bg-gradient-to-t from-sky-400 to-emerald-300 shadow-[0_0_6px_rgba(56,189,248,0.6)]'
+                ? 'bg-gradient-to-t from-zinc-400 via-zinc-200 to-white shadow-[0_0_8px_rgba(255,255,255,0.7)]'
                 : 'bg-zinc-600'
             }`}
           />
