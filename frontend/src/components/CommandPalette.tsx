@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Search, CornerDownLeft, Sparkles, FileVideo, Cpu, ArrowRight } from 'lucide-react';
+import { Search, CornerDownLeft, Sparkles, FileVideo, Cpu, ArrowRight, Terminal, Code2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { NAV_ITEMS } from './navConfig';
 import { useFocusTrap } from '../hooks/useFocusTrap';
@@ -72,6 +72,33 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       badge: 'NLP',
       onSelect: () => {
         setActiveTab('extraction');
+        onClose();
+      }
+    });
+
+    list.push({
+      id: 'action-docs',
+      title: 'FastAPI Swagger Documentation Portal',
+      subtitle: 'Interactive OpenAPI 3.1 portal with dark grey theme, particle canvas & code snippets',
+      category: 'Developer Tools',
+      icon: Terminal,
+      hotkey: 'D',
+      badge: 'OAS 3.1',
+      onSelect: () => {
+        window.open('/docs', '_blank');
+        onClose();
+      }
+    });
+
+    list.push({
+      id: 'action-openapi',
+      title: 'OpenAPI 3.1 JSON Specification',
+      subtitle: 'Download or inspect the raw machine-readable OpenAPI schema',
+      category: 'Developer Tools',
+      icon: Code2,
+      badge: 'JSON',
+      onSelect: () => {
+        window.open('/openapi.json', '_blank');
         onClose();
       }
     });
