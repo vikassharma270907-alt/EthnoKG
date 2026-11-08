@@ -263,13 +263,28 @@ export const PlantModal: React.FC<PlantModalProps> = ({ plant, onClose }) => {
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">Key Bioactive Compounds</h4>
+              <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono flex items-center gap-1.5">
+                <Beaker className="w-3.5 h-3.5 text-zinc-400" />
+                <span>Key Bioactive Compounds & Cheminformatics</span>
+              </h4>
               <div className="flex flex-wrap gap-1.5">
-                {(plant.reported_compounds || []).map((comp, i) => (
-                  <span key={i} className="text-xs bg-zinc-800 text-zinc-200 border border-zinc-700 px-2.5 py-1 rounded-md font-mono">
-                    {comp}
-                  </span>
-                ))}
+                {(plant.reported_compounds || []).length > 0 ? (
+                  (plant.reported_compounds || []).map((comp, i) => (
+                    <a
+                      key={i}
+                      href={`https://pubchem.ncbi.nlm.nih.gov/#query=${encodeURIComponent(comp)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white border border-zinc-700 px-2.5 py-1 rounded-md font-mono flex items-center gap-1.5 transition-colors cursor-pointer group"
+                      title={`Inspect ${comp} in PubChem Substance / Compound Repository`}
+                    >
+                      <span>{comp}</span>
+                      <ExternalLink className="w-2.5 h-2.5 text-zinc-400 group-hover:text-zinc-200" />
+                    </a>
+                  ))
+                ) : (
+                  <span className="text-xs text-zinc-500 italic font-mono">No isolated compounds recorded</span>
+                )}
               </div>
             </div>
           </div>
