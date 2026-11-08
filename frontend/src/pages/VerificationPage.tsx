@@ -321,7 +321,7 @@ export const VerificationPage: React.FC = () => {
       {/* Verification Modal for Detailed Inspection */}
       {activeRel && (
         <VerificationModal
-          rel={activeRel}
+          relationship={activeRel}
           onClose={() => setActiveRel(null)}
           onApprove={handleModalApprove}
           onReject={handleModalReject}
