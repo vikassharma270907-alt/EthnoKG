@@ -18,7 +18,7 @@ if ! command -v npm &> /dev/null; then
   esac
 
   mkdir -p /tmp/node
-  curl -fsSL "https://nodejs.org/dist/${NODE_VER}/node-${NODE_VER}-${NODE_ARCH}.tar.xz" | tar -xJ -C /tmp/node --strip-components=1
+  curl -fsSL "https://nodejs.org/dist/${NODE_VER}/node-${NODE_VER}-${NODE_ARCH}.tar.gz" | tar -xz -C /tmp/node --strip-components=1
   export PATH="/tmp/node/bin:$PATH"
   echo "==> Portable Node.js $(node -v) and npm $(npm -v) installed successfully."
 fi
